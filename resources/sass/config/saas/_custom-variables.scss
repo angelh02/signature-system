@@ -1,0 +1,134 @@
+//
+// custom-variables.scss
+//
+
+//ItslColors
+$primary-50: #C88A8A !default;
+$primary-100: #BF7776 !default;
+$primary-200: #B66463 !default;
+$primary-300: #AD504F !default;
+$primary-400: #A43D3C !default;
+$primary-500: #9B2A29 !default;
+$primary-600: #8D2726 !default;
+$primary-700: #7F2322 !default;
+$primary-800: #711F1E  !default;
+$primary-900: #631B1B !default;
+
+$secondary-50: #FFF3E0 !default;
+$secondary-100: #FFE0B2 !default;
+$secondary-200: #FFCC80 !default;
+$secondary-300: #FFB74D !default;
+$secondary-400: #FFA726 !default;
+$secondary-500: #FF9800 !default;
+$secondary-600: #FB8C00 !default;
+$secondary-700: #F57C00 !default;
+$secondary-800: #EF6C00 !default;
+$secondary-900: #E65100 !default;
+
+// Background left-sidebar
+$bg-leftbar:                        linear-gradient(135deg, $primary-900 0%, $primary-500 60%);
+$bg-leftbar-light:                #ffffff;
+$bg-leftbar-dark:                 $primary-900;
+$bg-topnav:                       $primary-900;
+
+// Deatched left sidenav
+$bg-detached-leftbar:             #ffffff;
+
+// Topbar Height
+$topbar-height:                     70px;
+
+// Logo Display
+$logo-light-display:                block;
+$logo-dark-display:                 none;
+// Logo auth display
+$logo-auth-light-display:                none;
+$logo-auth-dark-display:                 block;
+
+// Leftbar width
+$leftbar-width:                     260px;
+
+// Boxed Layout
+$boxed-layout-width:                1300px;
+$boxed-layout-bg:                 #ffffff;
+
+// Menu item colors (Default-dark)
+$menu-item:                       $secondary-100;
+$menu-item-hover:                 $secondary-50;
+$menu-item-active:                $secondary-50;
+
+// Menu item colors (light)
+$menu-item-light:                 #C88A8A;
+$menu-item-light-hover:           $primary-500;
+$menu-item-light-active:          $primary-500;
+
+// Detached Menu item colors
+$menu-item-dark:                  #C88A8A;
+$menu-item-dark-hover:            $primary-500;
+$menu-item-dark-active:           $primary-500;
+
+// Dark sidenav Menu item color
+$sidebar-dark-menu-item:          $secondary-100;
+$sidebar-dark-menu-item-hover:    $secondary-50;
+$sidebar-dark-menu-item-active:   #ffffff;
+
+// Rightbar Width
+$rightbar-width:       280px;
+$rightbar-bg:                     #ffffff;
+$rightbar-title-bg:               #463131;
+$rightbar-title-color:            #ffffff;
+$rightbar-title-btn-bg:           #5a4444;
+$rightbar-title-btn-color:        #ffffff;
+$rightbar-overlay-bg:             #463131;
+
+// Topbar Background
+$bg-topbar:                       #ffffff;
+$bg-topbar-dark:                  #5a4444;
+
+// Topbar Search
+$bg-topbar-search:                #f1f3fa;
+$bg-topbar-dark-search:           #3c4655;
+
+// Helpbox
+$help-box-light-bg:               rgba(255,255,255,0.07);
+$help-box-dark-bg:                $primary-500;
+
+// Font weight
+$font-weight-semibold:              600;
+
+// Dropdown Large
+$dropdown-lg-width:                 320px;
+
+// Page title color
+$page-title-color:                  inherit;
+
+// Nav-pill background
+$nav-pills-bg:                    #eef2f7;
+
+// Custom-accordion
+$custom-accordion-title-color:    #5a4444;
+
+// Dragula demo background
+$dragula-bg:                      #f7f9fb;
+
+// Form wizard header background
+$form-wizard-header-bg:           #eef2f7;
+
+// Text title color
+$text-title-color:                #6c757d;
+
+// card Loader background
+$card-loader-bg:                  #5a4444;
+
+// Chat widget
+$chat-primary-user-bg:            #fef5e4;
+$chat-secondary-user-bg:          #f1f3fa;
+
+// User authentication Background
+$auth-bg:                         #ffffff;
+$auth-bg-pattern-img:               url("../images/bg-pattern-light.svg");
+
+// Apex chart
+$apex-grid-color:                 #f9f9fd;
+
+// Hero
+$hero-bg: linear-gradient(to bottom,$primary-900,$primary-500);
