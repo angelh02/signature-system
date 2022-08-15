@@ -13080,28 +13080,28 @@ body[data-layout=topnav] .container-fluid, body[data-layout=topnav] .container-s
 @font-face {
   font-family: "Nunito";
   src: url(/fonts/Nunito-Light.eot?f819f6545bdbe3d78cb3dcdeffa4fd5d);
-  src: local("Nunito Light"), local("Nunito-Light"), url(/fonts/Nunito-Light.eot?f819f6545bdbe3d78cb3dcdeffa4fd5d?#iefix) format("embedded-opentype"), url(/fonts/Nunito-Light.woff?b141e33ee7afe8a37ce4932b2e1b41c9) format("woff"), url(/fonts/Nunito-Light.ttf?bebe3f7d34a2d8b52942a7b148f2c2b0) format("truetype"), url(/fonts/Nunito-Light.svg?c77d98f5cc70801b4f66c5e72890c116#Roboto) format("svg");
+  src: local("Nunito Light"), local("Nunito-Light"), url(/fonts/Nunito-Light.eot?f819f6545bdbe3d78cb3dcdeffa4fd5d?#iefix) format("embedded-opentype"), url(/fonts/Nunito-Light.woff?b141e33ee7afe8a37ce4932b2e1b41c9) format("woff"), url(/fonts/Nunito-Light.ttf?bebe3f7d34a2d8b52942a7b148f2c2b0) format("truetype"), url(/fonts/Nunito-Light.svg?afc6669cf87085cbf6929cc2230f051f#Roboto) format("svg");
   font-weight: 300;
   font-style: normal;
 }
 @font-face {
   font-family: "Nunito";
   src: url(/fonts/Nunito-Regular.eot?f400658ba7db90343f47cc3f391902e4);
-  src: local("Nunito Regular"), local("Nunito-Regular"), url(/fonts/Nunito-Regular.eot?f400658ba7db90343f47cc3f391902e4?#iefix) format("embedded-opentype"), url(/fonts/Nunito-Regular.woff?328e9506b6f5c2f2622a24c105c83996) format("woff"), url(/fonts/Nunito-Regular.ttf?f8c1d028eab80594702332e512d858ff) format("truetype"), url(/fonts/Nunito-Regular.svg?7c16b0aeb76682f4a32c8532136d99fa#Roboto) format("svg");
+  src: local("Nunito Regular"), local("Nunito-Regular"), url(/fonts/Nunito-Regular.eot?f400658ba7db90343f47cc3f391902e4?#iefix) format("embedded-opentype"), url(/fonts/Nunito-Regular.woff?328e9506b6f5c2f2622a24c105c83996) format("woff"), url(/fonts/Nunito-Regular.ttf?f8c1d028eab80594702332e512d858ff) format("truetype"), url(/fonts/Nunito-Regular.svg?d9275f862c53c9caf23596a482915f11#Roboto) format("svg");
   font-weight: 400;
   font-style: normal;
 }
 @font-face {
   font-family: "Nunito";
   src: url(/fonts/Nunito-SemiBold.eot?fd2e1f201b67b09049f936bd4abb9833);
-  src: local("Nunito SemiBold"), local("Nunito-SemiBold"), url(/fonts/Nunito-SemiBold.eot?fd2e1f201b67b09049f936bd4abb9833?#iefix) format("embedded-opentype"), url(/fonts/Nunito-SemiBold.woff?03392c015e48a5e821e6a0b1ecbc7ae8) format("woff"), url(/fonts/Nunito-SemiBold.ttf?689a49a3cea80f39b5b03146b66f4b02) format("truetype"), url(/fonts/Nunito-SemiBold.svg?26690929766633defdfdd531a3103eb2#Roboto) format("svg");
+  src: local("Nunito SemiBold"), local("Nunito-SemiBold"), url(/fonts/Nunito-SemiBold.eot?fd2e1f201b67b09049f936bd4abb9833?#iefix) format("embedded-opentype"), url(/fonts/Nunito-SemiBold.woff?03392c015e48a5e821e6a0b1ecbc7ae8) format("woff"), url(/fonts/Nunito-SemiBold.ttf?689a49a3cea80f39b5b03146b66f4b02) format("truetype"), url(/fonts/Nunito-SemiBold.svg?852db321c02cd0929bb7814ffeb38a96#Roboto) format("svg");
   font-weight: 600;
   font-style: normal;
 }
 @font-face {
   font-family: "Nunito";
   src: url(/fonts/Nunito-Bold.eot?f75a50648d05644e4779e87fe107aedd);
-  src: local("Nunito Bold"), local("Nunito-Bold"), url(/fonts/Nunito-Bold.eot?f75a50648d05644e4779e87fe107aedd?#iefix) format("embedded-opentype"), url(/fonts/Nunito-Bold.woff?a229907112951d36fed2862b38db0e46) format("woff"), url(/fonts/Nunito-Bold.ttf?c8d0ed25e6e2a459947c880a169330b9) format("truetype"), url(/fonts/Nunito-Bold.svg?aa521effcaf78afa30b05063b7aea22e#Roboto) format("svg");
+  src: local("Nunito Bold"), local("Nunito-Bold"), url(/fonts/Nunito-Bold.eot?f75a50648d05644e4779e87fe107aedd?#iefix) format("embedded-opentype"), url(/fonts/Nunito-Bold.woff?a229907112951d36fed2862b38db0e46) format("woff"), url(/fonts/Nunito-Bold.ttf?c8d0ed25e6e2a459947c880a169330b9) format("truetype"), url(/fonts/Nunito-Bold.svg?f570e1b8c98bd190d20927b83579c82b#Roboto) format("svg");
   font-weight: 700;
   font-style: normal;
 }
@@ -14937,7 +14937,7 @@ input[data-switch=dark]:checked + label {
 }
 
 body.authentication-bg {
-  background-image: url(/images/bg-pattern-light.svg?03ecc6def00f414b7da68dd6f13d9e1a);
+  background-image: url(/images/bg-pattern-light.svg?c15be34ce140560c166c9a79e4a4adea);
   background-size: cover;
   background-position: center;
 }

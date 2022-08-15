@@ -9,7 +9,7 @@ File: Icons Css File
 @font-face {
   font-family: "unicons";
   src: url(/fonts/unicons.eot?ca6ba1354c470b06df5d56e4afa3aae3);
-  src: url(/fonts/unicons.eot?ca6ba1354c470b06df5d56e4afa3aae3#iefix) format("embedded-opentype"), url(/fonts/unicons.woff2?b5ae9656e5aa1bf09839a1e030d0c827) format("woff2"), url(/fonts/unicons.woff?31bc37652b168677337f252788fd4e0b) format("woff"), url(/fonts/unicons.ttf?257bdf01db318b704dd641dc18376aff) format("truetype"), url(/fonts/unicons.svg?f5dd903de4721de0781954ebfb30e0e7#unicons) format("svg");
+  src: url(/fonts/unicons.eot?ca6ba1354c470b06df5d56e4afa3aae3#iefix) format("embedded-opentype"), url(/fonts/unicons.woff2?b5ae9656e5aa1bf09839a1e030d0c827) format("woff2"), url(/fonts/unicons.woff?31bc37652b168677337f252788fd4e0b) format("woff"), url(/fonts/unicons.ttf?257bdf01db318b704dd641dc18376aff) format("truetype"), url(/fonts/unicons.svg?09d1a27b0eae576d8dd18522258586a1#unicons) format("svg");
   font-weight: normal;
   font-style: normal;
 }
@@ -3255,7 +3255,7 @@ File: Icons Css File
 @font-face {
   font-family: "dripicons-v2";
   src: url(/fonts/dripicons-v2.eot?7f392f1e4787b46b3e8b7a724b923151);
-  src: url(/fonts/dripicons-v2.eot?7f392f1e4787b46b3e8b7a724b923151?#iefix) format("embedded-opentype"), url(/fonts/dripicons-v2.woff?f19dcc0358afed69d2775da7999aa743) format("woff"), url(/fonts/dripicons-v2.ttf?09c9c870ef8f9cffcc8faf6091535231) format("truetype"), url(/fonts/dripicons-v2.svg?4cecedd188b606da855d20edfa03e154#dripicons-v2) format("svg");
+  src: url(/fonts/dripicons-v2.eot?7f392f1e4787b46b3e8b7a724b923151?#iefix) format("embedded-opentype"), url(/fonts/dripicons-v2.woff?f19dcc0358afed69d2775da7999aa743) format("woff"), url(/fonts/dripicons-v2.ttf?09c9c870ef8f9cffcc8faf6091535231) format("truetype"), url(/fonts/dripicons-v2.svg?de54f4eb6e267d60dda522561c36ba5a#dripicons-v2) format("svg");
   font-weight: normal;
   font-style: normal;
 }
