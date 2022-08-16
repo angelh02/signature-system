@@ -36,9 +36,14 @@
 <script setup>
 import {onMounted} from 'vue';
 import $ from 'jquery';
+import dataTable from 'datatables';
+
 
 onMounted(() => {
-    // $('#basic-datatable').DataTable();
+    $('#basic-datatable').dataTable({
+        paginate: false,
+        // scrollY: 300
+    });
 })
     
     

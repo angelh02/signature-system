@@ -13,7 +13,7 @@
 <body>   
     <div id="app">
         @include('layouts.navbar')
-        <div class="">
+        <div class="py-4">
             @yield('content')
         </div>  
     </div>    
