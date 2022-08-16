@@ -38,7 +38,7 @@ import {onMounted} from 'vue';
 import $ from 'jquery';
 
 onMounted(() => {
-    $('#basic-datatable').DataTable();
+    // $('#basic-datatable').DataTable();
 })
     
     
