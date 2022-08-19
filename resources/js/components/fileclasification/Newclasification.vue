@@ -41,6 +41,27 @@
                 </div>
             </div>
         </div>
+        <div class="row g-2">
+            <div class="mb-3 col-6">                    
+                <label class="form-label" for="validationCustom05">Periodo Inicio</label>
+                <div class="input-group date">
+                    <input  type="text" class="form-control" data-date-autoclose="true"  id="dateInicio">
+                    <div class="input-group-addon">
+                        <span class="uil-calendar-alt form-control"></span>
+                    </div>         
+                </div>    
+            </div>
+            <div class="mb-3 col-6">                    
+                <label class="form-label" for="validationCustom05">Periodo Fin</label>
+                <div class="input-group date">
+                    <input  type="text" class="form-control" data-date-autoclose="true"  id="dateFin">
+                    <div class="input-group-addon">
+                        <span class="uil-calendar-alt form-control"></span>
+                    </div>         
+                </div>    
+            </div>
+        </div>
+        
        
         <div class="mb-3">
             <label class="form-label" for="validationCustom05">Consecutivo</label>
@@ -56,3 +77,26 @@
         
     </form>
 </template>
+
+<script setup>
+import {ref,onMounted} from 'vue';
+import $ from 'jquery'
+import {datepicker} from 'bootstrap-datepicker';
+
+onMounted(() => {
+$('#dateInicio').datepicker({
+    language: 'es',
+    format: " yyyy",
+    viewMode: "years", 
+    minViewMode: "years"
+});  
+$('#dateFin').datepicker({
+    format: " yyyy",
+    viewMode: "years", 
+    minViewMode: "years"
+}); 
+            
+});
+
+
+</script>

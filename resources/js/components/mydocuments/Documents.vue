@@ -73,7 +73,7 @@
 </template>
 
 <script setup>
-import DocumentUpload from "./DocumentUpload.vue";
+import DocumentUpload from "../elements/DropZone.vue";
 import { ref } from "vue";
 import DocumentSearch from "./DocumentSearch.vue";
 
