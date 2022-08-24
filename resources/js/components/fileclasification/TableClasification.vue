@@ -1,5 +1,5 @@
 <template>
-   <table id="example" class="table table-striped" style="width:100%">
+   <table id="example" class="table table-striped cell-border" style="width:100%">
     </table>
 </template>
 
@@ -26,6 +26,8 @@ onMounted(async () => {
         },
         data:filesClasification.value.results,
         columns:filesColumns,
+        scrollY: '50vh',
+        scrollCollapse: true,
         // paginate: true,
         // scrollY: 300
     });
@@ -58,7 +60,7 @@ onMounted(async () => {
 const getRequests = async () => {
     const results = await getFileRequests("");
     filesClasification.value = results
-    console.log(filesClasification.value.results)
+    // console.log(filesClasification.value)
 };
 
 

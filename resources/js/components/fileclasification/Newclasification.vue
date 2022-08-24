@@ -25,7 +25,9 @@
             <div class="mb-3 col-6">
                 <!-- <label class="" for="validationCustom05"></label> -->
                 <select class="form-select" id="validationCustom02" placeholder="Selección de serie" value="" required>
-                    <option placeholder="sss" value=""></option>
+                    <option placeholder="sss" v-for="res in filesClasification.value" value="">
+                    {{res}}
+                    </option>
                 </select>
                 <div class="invalid-feedback">
                     Please provide a valid zip.
@@ -81,14 +83,24 @@
 <script setup>
 import {ref,onMounted} from 'vue';
 import $ from 'jquery'
+import {useFileClasificationRequests} from "@/js/composables/useFileClasificationRequest.js"
 import {datepicker} from 'bootstrap-datepicker';
 
-onMounted(() => {
+const filesClasification = ref("");
+
+const {
+    filesColumns,
+    getFileRequests,
+} = useFileClasificationRequests();
+
+onMounted(async () => {
+    await getRequests()
 $('#dateInicio').datepicker({
     language: 'es',
     format: " yyyy",
     viewMode: "years", 
-    minViewMode: "years"
+    minViewMode: "years",
+    multidate:true
 });  
 $('#dateFin').datepicker({
     format: " yyyy",
@@ -97,6 +109,12 @@ $('#dateFin').datepicker({
 }); 
             
 });
+
+const getRequests = async () => {
+    const results = await getFileRequests("");
+    filesClasification = results.results.name
+    console.log(results.results.name)
+};
 
 
 </script>
