@@ -10,7 +10,7 @@
         <div class="col-xl-3 col-lg-4">
             <div class="card tilebox-one">
                 <div class="card-body">
-                    <Newclasification></Newclasification>
+                    <Newclasification  :dataForm="dataForm" @update="dataUpdated"></Newclasification>
                 </div> 
             </div>
         </div>
@@ -22,7 +22,7 @@
                         <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
                         Property HY1xx is not receiving hits. Either your site is not receiving any sessions or it is not tagged correctly.
                     </div>
-                    <TableClasification></TableClasification>
+                    <TableClasification @id="receivedId" @data="receivedData" :updated="updated"></TableClasification>
                 </div> 
             </div> 
         </div>
@@ -32,5 +32,24 @@
 <script setup>
 import Newclasification from './Newclasification.vue';
 import TableClasification from './TableClasification.vue';
+import {ref,onMounted,watch} from 'vue';
+// import $ from 'jquery';
 
+
+const updated = ref(false);
+const dataForm = ref("");
+const id = ref("");
+
+
+function dataUpdated() {
+    updated.value = !updated.value;
+}
+
+function receivedData(data) {
+    dataForm.value = data
+}
+
+// function receivedId(data) {
+//     id.value = data
+// }
 </script>

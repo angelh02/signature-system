@@ -57,7 +57,6 @@
                 </div> 
             </div>
         </div>
-
         <div class="col-xl-9 col-lg-8">
             <div class="card card-h-100">
                 <div class="card-body">
@@ -76,6 +75,7 @@
 import DocumentUpload from "../elements/DropZone.vue";
 import { ref } from "vue";
 import DocumentSearch from "./DocumentSearch.vue";
+import Home from "../Home.vue";
 
 let dropzoneFile = ref("");
 const drop = (e) => {
