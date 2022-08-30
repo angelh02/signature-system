@@ -96,13 +96,9 @@ const createTable = async () => {
     }); 
 };
 
-
-
-
 const getRequests = async () => {
     const results = await getClasification([]);
     filesClasification.value = results;
-    refresh.value = filesClasification.value.length;
     createTable();
 };
 
@@ -112,7 +108,7 @@ const deleteRequests = async () => {
         // console.log(res)
     });
     $("#example").DataTable().destroy();
-        getRequests();
+    getRequests();
 };
 
 

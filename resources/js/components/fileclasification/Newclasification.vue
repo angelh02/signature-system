@@ -17,7 +17,9 @@
                     {{ `${res.code}` }} - {{ `${res.name}` }}
                 </option>
             </select>
-            <div class="valid-feedback">Looks good!</div>
+            <div v-if="submit && !$v.background_id.required" class="mensajeError">
+                Debe escoger una opcion gilipolla
+            </div>
         </div>
         <div class="mb-3">
             <label class="form-label" for="section_id">Sección</label>
@@ -47,8 +49,8 @@
                         v-model="dataForm.series"
                         required
                     />
-                    <div class="invalid-feedback">
-                        Please provide a valid zip.
+                    <div v-if="submit " class="mensajeError">
+                        Debe escoger una opcion gilipolla
                     </div>
                 </div>
             </div>
@@ -122,12 +124,6 @@
                 </div>
             </div>
         </div>
-        <div class="input-group date">
-    <input type="text" class="form-control" value="12-02-2012">
-    <div class="input-group-addon">
-        <span class="glyphicon glyphicon-th"></span>
-    </div>
-</div>
         <div class="mb-3">
             <label class="form-label"
                 >Consecutivo</label
@@ -143,16 +139,21 @@
             <div class="invalid-feedback">Please provide a valid zip.</div>
         </div>
         <div class="row justify-items-center">
-            <button class="btn btn-info mb-2" @click.prevent="editRequest">
+            <button v-if="!edit" class="btn btn-primary mb-2" type="submit" @click.prevent="addRequest">
                 AGREGAR CLASIFICACIÓN
             </button>
-            <button class="btn btn-light mb-2" type="submit">CANCELAR</button>
+            <button v-if="edit" class="btn btn-primary mb-2" type="submit" @click.prevent="editRequest">
+                ACTUALIZAR CLASIFICACIÓN
+            </button>
+            <button class="btn btn-light mb-2" type="submit" @click="setForm">CANCELAR</button>
         </div>
     </form>
 </template>
 
 <script setup>
-import { ref, onMounted, toRefs,toRef } from "vue";
+import useVuelidate from '@vuelidate/core'
+import { required, email } from '@vuelidate/validators'
+import { ref, onMounted, toRefs, toRef, reactive } from "vue";
 import $ from "jquery";
 import { useClasificationsRequests } from "@/js/composables/useClasificationsRequest.js";
 import { useFormClasificationRequest } from "@/js/composables/useFormClasificationRequest.js";
@@ -171,11 +172,12 @@ const edit = toRef(props, 'edit');
 
 const emit = defineEmits(['update'])
 
+const submit = ref(false)
 const backGround = ref("");
 const section = ref("");
 const productionArea = ref("");
-const formData = ref(dataForm);
-const reset = ref({
+const formData = reactive(dataForm);
+const initialState = ref({
     background_id: "",
     section_id: "",
     series: "",
@@ -184,6 +186,16 @@ const reset = ref({
     start_period: "",
     end_period: "",
     consecutive_number: "",
+})
+const addData = ref({
+    background_id: formData.background_id,
+    section_id: formData.value.section_id,
+    series: formData.value.series,
+    subseries: formData.value.subseries,
+    production_area_id: formData.value.production_area_id,
+    start_period: formData.value.start_period,
+    end_period: formData.value.end_period,
+    consecutive_number: formData.value.consecutive_number,
 })
 // const editData = ref(dataForm)
 const editData = ref({
@@ -197,14 +209,26 @@ const editData = ref({
     end_period: dataForm.end_period,
     consecutive_number: dataForm.consecutive_number,
 });
-console.log(dataForm)
-const addData = ref("");
+// const addData = ref("");
 const getId = ref("");
 const starDate = ref("");
 const endDate = ref("")
+const form = reactive({ ...dataForm });
+
 
 const { getBackground, getSection, getProductionArea, addClassification, editClassification } =
     useClasificationsRequests();
+
+const rules = {
+      firstName: { required }, // Matches state.firstName
+      lastName: { required }, // Matches state.lastName
+      formData: {
+        background_id: { required },
+        series: {required} // Matches state.contact.email
+      }
+    }
+
+const v$ = useVuelidate(rules, formData)
 
 onMounted(async () => {
     await getRequests();
@@ -230,10 +254,12 @@ onMounted(async () => {
 });
 
 const onSubmit = async (values) => {
-    // if(dataForm != null){
-    //     formData.value.series = dataForm.value.series
+    // alert("yep")
+    // submit.value = true
+    // if($v.$invalid){
+    //     return;
     // }
-    // console.log(formData.value)
+    console.log(form)
 };
 
 const getRequests = async () => {
@@ -248,9 +274,9 @@ const getRequests = async () => {
 };
 
 const addRequest = async => {
-        // console.log(editData.value)
-
-    useFileClasificationRequestsAPI.addClassification(formData)
+    // console.log(editData.value)
+    // console.log("Datos",formData.value)
+    useFileClasificationRequestsAPI.addClassification(formData.value)
     .then((res) => {
         // console.log(res)
     });
@@ -259,16 +285,62 @@ const addRequest = async => {
 };
 
 const editRequest = async => {
-    console.log(dataForm.value)
-    useFileClasificationRequestsAPI.editClassification(dataForm.value)
+    onSubmit()
+    // console.log(formData.value)
+    // console.log(dataForm.value)
+    useFileClasificationRequestsAPI.editClassification(formData.value)
     .then((res) => {
-        // console.log(res)
+    //     $.NotificationApp.send(
+    //     "Correcto",
+    //     formData.value.id
+    //         ? "El formulario del estudiante se actualizo correctamente"
+    //         : "El formulario del estudiante se registro correctamente",
+    //     "bottom-right",
+    //     "DarkGreen",
+    //     "success"
+    // );
     });
     emit('update');
-    dataForm.value = reset.value
+    // console.log("Satos",addData.value)
+    // dataForm.value = reset.value
 
 
 }
+
+// function resetData(){
+//     edit.value = true;
+//     formData.value = reset.value
+//     console.log(formData.value)
+//     // formData.id = null;
+//     // formData.background_id = 0;
+//     // formData.section_id = 0;
+//     // formData.series = "";
+//     // formData.subseries = "";
+//     // formData.production_area_id = 0;
+//     // formData.start_period = "";
+//     // formData.end_period = "";
+//     // formData.consecutive_number = "";
+// }
+
+function resetForm() {
+    Object.assign(formData, initialState);
+}
+
+function setForm() {
+    Object.assign(dataForm, {
+    id: null,    
+    background_id: 0,
+    section_id: 0,
+    series: "",
+    subseries: "",
+    production_area_id: 0,
+    start_period: "",
+    end_period: "",
+    consecutive_number: "",
+    });
+}
+
+
 
 
 // ellis85@example.com
