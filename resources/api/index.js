@@ -90,23 +90,23 @@ async function editClassification(editData) {
     })
 }
 // Eliminar
-// async function deleteClassification(id) {
-// return await axios
-//   .post(`/api/classification/delete/`+id
-//   )
-//   .then((res) => {
-//     if (res.status != 200) throw new Error("Response Failed");
-//     return res.data;
-//   })
-// }
-
-const deleteClassification = async (id) => {
-  try {
-    const res = await axios.delete(`/api/classification/delete/`+id);
+async function deleteClassification(id) {
+return await axios
+  .delete(`/api/classification/delete/`+id
+  )
+  .then((res) => {
+    if (res.status != 200) throw new Error("Response Failed");
     return res.data;
-  } catch (error) {
-    console.log(error);
-  }
+  })
 }
+
+// const deleteClassification = async (id) => {
+//   try {
+//     const res = await axios.delete(`/api/classification/delete/`+id);
+//     return res.data;
+//   } catch (error) {
+//     console.log(error);
+//   }
+// }
 
 export default {getClasification,getBackground,getSection,getProductionArea,addClassification,editClassification,deleteClassification}

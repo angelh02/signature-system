@@ -109,14 +109,14 @@
                 <label class="form-label"
                     >Periodo Fin</label
                 >
-                <div class="input-group date" id="end_period">
+                <div class="input-group date" >
                     <input
                         autocomplete="off"
                         type="text"
                         class="form-control"
                         data-date-autoclose="true"
                         v-model="formData.end_period"
-                        
+                        id="end_period"
                     />
                     <div class="input-group-addon">
                         <span class="uil-calendar-alt form-control"></span>
@@ -139,10 +139,10 @@
             <div class="invalid-feedback">Please provide a valid zip.</div>
         </div>
         <div class="row justify-items-center">
-            <button v-if="!editFlag" class="btn btn-primary mb-2" type="submit" @click.prevent="addRequest">
+            <button v-if="!edit" class="btn btn-primary mb-2" type="submit" @click.prevent="addRequest">
                 AGREGAR CLASIFICACIÓN
             </button>
-            <button v-if="editFlag" class="btn btn-primary mb-2" type="submit" @click.prevent="editRequest">
+            <button v-if="edit" class="btn btn-primary mb-2" type="submit" @click.prevent="editRequest">
                 ACTUALIZAR CLASIFICACIÓN
             </button>
             <button class="btn btn-light mb-2" type="submit" @click="resetData">CANCELAR</button>
@@ -167,11 +167,10 @@ const props = defineProps({
 
 //ReadOnly
 const dataForm = toRef(props, 'dataForm');
-const edit = toRefs(props, 'edit');
-// console.log(dataForm);
+const edit = toRef(props, 'edit');
 
 
-const emit = defineEmits(['update'])
+const emit = defineEmits(['update','cancel'])
 
 const submit = ref(false)
 const backGround = ref("");
@@ -180,8 +179,6 @@ const productionArea = ref("");
 const starDate = ref("");
 const endDate = ref("")
 //ReactiveProps
-const editFlag = ref(edit);
-console.log(editFlag);
 const formData = reactive(dataForm);
 
 
@@ -209,7 +206,7 @@ onMounted(async () => {
 
     });
     $("#start_period").on("change",function(){
-        starDate.value = $(this).val();
+        formData.value.start_period  = $(this).val();
     });
     $("#end_period").datepicker({
         language: "es",
@@ -218,7 +215,7 @@ onMounted(async () => {
         minViewMode: "years",
     });
     $("#end_period").on("change",function(){
-        endDate.value = $(this).val();
+        formData.value.end_period = $(this).val();
     });
 });
 
@@ -244,7 +241,6 @@ const getRequests = async () => {
 const addRequest = async => {
     useFileClasificationRequestsAPI.addClassification(formData.value)
     .then((res) => {
-        // console.log(res)
     });
     emit('update');
     onSubmit()
@@ -252,8 +248,7 @@ const addRequest = async => {
 
 const editRequest = async => {
     onSubmit()
-    // console.log(formData.value)
-    // console.log(dataForm.value)
+   
     useFileClasificationRequestsAPI.editClassification(formData.value)
     .then((res) => {
     //     $.NotificationApp.send(
@@ -267,8 +262,7 @@ const editRequest = async => {
     // );
     });
     emit('update');
-    // console.log("Satos",addData.value)
-    // dataForm.value = reset.value
+    
 
 
 }

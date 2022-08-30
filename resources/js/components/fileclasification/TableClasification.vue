@@ -4,13 +4,6 @@
         class="table table-striped cell-border"
         style="width: 100%"
     ></table>
-    <ModalComponent v-show="visible"  @close="close">
-    <!-- <template v-slot:header> Cargar expediente </template> -->
-
-    <!-- <template v-slot:body>
-      
-    </template> -->
-    </ModalComponent>
 </template>
 
 <script setup>
@@ -36,7 +29,6 @@ const name = ref("");
 const fila = ref("");
 const visible = ref(false);
 const refresh = ref(false);
-const id = ref("")
 const formData = reactive({
     id:"",
     background_id: "",
@@ -55,6 +47,19 @@ onMounted(async () => {
     getRequests();
 });
 
+const refreshTable = async() => {
+    $("#example").dataTable({
+        language: {
+            url: "//cdn.datatables.net/plug-ins/1.10.11/i18n/Spanish.json",
+        },
+        data: filesClasification.value,
+        columns: filesColumns,
+        scrollY: "50vh",
+        scrollCollapse: true,
+        destroy: true,
+    });
+}
+
 const createTable = async () => {
     $("#example").dataTable({
         language: {
@@ -66,7 +71,6 @@ const createTable = async () => {
         scrollCollapse: true,
         destroy: true,
     });
-    // console.log(filesClasification.value);
     $("#example tbody").on("click", "#btn_editar", function () {
         // fila.value = dtTable.api().row(this).data[0];
         fila.value = $(this).closest("tr");
@@ -83,32 +87,33 @@ const createTable = async () => {
         formData.end_period = classifications[index].end_period;
         formData.consecutive_number = classifications[index].consecutive_number;
         emit("data", formData);
-        // console.log(formData)
-        // console.log(id)
-        // openModal();
+      
     });
 
     $(document).on("click", "#btn_borrar", function(){
         fila.value = $(this);           
-        id.value = parseInt($(this).closest('tr').find('td:eq(0)').text());      
-        deleteRequests();      
-        
+        const id = parseInt($(this).closest('tr').find('td:eq(0)').text());   
+        console.log(id);   
+        deleteRequests(id);      
     }); 
 };
 
-const getRequests = async () => {
+const getRequests = async (refresh = false) => {
     const results = await getClasification([]);
     filesClasification.value = results;
-    createTable();
+    if(!refresh)
+        createTable();
+    else
+        refreshTable();
 };
 
-const deleteRequests = async () => {
-    useFileClasificationRequestsAPI.deleteClassification(id.value)
+const deleteRequests = async (id) => {
+    useFileClasificationRequestsAPI.deleteClassification(id)
     .then((res) => {
-        // console.log(res)
+        $("#example").DataTable().destroy();
+        getRequests(true);
     });
-    $("#example").DataTable().destroy();
-    getRequests();
+   
 };
 
 
@@ -116,7 +121,7 @@ watch(
     () => updated,
     (updated, oldUpdated) => {
         $("#example").DataTable().destroy();
-        getRequests();
+        getRequests(true);
     },
     { deep: true },   
 );
@@ -129,6 +134,5 @@ const openModal = () => {
 
 const close = async () => {
     visible.value = false;
-    // resetData.value = true;
 };
 </script>
