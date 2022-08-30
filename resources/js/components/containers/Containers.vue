@@ -10,7 +10,7 @@
         <div class="col-xl-3 col-lg-4">
             <div class="card tilebox-one">
                 <div class="card-body">
-                    <Newclasification :edit="edit" :dataForm="dataForm" @update="dataUpdated" @cancel="cancelUpdate"></Newclasification>
+                    <Newclasification :edit="edit" :dataForm="dataForm" @update="dataUpdated"></Newclasification>
                 </div> 
             </div>
         </div>
@@ -31,8 +31,8 @@
 
 <script setup>
 import Newclasification from './Newclasification.vue';
-import TableClasification from './TableClasification.vue';
-import {ref,onMounted,watch,reactive} from 'vue';
+import TableClasification from './TableContainers.vue';
+import {ref,onMounted,watch} from 'vue';
 // import $ from 'jquery';
 
 
@@ -41,10 +41,6 @@ const edit = ref(false);
 const dataForm = ref({});
 // const id = ref("");
 
-
-function cancelUpdate(){
-    edit.value = false;
-}
 
 function dataUpdated() {
     updated.value = !updated.value;

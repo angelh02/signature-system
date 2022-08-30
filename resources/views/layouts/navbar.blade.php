@@ -18,6 +18,11 @@
                             <h4>CLASIFICACIÓN DE ARCHIVOS</h4>
                         </router-link>
                 </li>
+                <li class="nav-item" >
+                        <router-link class="nav-link py-2 text-body" active-class="active" to="/containers">
+                            <h4>CONTENEDORES</h4>
+                        </router-link>
+                </li>
             </ul>
         </div>  
         <div class="" style="">       

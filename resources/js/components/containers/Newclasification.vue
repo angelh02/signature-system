@@ -139,13 +139,13 @@
             <div class="invalid-feedback">Please provide a valid zip.</div>
         </div>
         <div class="row justify-items-center">
-            <button v-if="!editFlag" class="btn btn-primary mb-2" type="submit" @click.prevent="addRequest">
+            <button v-if="!edit" class="btn btn-primary mb-2" type="submit" @click.prevent="addRequest">
                 AGREGAR CLASIFICACIÓN
             </button>
-            <button v-if="editFlag" class="btn btn-primary mb-2" type="submit" @click.prevent="editRequest">
+            <button v-if="edit" class="btn btn-primary mb-2" type="submit" @click.prevent="editRequest">
                 ACTUALIZAR CLASIFICACIÓN
             </button>
-            <button class="btn btn-light mb-2" type="submit" @click="resetData">CANCELAR</button>
+            <button class="btn btn-light mb-2" type="submit" @click="setForm">CANCELAR</button>
         </div>
     </form>
 </template>
@@ -165,9 +165,8 @@ const props = defineProps({
     edit: Boolean
 });
 
-//ReadOnly
 const dataForm = toRef(props, 'dataForm');
-const edit = toRefs(props, 'edit');
+const edit = toRef(props, 'edit');
 // console.log(dataForm);
 
 
@@ -177,12 +176,44 @@ const submit = ref(false)
 const backGround = ref("");
 const section = ref("");
 const productionArea = ref("");
+const formData = reactive(dataForm);
+const initialState = ref({
+    background_id: "",
+    section_id: "",
+    series: "",
+    subseries: "",
+    production_area_id: "",
+    start_period: "",
+    end_period: "",
+    consecutive_number: "",
+})
+const addData = ref({
+    background_id: formData.background_id,
+    section_id: formData.value.section_id,
+    series: formData.value.series,
+    subseries: formData.value.subseries,
+    production_area_id: formData.value.production_area_id,
+    start_period: formData.value.start_period,
+    end_period: formData.value.end_period,
+    consecutive_number: formData.value.consecutive_number,
+})
+// const editData = ref(dataForm)
+const editData = ref({
+    id:dataForm,
+    background_id: dataForm.background_id,
+    section_id: dataForm.section_id,
+    series: dataForm.series,
+    subseries: dataForm.subseries,
+    production_area_id: dataForm.production_area_id,
+    start_period: dataForm.start_period,
+    end_period: dataForm.end_period,
+    consecutive_number: dataForm.consecutive_number,
+});
+// const addData = ref("");
+const getId = ref("");
 const starDate = ref("");
 const endDate = ref("")
-//ReactiveProps
-const editFlag = ref(edit);
-console.log(editFlag);
-const formData = reactive(dataForm);
+const form = reactive({ ...dataForm });
 
 
 const { getBackground, getSection, getProductionArea, addClassification, editClassification } =
@@ -228,6 +259,7 @@ const onSubmit = async (values) => {
     // if($v.$invalid){
     //     return;
     // }
+    console.log(form)
 };
 
 const getRequests = async () => {
@@ -242,6 +274,8 @@ const getRequests = async () => {
 };
 
 const addRequest = async => {
+    // console.log(editData.value)
+    // console.log("Datos",formData.value)
     useFileClasificationRequestsAPI.addClassification(formData.value)
     .then((res) => {
         // console.log(res)
@@ -273,16 +307,41 @@ const editRequest = async => {
 
 }
 
-function resetData(){
-    formData.value.id = null;
-    formData.value.background_id = 0;
-    formData.value.section_id = 0;
-    formData.value.series = "";
-    formData.value.subseries = "";
-    formData.value.production_area_id = 0;
-    formData.value.start_period = "";
-    formData.value.end_period = "";
-    formData.value.consecutive_number = "";
-    emit('cancel');
+// function resetData(){
+//     edit.value = true;
+//     formData.value = reset.value
+//     console.log(formData.value)
+//     // formData.id = null;
+//     // formData.background_id = 0;
+//     // formData.section_id = 0;
+//     // formData.series = "";
+//     // formData.subseries = "";
+//     // formData.production_area_id = 0;
+//     // formData.start_period = "";
+//     // formData.end_period = "";
+//     // formData.consecutive_number = "";
+// }
+
+function resetForm() {
+    Object.assign(formData, initialState);
 }
+
+function setForm() {
+    Object.assign(dataForm, {
+    id: null,    
+    background_id: 0,
+    section_id: 0,
+    series: "",
+    subseries: "",
+    production_area_id: 0,
+    start_period: "",
+    end_period: "",
+    consecutive_number: "",
+    });
+}
+
+
+
+
+// ellis85@example.com
 </script>
