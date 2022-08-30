@@ -61,7 +61,7 @@ const refreshTable = async() => {
 }
 
 const createTable = async () => {
-    $("#example").dataTable({
+     const table = $("#example").DataTable({
         language: {
             url: "//cdn.datatables.net/plug-ins/1.10.11/i18n/Spanish.json",
         },
@@ -72,10 +72,9 @@ const createTable = async () => {
         destroy: true,
     });
     $("#example tbody").on("click", "#btn_editar", function () {
-        // fila.value = dtTable.api().row(this).data[0];
         fila.value = $(this).closest("tr");
         let classifications = filesClasification.value;
-        let classificationId = parseInt(fila.value.find("td:eq(0)").text());
+        let classificationId = parseInt(table.rows(fila.value).data()[0].id);
         let index = classifications.findIndex(x => x.id == classificationId);
         formData.id = classifications[index].id;
         formData.background_id = classifications[index].background_id;
@@ -91,9 +90,8 @@ const createTable = async () => {
     });
 
     $(document).on("click", "#btn_borrar", function(){
-        fila.value = $(this);           
-        const id = parseInt($(this).closest('tr').find('td:eq(0)').text());   
-        console.log(id);   
+        fila.value = $(this).closest("tr");           
+        const id = parseInt(table.rows(fila.value).data()[0].id);   
         deleteRequests(id);      
     }); 
 };

@@ -18,10 +18,10 @@
         <div class="col-xl-9 col-lg-8">
             <div class="card card-h-100">
                 <div class="card-body">
-                    <div class="alert alert-warning alert-dismissible fade show mb-3" role="alert">
+                    <!-- <div class="alert alert-warning alert-dismissible fade show mb-3" role="alert">
                         <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
                         Property HY1xx is not receiving hits. Either your site is not receiving any sessions or it is not tagged correctly.
-                    </div>
+                    </div> -->
                     <TableClasification  @data="receivedData" :updated="updated"></TableClasification>
                 </div> 
             </div> 

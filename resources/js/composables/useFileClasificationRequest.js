@@ -6,15 +6,15 @@ export function useFileClasificationRequests(from = null, to = null) {
         {
             title: "Id",
             data: "id",
-            visible: true
+            visible: false
         },
         {
             title: "Fondo",
-            data: "background.id",
+            data: "background.code",
         },
         {
             title: "Sección",
-            data: "section_id",
+            data: "section.code",
         },
         {
             title: "Series",
@@ -26,7 +26,7 @@ export function useFileClasificationRequests(from = null, to = null) {
         },
         {
             title: "Area de producción",
-            data: "production_area_id",
+            data: "production_area.code",
         },
         {
             title: "Periodo de inicio",
