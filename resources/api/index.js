@@ -78,9 +78,9 @@ async function addClassification(formData) {
       })
   }
 // Editar
-async function editClassification(formData) {
+async function editClassification(editData) {
   return await axios
-    .post(`/api/classification/update`, formData, {
+    .post(`/api/classification/update`, editData, {
       headers: { 'content-type': 'multipart/form-data' },
     }
     )
@@ -90,16 +90,23 @@ async function editClassification(formData) {
     })
 }
 // Eliminar
-async function deleteClassification(id) {
-  return await axios
-    .post(`/api/classification/delete`, id, {
-      headers: { 'content-type': 'multipart/form-data' },
-    }
-    )
-    .then((res) => {
-      if (res.status != 200) throw new Error("Response Failed");
-      return res.data;
-    })
+// async function deleteClassification(id) {
+// return await axios
+//   .post(`/api/classification/delete/`+id
+//   )
+//   .then((res) => {
+//     if (res.status != 200) throw new Error("Response Failed");
+//     return res.data;
+//   })
+// }
+
+const deleteClassification = async (id) => {
+  try {
+    const res = await axios.delete(`/api/classification/delete/`+id);
+    return res.data;
+  } catch (error) {
+    console.log(error);
+  }
 }
 
-export default {getClasification,getBackground,getSection,getProductionArea,addClassification,editClassification}
+export default {getClasification,getBackground,getSection,getProductionArea,addClassification,editClassification,deleteClassification}

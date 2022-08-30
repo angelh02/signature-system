@@ -14,11 +14,13 @@
 </template>
 
 <script setup>
-import { ref, onMounted, watch, toRefs } from "vue";
+import { ref, onMounted, watch, toRefs, reactive } from "vue";
 import $ from "jquery";
 import ModalEdit from "../elements/ModalEdit.vue";
 import { dataTable, table, row, destroy, draw } from "datatables";
 import { useFileClasificationRequests } from "@/js/composables/useFileClasificationRequest.js";
+import useFileClasificationRequestsAPI from "@/api/index.js";
+
 
 const props = defineProps({
     filesClasification: Object,
@@ -27,15 +29,15 @@ const props = defineProps({
 
 // const { filesClasification } = toRefs(props)
 const { updated } = toRefs(props);
-const emit = defineEmits(["data","id"]);
+const emit = defineEmits(["data"]);
 
 const filesClasification = ref("");
 const name = ref("");
 const fila = ref("");
 const visible = ref(false);
-const refresh = ref("");
+const refresh = ref(false);
 const id = ref("")
-const formData = ref({
+const formData = reactive({
     id:"",
     background_id: "",
     section_id: "",
@@ -51,30 +53,10 @@ const { filesColumns, getClasification } = useFileClasificationRequests();
 
 onMounted(async () => {
     getRequests();
-    // createTable()
-
-    //  $(document).on("click", ".btnEditar", function(){
-    //     // opcion='editar';
-    //     fila = $(this);
-    //     // fila = $(this).closest("tr");
-    //     // id = parseInt(fila.find('td:eq(0)').text());
-    //     name = fila.find('td:eq(0)').text();
-    //     console.log(name)
-    //     // precio = fila.find('td:eq(2)').text();
-    //     // stock = fila.find('td:eq(3)').text();
-    //     // $("#id").val(id);
-    //     // $("#descripcion").val(descripcion);
-    //     // $("#precio").val(precio);
-    //     // $("#stock").val(stock);
-    //     // $(".modal-header").css("background-color", "#7303c0");
-    //     // $(".modal-header").css("color", "white" );
-    //     // $(".modal-title").text("Editar Artículo");
-    //     // $('#modalCRUD').modal('show');
-    // });
 });
 
 const createTable = async () => {
-    let dtTable = $("#example").dataTable({
+    $("#example").dataTable({
         language: {
             url: "//cdn.datatables.net/plug-ins/1.10.11/i18n/Spanish.json",
         },
@@ -88,25 +70,28 @@ const createTable = async () => {
     $("#example tbody").on("click", "#btn_editar", function () {
         // fila.value = dtTable.api().row(this).data[0];
         fila.value = $(this).closest("tr");
-        formData.id = fila.value.find("td:eq(0)").text();
-        formData.background_id = fila.value.find("td:eq(1)").text();
-        formData.section_id = fila.value.find("td:eq(2)").text();
-        formData.series = fila.value.find("td:eq(3)").text();
-        formData.subseries = fila.value.find("td:eq(4)").text();
-        formData.production_area_id = fila.value.find("td:eq(5)").text();
-        formData.start_period = fila.value.find("td:eq(6)").text();
-        formData.end_period = fila.value.find("td:eq(7)").text();
-        formData.consecutive_number = fila.value.find("td:eq(8)").text();
+        let classifications = filesClasification.value;
+        let classificationId = parseInt(fila.value.find("td:eq(0)").text());
+        let index = classifications.findIndex(x => x.id == classificationId);
+        formData.id = classifications[index].id;
+        formData.background_id = classifications[index].background_id;
+        formData.section_id = classifications[index].section_id;
+        formData.series = classifications[index].series;
+        formData.subseries = classifications[index].subseries;
+        formData.production_area_id = classifications[index].production_area_id;
+        formData.start_period = classifications[index].start_period;
+        formData.end_period = classifications[index].end_period;
+        formData.consecutive_number = classifications[index].consecutive_number;
         emit("data", formData);
-        emit("id", id);
         // console.log(formData)
         // console.log(id)
-        openModal();
+        // openModal();
     });
 
     $(document).on("click", "#btn_borrar", function(){
         fila.value = $(this);           
-        id.value = parseInt($(this).closest('tr').find('td:eq(0)').text());            
+        id.value = parseInt($(this).closest('tr').find('td:eq(0)').text());      
+        deleteRequests();      
         
     }); 
 };
@@ -122,10 +107,12 @@ const getRequests = async () => {
 };
 
 const deleteRequests = async () => {
-    const results = await getClasification([]);
-    filesClasification.value = results;
-    refresh.value = filesClasification.value.length;
-    createTable();
+    useFileClasificationRequestsAPI.deleteClassification(id.value)
+    .then((res) => {
+        // console.log(res)
+    });
+    $("#example").DataTable().destroy();
+        getRequests();
 };
 
 
@@ -135,7 +122,7 @@ watch(
         $("#example").DataTable().destroy();
         getRequests();
     },
-    { deep: true }
+    { deep: true },   
 );
 
 const openModal = () => {

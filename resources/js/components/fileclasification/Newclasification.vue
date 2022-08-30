@@ -9,7 +9,7 @@
                 class="form-select"
                 id="background_id"
                 name="background_id"
-                v-model="dataForm.background_id"
+                v-model="formData.background_id"
                 required
             >
                 <option :value="''" selected>Selecciona una opción...</option>
@@ -143,7 +143,7 @@
             <div class="invalid-feedback">Please provide a valid zip.</div>
         </div>
         <div class="row justify-items-center">
-            <button class="btn btn-info mb-2" @click.prevent="addRequest">
+            <button class="btn btn-info mb-2" @click.prevent="editRequest">
                 AGREGAR CLASIFICACIÓN
             </button>
             <button class="btn btn-light mb-2" type="submit">CANCELAR</button>
@@ -152,7 +152,7 @@
 </template>
 
 <script setup>
-import { ref, onMounted, toRefs } from "vue";
+import { ref, onMounted, toRefs,toRef } from "vue";
 import $ from "jquery";
 import { useClasificationsRequests } from "@/js/composables/useClasificationsRequest.js";
 import { useFormClasificationRequest } from "@/js/composables/useFormClasificationRequest.js";
@@ -161,11 +161,12 @@ import useFileClasificationRequestsAPI from "@/api/index.js";
 
 const props = defineProps({
     dataForm: Object,
-    // id: Object
+    edit: Boolean
 });
 
-const { dataForm } = toRefs(props);
-// const { id } = toRefs(props);
+const dataForm = toRef(props, 'dataForm');
+const edit = toRef(props, 'edit');
+// console.log(dataForm);
 
 
 const emit = defineEmits(['update'])
@@ -174,23 +175,35 @@ const backGround = ref("");
 const section = ref("");
 const productionArea = ref("");
 const formData = ref(dataForm);
-// const editData = ref({
-//     id: dataForm.value.id,
-//     background_id: formData.background_id,
-//     section_id: formData.section_id,
-//     series: formData.series,
-//     subseries: formData.subseries,
-//     production_area_id: formData.production_area_id,
-//     start_period: formData.start_period,
-//     end_period: formData.end_period,
-//     consecutive_number: formData.consecutive_number,
-// });
+const reset = ref({
+    background_id: "",
+    section_id: "",
+    series: "",
+    subseries: "",
+    production_area_id: "",
+    start_period: "",
+    end_period: "",
+    consecutive_number: "",
+})
+// const editData = ref(dataForm)
+const editData = ref({
+    id:dataForm,
+    background_id: dataForm.background_id,
+    section_id: dataForm.section_id,
+    series: dataForm.series,
+    subseries: dataForm.subseries,
+    production_area_id: dataForm.production_area_id,
+    start_period: dataForm.start_period,
+    end_period: dataForm.end_period,
+    consecutive_number: dataForm.consecutive_number,
+});
+console.log(dataForm)
 const addData = ref("");
 const getId = ref("");
 const starDate = ref("");
 const endDate = ref("")
 
-const { getBackground, getSection, getProductionArea, addClassification } =
+const { getBackground, getSection, getProductionArea, addClassification, editClassification } =
     useClasificationsRequests();
 
 onMounted(async () => {
@@ -220,7 +233,7 @@ const onSubmit = async (values) => {
     // if(dataForm != null){
     //     formData.value.series = dataForm.value.series
     // }
-    console.log(formData.value)
+    // console.log(formData.value)
 };
 
 const getRequests = async () => {
@@ -247,10 +260,14 @@ const addRequest = async => {
 
 const editRequest = async => {
     console.log(dataForm.value)
-    useFileClasificationRequestsAPI.editClassification()
+    useFileClasificationRequestsAPI.editClassification(dataForm.value)
     .then((res) => {
         // console.log(res)
     });
+    emit('update');
+    dataForm.value = reset.value
+
+
 }
 
 
