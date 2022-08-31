@@ -48,9 +48,9 @@ Route::get('/container/conservation-time/get/{id}', 'ConservationTimeController@
 Route::get('/container/conservation-type/get-all', 'ConservationTypeController@getAll');
 Route::get('/container/conservation-type/get/{id}', 'ConservationTypeController@getConservationType');
 
-//Documental values routes
-Route::get('/container/documental-value/get-all', 'DocumentalValueController@getAll');
-Route::get('/container/documental-value/get/{id}', 'DocumentalValueController@getDocumentalValue');
+//Document values routes
+Route::get('/container/document-value/get-all', 'DocumentValueController@getAll');
+Route::get('/container/document-value/get/{id}', 'DocumentValueController@getDocumentValue');
 
 //Information types routes
 Route::get('/container/information-type/get-all', 'InformationTypeController@getAll');
@@ -67,3 +67,13 @@ Route::post('/container/store', 'ContainerController@store');
 Route::post('/container/update', 'ContainerController@update');
 Route::delete('/container/delete/{id}', 'ContainerController@delete');
 
+//Document Types routes
+Route::get('/document-type/get-all', 'DocumentTypeController@getAll');
+Route::get('/document-type/get/{id}', 'DocumentTypeController@getDocumentType');
+
+//Container routes
+Route::get('/document/get-all', 'DocumentController@getAll');
+Route::get('/document/get/{id}', 'DocumentController@getDocument');
+Route::post('/document/store', 'DocumentController@store');
+Route::post('/document/update', 'DocumentController@update');
+Route::delete('/document/delete/{id}', 'DocumentController@delete');

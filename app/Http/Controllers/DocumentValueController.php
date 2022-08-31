@@ -9,15 +9,15 @@ class DocumentValueController extends Controller
 {
     public function getAll()
     {
-        $documentalValues = DocumentValue::all();
+        $documentValues = DocumentValue::all();
 
-        return response()->json($documentalValues, 200);
+        return response()->json($documentValues, 200);
     }
 
-    public function getDocumentalValue($id)
+    public function getDocumentValue($id)
     {
-        $documentalValue = DocumentValue::where("id", $id)->first();
+        $documentValue = DocumentValue::where("id", $id)->first();
 
-        return response()->json($documentalValue, 200);
+        return response()->json($documentValue, 200);
     }
 }
