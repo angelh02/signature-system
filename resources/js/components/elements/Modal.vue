@@ -1,102 +1,113 @@
+<script setup>
+const props = defineProps({
+  show: Boolean
+})
+</script>
+
 <template>
-    <div
-        id="signup-modal"
-        class="modal"
-        tabindex="-1"
-        role="dialog"
-        aria-hidden="true"
-    >
-        <div class="modal-dialog">
-            <div class="modal-content">
-                <div class="modal-body">
-                    <div class="text-center mt-2 mb-4">
-                        
-                    </div>
-
-                    <form class="ps-3 pe-3" action="#">
-                        <div class="mb-3">
-                            <label for="username" class="form-label"
-                                >Name</label
-                            >
-                            <input
-                                class="form-control"
-                                type="email"
-                                id="username"
-                                required=""
-                                placeholder="Michael Zenaty"
-                            />
-                        </div>
-
-                        <div class="mb-3">
-                            <label for="emailaddress" class="form-label"
-                                >Email address</label
-                            >
-                            <input
-                                class="form-control"
-                                type="email"
-                                id="emailaddress"
-                                required=""
-                                placeholder="john@deo.com"
-                            />
-                        </div>
-
-                        <div class="mb-3">
-                            <label for="password" class="form-label"
-                                >Password</label
-                            >
-                            <input
-                                class="form-control"
-                                type="password"
-                                required=""
-                                id="password"
-                                placeholder="Enter your password"
-                            />
-                        </div>
-
-                        <div class="mb-3">
-                            <div class="form-check">
-                                <input
-                                    type="checkbox"
-                                    class="form-check-input"
-                                    id="customCheck1"
-                                />
-                                <label
-                                    class="form-check-label"
-                                    for="customCheck1"
-                                    >I accept
-                                    <a href="#">Terms and Conditions</a></label
-                                >
-                            </div>
-                        </div>
-
-                        <div class="mb-3 text-center">
-                            <button
-                                class="btn btn-primary"
-                                type="button"
-                                @click="close"
-                            >
-                                Sign Up Free
-                            </button>
-                        </div>
-                    </form>
-                </div>
+  <Transition name="modal">
+    <div v-if="show" class="modal-mask">
+    <div class="modal-dialog modal-full-width">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h4 class="modal-title" id="fullWidthModalLabel">Modal Heading</h4>
+                <button type="button" class="btn-close"></button>
             </div>
-        </div>
+            <div class="modal-body">
+                ...
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-light" >Close</button>
+                <button type="button" class="btn btn-primary">Save changes</button>
+            </div>
+        </div><!-- /.modal-content -->
     </div>
+      <div class="modal-wrapper">
+        <div class="modal-container">
+          <div class="modal-header">
+            <slot name="header">default header</slot>
+          </div>
+
+          <div class="modal-body">
+            <slot name="body">default body</slot>
+          </div>
+
+          <div class="modal-footer">
+            <slot name="footer">
+              default footer
+              <button
+                class="modal-default-button"
+                @click="$emit('close')"
+              >OK</button>
+            </slot>
+          </div>
+        </div>
+      </div>
+    </div>
+  </Transition>
 </template>
 
-<script>
-export default {
-    name: "ModalComponent",
-    data() {
-        return {
-            resetValues: false,
-        };
-    },
-    methods: {
-        close() {
-            this.$emit("close");
-        },
-    },
-};
-</script>
+<style>
+.modal-mask {
+  position: fixed;
+  z-index: 9998;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-color: rgba(0, 0, 0, 0.5);
+  display: table;
+  transition: opacity 0.3s ease;
+}
+
+/* .modal-wrapper {
+  display: table-cell;
+  vertical-align: middle;
+}
+
+.modal-container {
+  width: 300px;
+  margin: 0px auto;
+  padding: 20px 30px;
+  background-color: #fff;
+  border-radius: 2px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.33);
+  transition: all 0.3s ease;
+}
+
+.modal-header h3 {
+  margin-top: 0;
+  color: #42b983;
+}
+
+.modal-body {
+  margin: 20px 0;
+}
+
+.modal-default-button {
+  float: right;
+} */
+
+/*
+ * The following styles are auto-applied to elements with
+ * transition="modal" when their visibility is toggled
+ * by Vue.js.
+ *
+ * You can easily play with the modal transition by editing
+ * these styles.
+ */
+
+.modal-enter-from {
+  opacity: 0;
+}
+
+.modal-leave-to {
+  opacity: 0;
+}
+
+/* .modal-enter-from .modal-container,
+.modal-leave-to .modal-container {
+  -webkit-transform: scale(1.1);
+  transform: scale(1.1);
+} */
+</style>

@@ -3,6 +3,8 @@ const Home = () => import("../components/mydocuments/DocumentsPreparation.vue")
 const Documents = () => import("../components/mydocuments/Documents.vue")
 const FileClasification = () => import("../components/fileclasification/FileClasification.vue")
 const Containers = () => import("../components/containers/Containers.vue")
+const DocumentsPreparation = () => import("../components/mydocuments/DocumentsPreparation.vue")
+
 
 // import Home from './components/Home.vue';
 // import Documents from './components/Documents.vue';
@@ -18,6 +20,11 @@ const routes = [
         path: '/documents',
         name: 'Documents',
         component: Documents
+    },
+    {
+        path: '/documents/preparation/:datafile',
+        name: 'DocumentsPreparation',
+        component: DocumentsPreparation
     },
     {
         path: '/fileclasification',
