@@ -23,8 +23,12 @@ class Document extends Model
         return $this->belongsTo(Container::class, "container_id");
     }
 
+    public function documentType(){
+        return $this->belongsTo(DocumentType::class, "document_type_id");
+    }
+
     public function documentSigned(){
-        return $this->hasMany(DocumentSigned::class);
+        return $this->hasOne(DocumentSigned::class);
     }
 
     public function documentSigners(){

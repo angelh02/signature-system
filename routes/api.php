@@ -77,3 +77,11 @@ Route::get('/document/get/{id}', 'DocumentController@getDocument');
 Route::post('/document/store', 'DocumentController@store');
 Route::post('/document/update', 'DocumentController@update');
 Route::delete('/document/delete/{id}', 'DocumentController@delete');
+
+//Document Signers routes
+Route::post('/document/signer/assign', 'DocumentController@assignSigner');
+Route::post('/document/signer/edit', 'DocumentController@editSigner');
+Route::delete('/document/signer/delete/{id}', 'DocumentController@deleteSigner');
+
+//Sign Document
+Route::post('/document/sign', 'DocumentController@signDocument');

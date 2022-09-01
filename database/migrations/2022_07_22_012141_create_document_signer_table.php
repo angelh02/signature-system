@@ -16,11 +16,10 @@ class CreateDocumentSignerTable extends Migration
         Schema::create('document_signer', function (Blueprint $table) {
             $table->id();
             $table->string("name");
-            $table->string("surnames");
             $table->string("email");
             $table->unsignedBigInteger("document_id");
-            $table->boolean("signed");
-            $table->date("signed_at");
+            $table->boolean("signed")->default(false);
+            $table->date("signed_at")->nullable();
 
             //Relations
             $table->foreign("document_id")->references("id")->on("documents")->onDelete("cascade");
