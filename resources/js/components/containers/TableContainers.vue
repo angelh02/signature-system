@@ -1,122 +1,121 @@
 <template>
     <table
-        id="example"
+        id="containers_table"
         class="table table-striped cell-border"
         style="width: 100%"
     ></table>
-    <ModalComponent v-show="visible"  @close="close">
-    <!-- <template v-slot:header> Cargar expediente </template> -->
-
-    <!-- <template v-slot:body>
-      
-    </template> -->
-    </ModalComponent>
 </template>
 
 <script setup>
 import { ref, onMounted, watch, toRefs, reactive } from "vue";
 import $ from "jquery";
 import ModalEdit from "../elements/ModalEdit.vue";
-import { dataTable, table, row, destroy, draw } from "datatables";
-import { useFileClasificationRequests } from "@/js/composables/useFileClasificationRequest.js";
-import useFileClasificationRequestsAPI from "@/api/index.js";
+import { dataTable, table, row, draw, destroy } from "datatables";
+import { useContainersRequests } from "@/js/composables/container-apis/useContainerRequest.js";
+import useContainersRequestsAPI from "@/api/container/index.js";
 
 
 const props = defineProps({
-    filesClasification: Object,
+    containersData: Object,
     updated: Boolean,
 });
 
-// const { filesClasification } = toRefs(props)
+// const { containersData } = toRefs(props)
 const { updated } = toRefs(props);
 const emit = defineEmits(["data"]);
 
-const filesClasification = ref("");
+const containersData = ref("");
 const name = ref("");
 const fila = ref("");
 const visible = ref(false);
 const refresh = ref(false);
-const id = ref("")
 const formData = reactive({
     id:"",
-    background_id: "",
-    section_id: "",
-    series: "",
-    subseries: "",
-    production_area_id: "",
-    start_period: "",
-    end_period: "",
-    consecutive_number: "",
+    conservation_time_id: 0,
+    conservation_type_id: 0,
+    document_value_id: 0,
+    information_type_id: 0,
+    selection_technique_id: 0,
+    effective_date: "",
 });
+const containerTable = ref("");
 
-const { filesColumns, getClasification } = useFileClasificationRequests();
+const { containerColumns, getContainers } = useContainersRequests();
 
 onMounted(async () => {
     getRequests();
 });
 
-const createTable = async () => {
-    $("#example").dataTable({
+const refreshTable = async() => {
+    containerTable.value = $("#containers_table").DataTable({
         language: {
             url: "//cdn.datatables.net/plug-ins/1.10.11/i18n/Spanish.json",
         },
-        data: filesClasification.value,
-        columns: filesColumns,
+        data: containersData.value,
+        columns: containerColumns,
         scrollY: "50vh",
         scrollCollapse: true,
         destroy: true,
     });
-    // console.log(filesClasification.value);
-    $("#example tbody").on("click", "#btn_editar", function () {
-        // fila.value = dtTable.api().row(this).data[0];
-        fila.value = $(this).closest("tr");
-        let classifications = filesClasification.value;
-        let classificationId = parseInt(fila.value.find("td:eq(0)").text());
-        let index = classifications.findIndex(x => x.id == classificationId);
-        formData.id = classifications[index].id;
-        formData.background_id = classifications[index].background_id;
-        formData.section_id = classifications[index].section_id;
-        formData.series = classifications[index].series;
-        formData.subseries = classifications[index].subseries;
-        formData.production_area_id = classifications[index].production_area_id;
-        formData.start_period = classifications[index].start_period;
-        formData.end_period = classifications[index].end_period;
-        formData.consecutive_number = classifications[index].consecutive_number;
-        emit("data", formData);
-        // console.log(formData)
-        // console.log(id)
-        // openModal();
-    });
+}
 
-    $(document).on("click", "#btn_borrar", function(){
-        fila.value = $(this);           
-        id.value = parseInt($(this).closest('tr').find('td:eq(0)').text());      
-        deleteRequests();      
+const createTable = async () => {
+    containerTable.value = $("#containers_table").DataTable({
+        language: {
+            url: "//cdn.datatables.net/plug-ins/1.10.11/i18n/Spanish.json",
+        },
+        data: containersData.value,
+        columns: containerColumns,
+        scrollY: "50vh",
+        scrollCollapse: true,
+        destroy: true,
         
-    }); 
-};
-
-const getRequests = async () => {
-    const results = await getClasification([]);
-    filesClasification.value = results;
-    createTable();
-};
-
-const deleteRequests = async () => {
-    useFileClasificationRequestsAPI.deleteClassification(id.value)
-    .then((res) => {
-        // console.log(res)
     });
-    $("#example").DataTable().destroy();
-    getRequests();
+    containerTable.value.on("click", "#btn_editar", function () {
+        fila.value = $(this).closest("tr");
+        let containers = containersData.value;
+        let containerId = parseInt(containerTable.value.rows(fila.value).data()[0].id);
+        let index = containers.findIndex(x => x.id == containerId);
+        formData.id = containers[index].id;
+        formData.name = containers[index].name;        
+        formData.conservation_time_id = containers[index].conservation_time_id;
+        formData.conservation_type_id = containers[index].conservation_type_id;
+        formData.document_value_id = containers[index].document_value_id;
+        formData.information_type_id = containers[index].information_type_id;
+        formData.selection_technique_id = containers[index].selection_technique_id;
+        formData.effective_date = containers[index].effective_date;
+        emit("data", formData);
+    });
+
+    containerTable.value.on("click", "#btn_borrar", function(){
+        fila.value = $(this).closest("tr");      
+        const id = parseInt(containerTable.value.rows(fila.value).data()[0].id);   
+        deleteRequests(id);      
+    });
+};
+
+const getRequests = async (refresh = false) => {
+    const results = await getContainers([]);
+    containersData.value = results;
+    if(!refresh)
+        createTable();
+    else
+        refreshTable();
+};
+
+const deleteRequests = async (id) => {
+    useContainersRequestsAPI.deleteContainer(id)
+    .then((res) => {
+        getRequests(true);
+    });
+   
 };
 
 
 watch(
     () => updated,
     (updated, oldUpdated) => {
-        $("#example").DataTable().destroy();
-        getRequests();
+        getRequests(true);
     },
     { deep: true },   
 );
@@ -129,6 +128,5 @@ const openModal = () => {
 
 const close = async () => {
     visible.value = false;
-    // resetData.value = true;
 };
 </script>

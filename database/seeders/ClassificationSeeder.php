@@ -3,6 +3,7 @@
 namespace Database\Seeders;
 
 use App\Models\Background;
+use App\Models\DocumentType;
 use App\Models\ProductionArea;
 use App\Models\Section;
 use Illuminate\Database\Seeder;
@@ -16,6 +17,28 @@ class ClassificationSeeder extends Seeder
      */
     public function run()
     {
+        //Document types list
+        DocumentType::factory([
+            "name" => "Carta de no adeudo",
+            "code" => "CNA"
+        ])->create();
+        DocumentType::factory([
+            "name" => "Constancia de servicio social",
+            "code" => "CSS"
+        ])->create();
+        DocumentType::factory([
+            "name" => "Lista de asistencia",
+            "code" => "LDA"
+        ])->create();
+        DocumentType::factory([
+            "name" => "Minuta de reunión",
+            "code" => "MDR"
+        ])->create();
+        DocumentType::factory([
+            "name" => "Acta de calificaciones",
+            "code" => "ADC"
+        ])->create();
+
         //Backgrounds List
         Background::factory([
             "name" => "Instituto Tecnológico Superior de Lerdo",

@@ -16,7 +16,7 @@ class Container extends Model
     public $timestamps = false;
 
     public function conservationTime(){
-        return $this->belongsTo(ConservationTime::class, "conservatio_time_id");
+        return $this->belongsTo(ConservationTime::class, "conservation_time_id");
     }
 
     public function conservationType(){
