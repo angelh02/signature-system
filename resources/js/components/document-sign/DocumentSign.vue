@@ -53,7 +53,7 @@
                                 <div class="inbox-item-img"><i class="mdi mdi-48px mdi-file-document-outline"></i></div>
                                 <p class="inbox-item-author">{{documentData?.name}}</p>
                                 <p class="inbox-item-text">Creado el {{documentData?.created_at}}</p>
-                                <a href="/document/download/constancia_servicio_social.pdf" style="font-size: 0.8125rem">Descargar</a>
+                                <a v-if="documentDownload != ''" :href="documentDownload" style="font-size: 0.8125rem">Descargar</a>
                             </div>
                             <div class="inbox-item">
                                 <p class="inbox-item-author">Tipo de documento</p>
@@ -105,6 +105,7 @@
                                     style="background-color: #a1a5ad"
                                 >
                                     <VuePdfEmbed
+                                        v-if="source != ''"
                                         class="scrollspy-example"
                                         ref="pdfRef" 
                                         :source="source"
@@ -248,7 +249,7 @@ const route = useRoute();
 const { getDocument } =
     useDocumentsRequests();
 //Cargar pdf
-const source = "/pdf/acta_calificaciones.pdf";
+const source = ref("");
 const page = ref(null);
 const pageCount = ref(1);
 const isLoading = ref(false);
@@ -257,26 +258,31 @@ const step = ref(0);
 const documentsFiles = ref([
     {
         name:"minuta_reunion.pdf",
+        url:"https://drive.google.com/uc?id=1e4Pg3SkXZh6NEldfTNTUmzTGxE3VQlvd&export=download",
         pdf_url:"https://drive.google.com/uc?id=15zd4xb1dOUigrrcNc9ap6LPakfQrj6rf&export=download",
         xml_url:"https://drive.google.com/uc?id=15zd4xb1dOUigrrcNc9ap6LPakfQrj6rf&export=download"
     },
     {
         name:"lista_asistencia.pdf",
+        url:"https://drive.google.com/uc?id=1sJ1hGDWhFW-3etoSo5gnUAatUxiImXrj&export=download",
         pdf_url:"https://drive.google.com/uc?id=1Uw0xeRpr9G8ZPLYBvd9edUV6wS01FA8a&export=download",
         xml_url:"https://drive.google.com/uc?id=1Uw0xeRpr9G8ZPLYBvd9edUV6wS01FA8a&export=download"
     },
     {
         name:"constancia_servicio_social.pdf",
+        url:"https://drive.google.com/uc?id=1QvAC2oJqRnUHddwkJiUOkxIQJ5jyb5ln&export=download",
         pdf_url:"https://drive.google.com/uc?id=1any8k0DPl9_7nbeeNbJdTo3XhMzXDiFG&export=download",
         xml_url:"https://drive.google.com/uc?id=1any8k0DPl9_7nbeeNbJdTo3XhMzXDiFG&export=download"
     },
     {
         name:"carta_no_adeudo.pdf",
+        url:"https://drive.google.com/uc?id=1IO2e-rsr0WKXRSF9VrwTBz92VSqthpyK&export=download",
         pdf_url:"https://drive.google.com/uc?id=1Ofd4anX48iI1VsCO39NjKMutSpoqtHr0&export=download",
         xml_url:"https://drive.google.com/uc?id=1Ofd4anX48iI1VsCO39NjKMutSpoqtHr0&export=download"
     },
     {
         name:"acta_calificaciones.pdf",
+        url:"https://drive.google.com/uc?id=1tEg_1Kt6N97-waTcHtmIVsR2Tm_ztOl7&export=download",
         pdf_url:"https://drive.google.com/uc?id=1ehzwQHmBGlpHA8DSMAG9lWV9z3ZdI8Gs&export=download",
         xml_url:"https://drive.google.com/uc?id=1ehzwQHmBGlpHA8DSMAG9lWV9z3ZdI8Gs&export=download"
     },
@@ -291,6 +297,7 @@ const submit = ref(false);
 const submited = ref(false);
 const documentId = ref(0);
 const documentData = ref({});
+const documentDownload = ref("");
 const signData = ref({
     id : 0,
     pdf_url : "",
@@ -401,11 +408,20 @@ const saveFilesKey = (files) => {
 };
 const searchDocument = async () => {
     documentData.value = await getDocument(documentId.value);
+    console.log(documentsFiles.value[0]);
+    let index = documentsFiles.value.findIndex(x => x.name == documentData.value.name);
+    console.log(index);
+    index = index == -1 ? 0 : index;
+    source.value = "/pdf/"+(documentsFiles.value[index].name);
+    documentDownload.value = documentsFiles.value[index].url;
+    signData.value.id = documentData.value.id;
+    signData.value.pdf_url = documentsFiles.value[index].pdf_url;
+    signData.value.xml_url = documentsFiles.value[index].xml_url;
     console.log(documentData.value.classification);
 };
 const signDocument = async () => {
     submit.value = true;
-    useContainerRequestsAPI.signDocument(signData.value)
+    useDocumentsRequestsAPI.signDocument(signData.value)
     .then((res) => {
         setTimeout(function() {
             submit.value = false;
