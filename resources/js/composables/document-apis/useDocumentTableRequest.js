@@ -3,30 +3,30 @@ import useDocumentsRequestsAPI from "@/api/document/index.js";
 
 export function useDocumentsRequests(from = null, to = null) {
     const containerColumns = [
-        {
+        /* {
             title: "Id",
             data: "id",
             visible: true
-        },
+        }, */
         {
             title: "Nombre",
-            data: "name",
+            /* data: "name", */
         },
         {
             title: "Tipo Documento",
-            data: "document_type.name",
+            /* data: "document_type.name", */
         },
         {
             title: "Clasificación",
-            data: "classification.name",
+            /* data: "classification.name", */
         },
         {
             title: "Contenedor",
-            data: "container.name",
+           /*  data: "container.name", */
         },
         {
             targets: -1,
-            data: null,
+            /* data: null,
             className: "col-2 text-center",
             defaultContent: `
                             <div>
@@ -47,7 +47,7 @@ export function useDocumentsRequests(from = null, to = null) {
                                     </div>
                                 </div>
                             </div>
-                            `,
+                            `, */
         },
     ];
 
