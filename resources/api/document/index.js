@@ -85,9 +85,35 @@ return await axios
 }
 // FRIMANTES
 // AGReGAR FIRMANTE
-async function addSigned(formData) {
+async function addSigner(formData) {
   return await axios
     .post(`/api/document/signer/assign`, formData, {
+      headers: { 'content-type': 'multipart/form-data' },
+    }
+    )
+    .then((res) => {
+      if (res.status != 200) throw new Error("Response Failed");
+      return res.data;
+    })
+}
+
+// ELIMINAR FIRMANTE
+async function deleteSigner(id) {
+  return await axios
+    .delete(`/api/document/signer/delete/`+id, {
+      headers: { 'content-type': 'multipart/form-data' },
+    }
+    )
+    .then((res) => {
+      if (res.status != 200) throw new Error("Response Failed");
+      return res.data;
+    })
+}
+
+// FIRMAR DOCUMENTO
+async function signDocument(signData) {
+  return await axios
+    .post(`/api/document/sign`, signData, {
       headers: { 'content-type': 'multipart/form-data' },
     }
     )
@@ -106,4 +132,4 @@ async function addSigned(formData) {
 //   }
 // }
 
-export default {getDocument,getDocuments,addDocument,editDocument,deleteDocument,getDocumentsType,addSigned}
+export default {getDocument,getDocuments,addDocument,editDocument,deleteDocument,getDocumentsType,addSigner,deleteSigner,signDocument}
