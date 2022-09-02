@@ -73,7 +73,7 @@
                                 class="card-body"
                             >
                             <div class="">
-                                    <VuePdfEmbed :source="source" :width="900"  class="scrollspy-example"></VuePdfEmbed>
+                                    <VuePdfEmbed :source="source" :width="1200"  class="scrollspy-example"></VuePdfEmbed>
                                 </div>
                             </div>
                             <!-- end card-body-->
@@ -170,6 +170,7 @@
                                     @click=""
                                 >
                                     CANCELAR
+
                                 </button>
                             </div>
                         </div>
@@ -208,11 +209,10 @@ const dataFile = toRef(props, "dataFile");
 const data = ref("");
 
 const addRequest = async => {
-    console.log(formData.value)
     useDocumentRequestsAPI.addSigned(formData.value)
     .then((res) => {
     });
-    // resetData();
+    resetData();
 }
 
 function resetData(){
@@ -225,14 +225,13 @@ function resetData(){
 
 onMounted(async () => {   
     dataReceived();
-    // console.log(data)fddd
 });
 
 
 
 function dataReceived() {
-    // data.value = router.params.datafile
-    console.log();
+    data.value = dataFile.value
+    // console.log(dataFile.value[0]);
 }
 
 </script>

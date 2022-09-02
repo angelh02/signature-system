@@ -22,8 +22,9 @@ const routes = [
         component: Documents
     },
     {
-        path: '/documents/preparation/:datafile',
+        path: '/documents/preparation',
         name: 'DocumentsPreparation',
+        props:true,
         component: DocumentsPreparation
     },
     {

@@ -1,36 +1,55 @@
 <script setup>
-import { toRef,ref } from 'vue';
-import VuePdfEmbed from 'vue-pdf-embed'
+import { toRef, ref } from "vue";
+import VuePdfEmbed from "vue-pdf-embed";
+import useDocumentRequestsAPI from "@/api/document/index.js";
 
-const emit = defineEmits(["showPreparation","close"]);
+const emit = defineEmits(["showPreparation", "close"]);
 
-const source = "https://lpl.unbosque.edu.co/wp-content/uploads/08-Guia-Resumen.pdf"
+const source =
+    "https://lpl.unbosque.edu.co/wp-content/uploads/08-Guia-Resumen.pdf";
 
-const clasifications = toRef(props, 'clasifications');
-const typesDocument = toRef(props, 'typesDocument');
-const containers = toRef(props, 'containers');
+const clasifications = toRef(props, "clasifications");
+const typesDocument = toRef(props, "typesDocument");
+const containers = toRef(props, "containers");
+const dataFile = toRef(props, "dataFile");
 
-const showPreparation = ref(false)
+// const data = dataFile.map();
+const formData = ref({
+    name: "",
+    container_id: "",
+    classification_id: "",
+    document_type_id: "",
+    url: "https://lpl.unbosque.edu.co/wp-content/uploads/08-Guia-Resumen.pdf",
+});
+
+
+const showPreparation = ref(false);
 const props = defineProps({
     show: Boolean,
     clasifications: Object,
     typesDocument: Object,
-    containers: Object
+    containers: Object,
+    dataFile: Object
 });
 
-
 function sendDocument() {
-    showPreparation.value = true
-    emit('showPreparation',showPreparation.value)
-    emit('close')
+    showPreparation.value = true;
+    emit("showPreparation", showPreparation.value);
+    emit("close");
+    addRequest();
+    // console.log(data.value);
 }
 
+const addRequest = (async) => {
+    useDocumentRequestsAPI.addDocument(formData.value).then((res) => {});
+    // resetData();
+};
 </script>
 
 <template>
     <Transition name="modal">
         <div v-if="show" class="modal-mask">
-            <div class="card col-11 container-fluid my-4" >
+            <div class="card col-11 container-fluid my-4">
                 <div class="">
                     <div class="modal-content">
                         <!-- <div class="modal-header">
@@ -43,7 +62,10 @@ function sendDocument() {
                         <div class="card-body">
                             <div class="row">
                                 <div class="col-8">
-                                    <VuePdfEmbed :source="source" :width="800"  class="scrollspy-example"></VuePdfEmbed>
+                                    <VuePdfEmbed
+                                        :source="source"
+                                        class="scrollspy-example"
+                                    ></VuePdfEmbed>
                                 </div>
                                 <div
                                     class="col-4 row mx-0 justify-content-center"
@@ -67,7 +89,7 @@ function sendDocument() {
                                                         id="name"
                                                         placeholder="Ingrese Nombre"
                                                         maxlength="30"
-                                                        v-model="name"
+                                                        v-model="formData.name"
                                                         required
                                                     />
                                                     <div
@@ -84,29 +106,16 @@ function sendDocument() {
                                                     </div>
                                                 </div>
                                                 <div class="mb-3">
-            <label class="form-label" for="background_id"
-                >TIPO DE DOCUMENTO</label
-            >
-            <select
-                class="form-select"
-                id="background_id"
-                name="background_id"
-                required
-            >
-                <option :value="''" selected>Selecciona una opción...</option>
-                <option value="" v-for="res in typesDocument" :value="res.id">
-                    {{ `${res.code}` }} - {{ `${res.name}` }}
-                </option>
-            </select>
-            <!-- <div class="mensajeError">Debe escoger una opcion</div> -->
-        </div>
-                                                <div class="mb-3">
                                                     <label
                                                         class="form-label"
                                                         for="background_id"
-                                                        >CLASIFICACIÓN</label
+                                                        >TIPO DE
+                                                        DOCUMENTO</label
                                                     >
                                                     <select
+                                                        v-model="
+                                                            formData.document_type_id
+                                                        "
                                                         class="form-select"
                                                         id="background_id"
                                                         name="background_id"
@@ -120,7 +129,39 @@ function sendDocument() {
                                                             opción...
                                                         </option>
                                                         <option
-                                                            value=""
+                                                            v-for="res in typesDocument"
+                                                            :value="res.id"
+                                                        >
+                                                            {{ `${res.code}` }}
+                                                            -
+                                                            {{ `${res.name}` }}
+                                                        </option>
+                                                    </select>
+                                                    <!-- <div class="mensajeError">Debe escoger una opcion</div> -->
+                                                </div>
+                                                <div class="mb-3">
+                                                    <label
+                                                        class="form-label"
+                                                        for="background_id"
+                                                        >CLASIFICACIÓN</label
+                                                    >
+                                                    <select
+                                                        v-model="
+                                                            formData.classification_id
+                                                        "
+                                                        class="form-select"
+                                                        id="background_id"
+                                                        name="background_id"
+                                                        required
+                                                    >
+                                                        <option
+                                                            :value="''"
+                                                            selected
+                                                        >
+                                                            Selecciona una
+                                                            opción...
+                                                        </option>
+                                                        <option
                                                             v-for="res in clasifications"
                                                             :value="res.id"
                                                         >
@@ -130,38 +171,56 @@ function sendDocument() {
                                                     <!-- <div class="mensajeError">Debe escoger una opcion</div> -->
                                                 </div>
                                                 <div class="mb-3">
-            <label class="form-label" for="background_id">CONTENEDORES</label>
-            <select
-                class="form-select"
-                id="background_id"
-                name="background_id"
-                required
-            >
-                <option :value="''" selected>Selecciona una opción...</option>
-                <option value="" v-for="res in containers" :value="res.id">
-                    {{ `${res.name}` }}
-                </option>
-            </select>
-            <!-- <div class="mensajeError">Debe escoger una opcion</div> -->
-        </div>
-                                                <div
-                                                    class="card-footer border-0 mx-1 row justify-items-center"
-                                                >
+                                                    <label
+                                                        class="form-label"
+                                                        for="background_id"
+                                                        >CONTENEDORES</label
+                                                    >
+                                                    <select
+                                                        v-model="
+                                                            formData.container_id
+                                                        "
+                                                        class="form-select"
+                                                        id="background_id"
+                                                        name="background_id"
+                                                        required
+                                                    >
+                                                        <option
+                                                            :value="''"
+                                                            selected
+                                                        >
+                                                            Selecciona una
+                                                            opción...
+                                                        </option>
+                                                        <option
+                                                            v-for="res in containers"
+                                                            :value="res.id"
+                                                        >
+                                                            {{ `${res.name}` }}
+                                                        </option>
+                                                    </select>
+                                                    <!-- <div class="mensajeError">Debe escoger una opcion</div> -->
+                                                </div>
+                                                <div class="d-flex justify-content-around">
                                                     <button
-                                                        class="btn btn-primary mb-2 col-5"
+                                                        class="btn btn-primary mb-2 row col-5"
                                                         type="submit"
-                                                        @click.prevent="sendDocument"
+                                                        @click.prevent="
+                                                            sendDocument
+                                                        "
                                                     >
                                                         CONTINUAR
                                                     </button>
                                                     <button
-                                                        class="btn btn-light mb-2 mx-3 col-5"
+                                                        class="btn btn-light mb-2 row col-5"
                                                         type="submit"
                                                         @click="$emit('close')"
                                                     >
                                                         CANCELAR
                                                     </button>
                                                 </div>
+                                                {{ dataFile[0].path }}
+                                                {{ dataFile[0].type }}
                                             </div>
                                         </div>
                                     </div>
@@ -227,7 +286,6 @@ function sendDocument() {
     <!-- /.modal -->
 </template>
 
-
 <style>
 .modal-mask {
     position: fixed;
@@ -241,7 +299,7 @@ function sendDocument() {
     transition: opacity 0.3s ease;
 }
 
-.scrollspy-example{
-    height: 838px
+.scrollspy-example {
+    height: 838px;
 }
 </style>

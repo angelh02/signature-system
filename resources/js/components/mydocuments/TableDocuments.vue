@@ -8,6 +8,7 @@
                 <th>Clasificación</th>
                 <th>Contenedor</th>
                 <th></th>
+                <th></th>
             </tr>
         </thead>
         <tbody>
@@ -99,7 +100,6 @@ const createTable = async () => {
 const getRequests = async (refresh = false) => {
     const results = await getDocuments([]);
     documents.value = results;
-    console.log(documents.value)
     var dT = $('#documentstable').DataTable();
     dT.destroy();
     createTable()

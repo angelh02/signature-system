@@ -86,10 +86,10 @@
             </div> 
         </div>
     </div>
-        <Modal :clasifications="clasifications"  :containers="containers" :typesDocument="typesDocument" :show="showModal" @showPreparation="showPreparation" @close="showModal = false"></Modal>
+        <Modal :clasifications="clasifications" :dataFile="dataFile" :containers="containers" :typesDocument="typesDocument" :show="showModal" @showPreparation="showPreparation" @close="showModal = false"></Modal>
     </div>
     <div >
-            <DocumentsPreparation v-show="showPrepa" :dataFile="dataFile"></DocumentsPreparation>
+        <DocumentsPreparation v-show="showPrepa" :dataFile="dataFile"></DocumentsPreparation>
     </div >
 </template>
 
@@ -121,8 +121,7 @@ const url = "{your_url}"; // Your url on the server side
         for (var x = 0; x < files.length; x++) {
         formData.append("images[]", files[x]);
         }
-        console.log(files)
-
+        // dataFile.value = formData 
         // axios
         // .post(url, formData, {
         //     headers: {
@@ -160,7 +159,7 @@ const url = "{your_url}"; // Your url on the server side
     function onDropAccepted(acceptFiles) {
         saveFiles(acceptFiles); 
         dataFile.value = acceptFiles
-        console.log(dataFile)
+        console.log(dataFile.value)
         showModal.value = true;
         
 
