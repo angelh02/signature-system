@@ -1,5 +1,5 @@
 <script setup>
-import { toRef, ref } from "vue";
+import { toRef, ref, onMounted } from "vue";
 import VuePdfEmbed from "vue-pdf-embed";
 import useDocumentRequestsAPI from "@/api/document/index.js";
 import { useRouter, useRoute } from "vue-router";
@@ -8,7 +8,7 @@ import { useRouter, useRoute } from "vue-router";
 const emit = defineEmits(["showPreparation", "close", "resFile"]);
 const router = useRouter();
 
-const source ="https://lpl.unbosque.edu.co/wp-content/uploads/08-Guia-Resumen.pdf";
+const source = ref("");
 
 const clasifications = toRef(props, "clasifications");
 const typesDocument = toRef(props, "typesDocument");
@@ -17,14 +17,43 @@ const dataFile = toRef(props, "dataFile");
 const resFile = ref("");
 const url = ref(dataFile)
 
+const documentsFiles = ref([
+    {
+        name:"minuta_reunion.pdf",
+        url:"https://drive.google.com/uc?id=1e4Pg3SkXZh6NEldfTNTUmzTGxE3VQlvd&export=download",
+    },
+    {
+        name:"lista_asistencia.pdf",
+        url:"https://drive.google.com/uc?id=1sJ1hGDWhFW-3etoSo5gnUAatUxiImXrj&export=download",
+    },
+    {
+        name:"constancia_servicio_social.pdf",
+        url:"https://drive.google.com/uc?id=1QvAC2oJqRnUHddwkJiUOkxIQJ5jyb5ln&export=download",
+    },
+    {
+        name:"carta_no_adeudo.pdf",
+        url:"https://drive.google.com/uc?id=1IO2e-rsr0WKXRSF9VrwTBz92VSqthpyK&export=download",
+    },
+    {
+        name:"acta_calificaciones.pdf",
+        url:"https://drive.google.com/uc?id=1tEg_1Kt6N97-waTcHtmIVsR2Tm_ztOl7&export=download",
+    },
+])
+
 // const data = dataFile.map();
 const formData = ref({
     name: "",
     container_id: "",
     classification_id: "",
     document_type_id: "",
-    url: url.value,
+    url: "",
 });
+
+function filter () { 
+    if(formData.document_type_id == 1){
+        formData.url = "https://drive.google.com/uc?id=1IO2e-rsr0WKXRSF9VrwTBz92VSqthpyK&export=download"
+    }
+} 
 
 
 const showPreparation = ref(false);
@@ -38,17 +67,26 @@ const props = defineProps({
 
 
 function sendDocument() {
-    showPreparation.value = true;
+    /* showPreparation.value = true;
     emit("showPreparation", showPreparation.value);
-    emit("close");
+    emit("close"); */
     addRequest();
-    // console.log(data.value);
+    console.log(index);
 }
 
+onMounted(async () => {
+    console.log(dataFile);
+    formData.value.name = dataFile;
+    let index = documentsFiles.value.findIndex(x => x.name == formData.value.name);
+    source.value = "/pdf/"+(index == -1? documentsFiles.value[0].name : documentsFiles.value[index].name);
+    formData.value.url = index == -1? documentsFiles.value[0].url : documentsFiles.value[index].url;
+});
+
 const addRequest = (async) => {
+    console.log(typesDocument.value[0].id)
     useDocumentRequestsAPI.addDocument(formData.value)
     .then((res) => {
-        resFile.value = res
+        // resFile.value = res
         router.push({ path: '/documents/preparation/' + res.id })       
     });
     // resetData();
@@ -72,6 +110,7 @@ const addRequest = (async) => {
                             <div class="row">
                                 <div class="col-8">
                                     <VuePdfEmbed
+                                        v-if="source != ''"
                                         :source="source"
                                         class="scrollspy-example"
                                     ></VuePdfEmbed>

@@ -71,6 +71,8 @@
                             @clasification="clasificationData"
                             @container="containerData"
                             @typeDocument="typeDocumentData"
+                            @filterData="filterData"
+                            
                         ></DocumentSearch>
                     </div>
                 </div>
@@ -82,12 +84,13 @@
                         <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
                         Property HY1xx is not receiving hits. Either your site is not receiving any sessions or it is not tagged correctly.
                     </div> -->
-                        <TableDocuments></TableDocuments>
+                        <TableDocuments :dataFilter="dataFilter"></TableDocuments>
                     </div>
                 </div>
             </div>
         </div>
         <Modal
+            v-if="showModal"
             :clasifications="clasifications"
             :dataFile="dataFile"
             :containers="containers"
@@ -99,11 +102,11 @@
         ></Modal>
     </div>
     <div>
-        <DocumentsPreparation
+        <!-- <DocumentsPreparation
             v-show="showPrepa"
             :dataFile="dataFile"
             :resFiles="resFIles"
-        ></DocumentsPreparation>
+        ></DocumentsPreparation> -->
     </div>
 </template>
 
@@ -127,6 +130,12 @@ const containers = ref("");
 const typesDocument = ref("");
 const showPrepa = ref("");
 const resFiles = ref("")
+
+// varible para filtros
+const  dataFilter =  ref({})
+
+
+
 
 const dataFile = ref("");
 const shadow = ref(false);
@@ -155,6 +164,10 @@ function onDrop(acceptFiles, rejectReasons) {
     saveFiles(acceptFiles);
 }
 
+function filterData(filterData) {
+    dataFilter.value = filterData;
+}
+
 function clasificationData(clasification) {
     clasifications.value = clasification;
 }
@@ -177,14 +190,11 @@ function resFile(resFile) {
 
 function onDropAccepted(acceptFiles) {
     saveFiles(acceptFiles);
-    // dataFile.value = acceptFiles;
     var encoded = btoa(JSON.stringify(acceptFiles))
     var actual = JSON.parse(atob(encoded))
+    dataFile.value = actual[0].path;
     console.log(actual);
     console.log(encoded);
-    dataFile.value = encoded;
-
-
     showModal.value = true;
 
     // $('#standard-modal').modal('show');
