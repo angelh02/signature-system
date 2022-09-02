@@ -4,6 +4,8 @@ const Documents = () => import("../components/mydocuments/Documents.vue")
 const FileClasification = () => import("../components/fileclasification/FileClasification.vue")
 const Containers = () => import("../components/containers/Containers.vue")
 const DocumentsPreparation = () => import("../components/mydocuments/DocumentsPreparation.vue")
+const DocumentStatus = () => import("../components/mydocuments/DocumentStatus.vue");
+const DocumentSign = () => import("../components/document-sign/DocumentSign.vue");
 
 
 // import Home from './components/Home.vue';
@@ -22,8 +24,9 @@ const routes = [
         component: Documents
     },
     {
-        path: '/documents/preparation/:datafile',
+        path: '/documents/preparation/:id',
         name: 'DocumentsPreparation',
+        props:true,
         component: DocumentsPreparation
     },
     {
@@ -36,6 +39,16 @@ const routes = [
         name: 'Containers',
         component: Containers
     },
+    {
+        path: '/document/status/:id',
+        name: 'DocumentStatus',
+        component: DocumentStatus
+    },
+    {
+        path: '/document/sign/:id',
+        name: 'DocumentSign',
+        component: DocumentSign
+    }
 
 ]
 

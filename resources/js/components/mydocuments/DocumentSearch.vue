@@ -7,7 +7,7 @@
             <label class="form-label"
                 >SÓLO MOSTRAR DOCUMENTOS QUE REQUIEREN FIRMA</label
             >
-            <input type="checkbox" id="switch0" data-switch="none" />
+            <input type="checkbox" id="switch0" data-switch="none" v-model="filterData.signed " @change="returnFilterData"/>
             <label for="switch0" data-on-label="" data-off-label=""></label>
         </div>
 
@@ -21,7 +21,8 @@
                 id="name"
                 placeholder="Ingrese Nombre"
                 maxlength="30"
-                v-model="name"
+                v-model="filterData.name"
+                @keyup.enter="returnFilterData"
                 required
             />
             <div v-if="submit " class="mensajeError">
@@ -29,7 +30,7 @@
             </div>
             <div class="invalid-feedback">Please provide a valid zip.</div>
         </div>
-        <div class="mb-3">
+        <!-- <div class="mb-3">
             <label class="form-label" for="validationCustom06">FIRMANTES</label>
            <input
                 type="text"
@@ -44,7 +45,7 @@
                 Debe ingresar un nombre
             </div>
             <div class="invalid-feedback">Please provide a valid zip.</div>
-        </div>
+        </div> -->
         <!-- <div class="mb-3 position-relative" id="datepicker4">
             <label class="form-label">FECHA DE CREACIÓN</label>
              <div class="input-group date">
@@ -88,9 +89,11 @@
                 id="background_id"
                 name="background_id"
                 required
+                v-model="filterData.document_type"
+                @change="returnFilterData"
             >
                 <option :value="''" selected>Selecciona una opción...</option>
-                <option value="" v-for="res in documentType" :value="res.id">
+                <option v-for="res in documentType" :value="res.id">
                     {{ `${res.code}` }} - {{ `${res.name}` }}
                 </option>
             </select>
@@ -103,9 +106,11 @@
                 id="background_id"
                 name="background_id"
                 required
+                v-model="filterData.classification"
+                @change="returnFilterData"
             >
                 <option :value="''" selected>Selecciona una opción...</option>
-                <option value="" v-for="res in clasification" :value="res.id">
+                <option v-for="res in clasification" :value="res.id">
                     {{ `${res.name}` }}
                 </option>
             </select>
@@ -118,9 +123,11 @@
                 id="background_id"
                 name="background_id"
                 required
+                v-model="filterData.container"
+                @change="returnFilterData"
             >
                 <option :value="''" selected>Selecciona una opción...</option>
-                <option value="" v-for="res in containers" :value="res.id">
+                <option v-for="res in containers" :value="res.id">
                     {{ `${res.name}` }}
                 </option>
             </select>
@@ -135,7 +142,7 @@ import $ from "jquery";
 import { datepicker } from "bootstrap-datepicker";
 import { useDocumentsRequests } from "@/js/composables/document-apis/useDocumentsRequest.js";
 
-const emit = defineEmits(['clasification','typeDocument','container'])
+const emit = defineEmits(['clasification','typeDocument','container','filterData'])
 
 
 const name = ref("")
@@ -145,6 +152,19 @@ const clasification = ref("")
 const containers = ref("")
 const fechaFirma = ref("")
 const fechaCreacion = ref("")
+
+const filterData = ref({
+    signed:0,
+    name:"",
+    document_type:0,
+    classification:0,
+    container:0
+})
+const document = ref("")
+const clas = ref("")
+const cont = ref("")
+
+
 
 const { getDocumentsType, getClasification,getContainers } =
     useDocumentsRequests();
@@ -168,6 +188,10 @@ onMounted(async () => {
     });
 });
 
+function returnFilterData () {
+    emit('filterData',filterData.value);
+}
+
 const getRequests = async () => {
     const resdocumentType = await getDocumentsType("");
     documentType.value = resdocumentType;
@@ -181,6 +205,9 @@ const getRequests = async () => {
     const resContainer = await getContainers("");
     containers.value = resContainer;
     emit('container',containers.value);
+
+    emit('filterData',filterData.value);
+   
     
 };
 </script>

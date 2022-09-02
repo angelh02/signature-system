@@ -49,12 +49,12 @@
             <p>
                 En esta sección  puedes consultar el estado de cada una de las firmas requeridas. En caso de que el firmante ya haya firmado podrás visualizar sus datos, su firma y la fecha en la que firmó.
             </p>
-            <div class="card border-secondary border mt-3">
+            <div class="card border-secondary border mt-3" v-if="documentData?.document_signers?.length > 0">
                 <div class="card-body p-2">
                     <table class="table table-sm table-borderless mb-0">
                         <col width=100><col width=100><col width=100><col width=100><col width=100><col width=100><col width=100><col width=100><col width=100><col width=100><col width=100><col width=100>
                         <tbody>
-                            <tr v-if="documentData?.document_signers?.length > 0" v-for="signer in documentData?.document_signers">
+                            <tr v-for="signer in documentData?.document_signers">
                                 <td colspan="1"><p class="m-0"><span :class="'badge bg-'+(signer.signed == 0 ? 'warning' : 'success')">{{signer.signed == 0 ? 'Pendiente' : 'Firmado'}}</span></p></td>
                                 <td colspan="2">{{signer.email}}</td>
                                 <td colspan="2">{{signer.name+" "+signer.surnames}}</td>
@@ -71,28 +71,26 @@
 import { ref, onMounted, toRefs, toRef, reactive } from "vue";
 import $ from "jquery";
 import { integer } from "@vuelidate/validators";
+import {useRoute} from 'vue-router';
 import { useDocumentsRequests } from "@/js/composables/document-apis/useDocumentsRequest.js";
 
-const props = defineProps({
-    documentId : 0
-});
+const route = useRoute()
+const documentId = ref(0);
 
 //Extract functions about requests
 const { getDocument } =
     useDocumentsRequests();
 
-//Readonly props
-const documentId = toRef(props, 'documentId');
-
 //Document
 const documentData = ref("");
 
 onMounted(async () => {
+    documentId.value = parseInt(route.params.id);
     searchDocument();
 });
 
 const searchDocument = async () => {
-    documentData.value = await getDocument(1);
+    documentData.value = await getDocument(documentId.value);
     console.log(documentData.value.classification);
 };
 </script>
