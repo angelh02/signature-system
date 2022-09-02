@@ -53,7 +53,7 @@
                                     class="card-body"
                                 >
                                 <div class="">
-                                        <VuePdfEmbed :source="source" :width="900"  class="scrollspy-example"></VuePdfEmbed>
+                                        <VuePdfEmbed v-if="source != ''" :source="source" :width="900"  class="scrollspy-example"></VuePdfEmbed>
                                     </div>
                                 </div>
                                 <!-- end card-body-->
@@ -162,7 +162,7 @@
                                         <div class="inbox-item-img"><i class="mdi mdi-48px mdi-file-document-outline"></i></div>
                                         <p class="inbox-item-author">{{documentData?.name}}</p>
                                         <p class="inbox-item-text">Creado el {{documentData?.created_at}}</p>
-                                        <a href="#" style="font-size: 0.8125rem">Descargar</a>
+                                        <a v-if="documentDownload != ''" :href="documentDownload" style="font-size: 0.8125rem">Descargar</a>
                                     </div>
                                     <div class="inbox-item">
                                         <p class="inbox-item-author">Tipo de documento</p>
@@ -188,8 +188,8 @@
                                     <a
                                         class="btn btn-light mb-2"
                                         type="button"
-                                        href="/documents
-                                        "
+                                        v-if="documentData?.id != null"
+                                        @click="deleteDocument"
                                     >
                                         CANCELAR
                                     </a>
@@ -222,11 +222,13 @@ const formData = ref({
     document_id: 1
 });
 const signers = ref([]);
+const documentId = ref(0);
 const documentData = ref({});
 const documentCreated = ref(false);
+const documentDownload = ref("");
 
 
-const source = "https://leo.uniandes.edu.co/images/Guias/Gua-para-resumen.pdf"
+const source = ref("");
 
 const props = defineProps({
     dataFile: Object,
@@ -269,22 +271,51 @@ function resetData(){
 
 onMounted(async () => {   
     console.log(route.params.id)
-    dataReceived();
+    documentId.value = parseInt(route.params.id);
     getDocumentData();
     // console.log(data)fddd
 });
 
-function dataReceived() {
-    // data.value = router.params.datafile
-    console.log();
-}
-
-function getDocumentData(){
-    useDocumentRequestsAPI.getDocument(1)
+function deleteDocument(){
+    useDocumentRequestsAPI.deleteDocument(documentId.value)
     .then((res) => {
-        documentData.value = res;
-        signers.value = res?.document_signers;
+        router.push({path:'/documents'});
     });
 }
 
+function getDocumentData(){
+    useDocumentRequestsAPI.getDocument(documentId.value)
+    .then((res) => {
+        documentData.value = res;
+        signers.value = res?.document_signers;
+        console.log(documentsFiles.value[0]);
+        let index = documentsFiles.value.findIndex(x => x.name == res.name);
+        console.log(index);
+        source.value = "/pdf/"+(index == -1? documentsFiles.value[0].name : documentsFiles.value[index].name);
+        documentDownload.value = index == -1? documentsFiles.value[0].url : documentsFiles.value[index].url;
+    });
+}
+
+const documentsFiles = ref([
+    {
+        name:"minuta_reunion.pdf",
+        url:"https://drive.google.com/uc?id=1e4Pg3SkXZh6NEldfTNTUmzTGxE3VQlvd&export=download",
+    },
+    {
+        name:"lista_asistencia.pdf",
+        url:"https://drive.google.com/uc?id=1sJ1hGDWhFW-3etoSo5gnUAatUxiImXrj&export=download",
+    },
+    {
+        name:"constancia_servicio_social.pdf",
+        url:"https://drive.google.com/uc?id=1QvAC2oJqRnUHddwkJiUOkxIQJ5jyb5ln&export=download",
+    },
+    {
+        name:"carta_no_adeudo.pdf",
+        url:"https://drive.google.com/uc?id=1IO2e-rsr0WKXRSF9VrwTBz92VSqthpyK&export=download",
+    },
+    {
+        name:"acta_calificaciones.pdf",
+        url:"https://drive.google.com/uc?id=1tEg_1Kt6N97-waTcHtmIVsR2Tm_ztOl7&export=download",
+    },
+]);
 </script>
