@@ -219,7 +219,7 @@ const route = useRoute();
 const formData = ref({
     name: "",
     email: "",
-    document_id: 1
+    document_id: 0,
 });
 const signers = ref([]);
 const documentId = ref(0);
@@ -272,6 +272,7 @@ function resetData(){
 onMounted(async () => {   
     console.log(route.params.id)
     documentId.value = parseInt(route.params.id);
+    formData.value.document_id = documentId.value;
     getDocumentData();
     // console.log(data)fddd
 });

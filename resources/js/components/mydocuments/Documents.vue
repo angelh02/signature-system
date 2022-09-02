@@ -13,10 +13,10 @@
             <div class="dropzone" v-bind="getRootProps()">
                 <div class="dz-message needsclick row align-items-center">
                     <input v-bind="getInputProps()" />
-                    <h4 class="h3 text-muted mdi mdi-file-upload-outline">
+                    <h4 class="text-muted mdi mdi-file-upload-outline">
                         Arrastra tu documetos a la página o
                         <label
-                            ><a class="text-info"
+                            ><a class="text-primary"
                                 >click aquí para seleccionar uno</a
                             ></label
                         >

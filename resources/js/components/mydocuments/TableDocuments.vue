@@ -29,9 +29,9 @@
                             uno XML y uno PDf asegurate<br> 
                             de descargar ambos</h5>
                             </div>
-                            <a class="dropdown-item" href="#">Descaragar pdf y xml</a>
-                            <a class="dropdown-item" href="#">Descaragar pdf</a>
-                            <a class="dropdown-item" href="#">Descaragar xml</a>
+                            <a class="dropdown-item" href="#" disabled>Descargar pdf y xml</a>
+                            <a class="dropdown-item" :href="document?.document_signed?.pdf_url">Descargar pdf</a>
+                            <a class="dropdown-item" href="" disabled>Descargar xml</a>
                         </div>
                     </div> 
                     <router-link
@@ -45,12 +45,12 @@
                
                 <td>
                     <div class="dropdown" >
-                        <a  class="btn btn-outline-info dropdown-toggle" href="#" role="button" id="dropdownMenuLink" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                        <a  class="btn btn-outline-secondary dropdown-toggle" href="#" role="button" id="dropdownMenuLink" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
                         </a>                                   
                         <div class="dropdown-menu" aria-labelledby="dropdownMenuLink">
-                            <router-link class="dropdown-item" :to="'/document/status/'+document?.id">Detalles</router-link>
-                            <a class="dropdown-item" href="#">Ver original</a>
-                            <a class="dropdown-item" href="#">Descaragar documento original</a>
+                            <router-link class="dropdown-item" :to="'/document/status/'+document?.id">Ver Detalles</router-link>
+                            <!-- <a class="dropdown-item" href="#">Ver original</a> -->
+                            <a class="dropdown-item" :href="document?.url">Descargar documento original</a>
                             <a class="dropdown-item" href="#">Eliminar documento</a>
                         </div>
                     </div> 

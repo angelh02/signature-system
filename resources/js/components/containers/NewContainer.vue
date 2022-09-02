@@ -69,7 +69,7 @@
             </select>
             <div class="valid-feedback">Looks good!</div>
         </div>
-        <div class="mb-3 mt-xxl-n3">
+        <div class="mb-3">
             <label class="form-label" for="information_type_id">Tipo de información</label>
             <select
                 class="form-select"
@@ -85,7 +85,7 @@
             </select>
             <div class="valid-feedback">Looks good!</div>
         </div>
-        <div class="mb-3 mt-xxl-n3">
+        <div class="mb-3 ">
             <label class="form-label" for="selection_technique_id">Tecnica de selección</label>
             <select
                 class="form-select"
