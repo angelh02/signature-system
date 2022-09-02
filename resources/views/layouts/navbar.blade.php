@@ -4,7 +4,7 @@
             <span class="navbar-toggler-icon"></span>
         </button>
         <span class="account-user-avatar">
-            <img src="{{ asset('css/images/EFIRMA.png') }}" alt="user-image" class="rounded-circle">
+            <img src="{{ asset('/images/itsl-logo.png') }}" style="width: 65px; height: 65px" alt="user-image" class="rounded-circle me-2">
         </span>
         <div class="col nav">
             <ul class="nav nav-tabs nav-bordered navbar-collapse collapse" id="navbarSupportedContent">
