@@ -197,7 +197,9 @@ const formData = ref({
     document_id: 1
 });
 
+
 const source = "https://leo.uniandes.edu.co/images/Guias/Gua-para-resumen.pdf"
+
 const props = defineProps({
     dataFile: Object,
 });
