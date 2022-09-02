@@ -2,16 +2,20 @@
 import { toRef, ref } from "vue";
 import VuePdfEmbed from "vue-pdf-embed";
 import useDocumentRequestsAPI from "@/api/document/index.js";
+import { useRouter, useRoute } from "vue-router";
 
-const emit = defineEmits(["showPreparation", "close"]);
 
-const source =
-    "https://lpl.unbosque.edu.co/wp-content/uploads/08-Guia-Resumen.pdf";
+const emit = defineEmits(["showPreparation", "close", "resFile"]);
+const router = useRouter();
+
+const source ="https://lpl.unbosque.edu.co/wp-content/uploads/08-Guia-Resumen.pdf";
 
 const clasifications = toRef(props, "clasifications");
 const typesDocument = toRef(props, "typesDocument");
 const containers = toRef(props, "containers");
 const dataFile = toRef(props, "dataFile");
+const resFile = ref("");
+const url = ref(dataFile)
 
 // const data = dataFile.map();
 const formData = ref({
@@ -19,7 +23,7 @@ const formData = ref({
     container_id: "",
     classification_id: "",
     document_type_id: "",
-    url: "https://lpl.unbosque.edu.co/wp-content/uploads/08-Guia-Resumen.pdf",
+    url: url.value,
 });
 
 
@@ -32,6 +36,7 @@ const props = defineProps({
     dataFile: Object
 });
 
+
 function sendDocument() {
     showPreparation.value = true;
     emit("showPreparation", showPreparation.value);
@@ -41,7 +46,11 @@ function sendDocument() {
 }
 
 const addRequest = (async) => {
-    useDocumentRequestsAPI.addDocument(formData.value).then((res) => {});
+    useDocumentRequestsAPI.addDocument(formData.value)
+    .then((res) => {
+        resFile.value = res
+        router.push({ path: '/documents/preparation/' + res.id })       
+    });
     // resetData();
 };
 </script>

@@ -22,7 +22,7 @@ const routes = [
         component: Documents
     },
     {
-        path: '/documents/preparation',
+        path: '/documents/preparation/:id',
         name: 'DocumentsPreparation',
         props:true,
         component: DocumentsPreparation

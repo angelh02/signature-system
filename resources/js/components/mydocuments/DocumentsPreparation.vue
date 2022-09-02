@@ -186,26 +186,29 @@
 <script setup>
 import { ref, onMounted, watch, toRef, reactive } from "vue";
 import $ from 'jquery'
-import { useRouter } from "vue-router";
+import { useRouter, useRoute } from "vue-router";
 import VuePdfEmbed from 'vue-pdf-embed'
 import useDocumentRequestsAPI from "@/api/document/index.js";
 
 
 const router = useRouter();
+const route = useRoute();
 const formData = ref({
     name: "",
     email: "",
     document_id: 1
 });
 
-
 const source = "https://leo.uniandes.edu.co/images/Guias/Gua-para-resumen.pdf"
 
 const props = defineProps({
     dataFile: Object,
+    resFiles: Object
 });
 
 const dataFile = toRef(props, "dataFile");
+const resFiles = toRef(props, "resFiles");
+
 const data = ref("");
 
 const addRequest = async => {
@@ -224,6 +227,7 @@ function resetData(){
 
 
 onMounted(async () => {   
+    console.log(route.params.id)
     dataReceived();
 });
 
