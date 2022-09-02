@@ -1,5 +1,5 @@
 import {createRouter, createWebHistory} from "vue-router"
-const Home = () => import("../components/mydocuments/DocumentsPreparation.vue")
+const Home = () => import("../components/mydocuments/Documents.vue")
 const Documents = () => import("../components/mydocuments/Documents.vue")
 const FileClasification = () => import("../components/fileclasification/FileClasification.vue")
 const Containers = () => import("../components/containers/Containers.vue")
@@ -13,11 +13,6 @@ const DocumentSign = () => import("../components/document-sign/DocumentSign.vue"
 // import FileClasification from './components/FileClasification.vue';
 
 const routes = [
-    {
-        path: '/home',
-        name: 'Home',
-        component: Home
-    },
     {
         path: '/documents',
         name: 'Documents',
