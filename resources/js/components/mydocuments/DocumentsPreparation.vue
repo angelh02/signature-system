@@ -187,7 +187,7 @@ import VuePdfEmbed from 'vue-pdf-embed'
 
 const router = useRouter();
 
-const source = "https://lpl.unbosque.edu.co/wp-content/uploads/08-Guia-Resumen.pdf"
+const source = "http://jornadasciberseguridad.riasc.unileon.es/archivos/ejemplo_esp.pdf"
 const props = defineProps({
     dataFile: Object,
 });
