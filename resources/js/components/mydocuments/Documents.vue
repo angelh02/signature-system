@@ -1,5 +1,5 @@
 <template>
-    <div class="px-4">
+    <div v-if="!showPrepa" class="px-4">
         <div class="row">
             <div class="col-12">
                 <div class="page-title-box">
@@ -24,13 +24,9 @@
                             class="dropzoneFile btn-check"
                         />
                     </h4>
-                    <!-- <p v-if="isDragActive">Drop the files here ...</p>
-                    <p v-else>Drag 'n' drop some files here, or click to select files</p> -->
                     </div>
                 </div>
-            
-            <!-- <button @click="open">open</button> -->
-        </div>
+            </div>
         <!-- <DocumentUpload
             @drop.prevent="drop"
             @change="selectedFile"
@@ -74,32 +70,32 @@
         <div class="col-xl-3 col-lg-4">
             <div class="card tilebox-one">
                 <div class="card-body">
-                    <DocumentSearch></DocumentSearch>
+                    <DocumentSearch @clasification="clasificationData" @container="containerData" @typeDocument="typeDocumentData"></DocumentSearch>
                 </div> 
             </div>
         </div>
         <div class="col-xl-9 col-lg-8">
             <div class="card card-h-100">
                 <div class="card-body">
-                    <div class="alert alert-warning alert-dismissible fade show mb-3" role="alert">
+                    <!-- <div class="alert alert-warning alert-dismissible fade show mb-3" role="alert">
                         <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
                         Property HY1xx is not receiving hits. Either your site is not receiving any sessions or it is not tagged correctly.
-                    </div>
+                    </div> -->
                     <TableDocuments></TableDocuments>
                 </div> 
             </div> 
         </div>
     </div>
-    <div v-show="shadow = false">
-            <DocumentsPreparation :dataFile="dataFile"></DocumentsPreparation>
-    </div >
-    <Modal :show="showModal" @close="showModal = false"></Modal>
+        <Modal :clasifications="clasifications"  :containers="containers" :typesDocument="typesDocument" :show="showModal" @showPreparation="showPreparation" @close="showModal = false"></Modal>
     </div>
+    <div >
+            <DocumentsPreparation v-show="showPrepa" :dataFile="dataFile"></DocumentsPreparation>
+    </div >
 </template>
 
 <script setup>
 import DocumentUpload from "../elements/DropZone.vue";
-import $ from 'jquery'
+import $ from 'jquery';
 import { ref, reactive } from "vue";
 import DocumentSearch from "./DocumentSearch.vue"; 
 import DocumentsPreparation from "./DocumentsPreparation.vue"
@@ -112,6 +108,10 @@ const router = useRouter();
 
 const emit = defineEmits(["data"]);
 const showModal = ref(false)
+const clasifications = ref("")
+const containers = ref("")
+const typesDocument = ref("")
+const showPrepa = ref("")
 
 const dataFile = ref("")
 const shadow = ref(false)
@@ -141,11 +141,30 @@ const url = "{your_url}"; // Your url on the server side
         saveFiles(acceptFiles);       
     }
 
+    function clasificationData(clasification) {
+        clasifications.value = clasification
+    }
+
+    function containerData(container) {
+        containers.value = container
+    }
+
+    function typeDocumentData(typeDocument) {
+        typesDocument.value = typeDocument
+    }
+
+    function showPreparation(data) {
+        showPrepa.value = data
+    }
+
     function onDropAccepted(acceptFiles) {
         saveFiles(acceptFiles); 
         dataFile.value = acceptFiles
         console.log(dataFile)
         showModal.value = true;
+        
+
+        // $('#standard-modal').modal('show');
 
         // router.push({ name: "DocumentsPreparation"
         //             , params: {datafile: JSON.stringify(dataFile)}})
@@ -154,15 +173,4 @@ const url = "{your_url}"; // Your url on the server side
 
     const { getRootProps, getInputProps, ...rest } = useDropzone({ onDrop, onDropAccepted });
    
-// let dropzoneFile = ref("");
-// const drop = (e) => {
-//     dropzoneFile.value = e.dataTransfer.files[0];
-//     console.log(dropzoneFile.value.name);
-// };
-// const selectedFile = () => {
-//     dropzoneFile.value = document.querySelector(".dropzoneFile").files[0];
-//         console.log(dropzoneFile.value);
-
-// };
-// return { dropzoneFile, drop, selectedFile };
 </script>

@@ -1,5 +1,5 @@
 <template>
-    <table
+    <table v-if="documents.value"
         id="example"
         class="table table-striped cell-border"
         style="width: 100%"
@@ -11,34 +11,13 @@ import { ref, onMounted, watch, toRefs, reactive } from "vue";
 import $ from "jquery";
 import ModalEdit from "../elements/ModalEdit.vue";
 import { dataTable, table, row, destroy, draw } from "datatables";
-import { useDocumentsRequest } from "@/js/composables/useMyDocumentsRequest.js";
+import { useDocumentsRequests } from "@/js/composables/document-apis/useDocumentTableRequest.js";
 import useFileClasificationRequestsAPI from "@/api/index.js";
 
-const { filesColumns, getClasification } = useDocumentsRequest();
-
-const data = [
-    {
-    id: 2,
-    name: "fer",
-    participantes:"estos",
-    create:"ala",
-    firmado: "si",
-    clasification: "5",
-    start_end: "2022"
-    },
-    {
-    id: 2,
-    name: "fer",
-    participantes:"estos",
-    create:"ala",
-    firmado: "si",
-    clasification: "5",
-    start_end: "2022"
-    }
-] 
-
+const { containerColumns, getDocuments } = useDocumentsRequests();
+const documents = ref("")
 onMounted(async () => {
-    createTable();
+    getRequests();
     // console.log(data)
 });
 
@@ -47,11 +26,30 @@ const createTable = async () => {
         language: {
             url: "//cdn.datatables.net/plug-ins/1.10.11/i18n/Spanish.json",
         },
-        data: data,
-        columns: filesColumns,
-        scrollY: "50vh",
-        scrollCollapse: true,
+        data: documents.value,
+        columns: containerColumns,
+        scrollY: "45vh",
+        scrollCollapse: false,
         destroy: true,
     });
 }
+
+const getRequests = async (refresh = false) => {
+    const results = await getDocuments([]);
+    documents.value = results;
+    console.log(documents.value)
+    createTable()
+    // if(!refresh)
+    //     createTable();
+    // else
+    //     refreshTable();
+};
 </script>
+<style>
+.dataTables_wrapper .dataTables_scroll div.dataTables_scrollBody {
+    -webkit-overflow-scrolling: touch;
+        overflow: inherit;
+
+}
+
+</style>

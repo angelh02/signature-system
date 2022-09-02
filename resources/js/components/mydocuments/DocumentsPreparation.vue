@@ -65,16 +65,16 @@
                             </li>
                         </ul>
                     </div>
-                    <div class="tab-pane" id="profile1">
+                    <div class="tab-pane my-lg-n4" id="profile1">
                         <div
-                            class="card bg-secondary text-white"
-                            style="background-color: #a1a5ad"
+                            class="border text-white"
                         >
                             <div
                                 class="card-body"
-                                style="background-color: #a1a5ad"
                             >
-                            <VuePdfEmbed :source="source" :page="1"></VuePdfEmbed>
+                            <div class="">
+                                    <VuePdfEmbed :source="source" :width="900"  class="scrollspy-example"></VuePdfEmbed>
+                                </div>
                             </div>
                             <!-- end card-body-->
                         </div>
@@ -95,6 +95,7 @@
                                                 class="form-control"
                                                 id="email"
                                                 placeholder="correo@dominio.com"
+                                                v-model="formData.email"
                                                 required
                                             />
                                             <div class="invalid-feedback">
@@ -110,6 +111,7 @@
                                                 class="form-control"
                                                 id="name"
                                                 placeholder="Nombre del Firmante"
+                                                v-model="formData.name"
                                                 required
                                             />
                                             <div class="invalid-feedback">
@@ -124,6 +126,7 @@
 
                                         style="color: #3090b7;"
                                         type="button"
+                                        @click="addRequest"
                                     >
                                     <h4 class="uil-plus-circle">Añadir firmante</h4>
                                         
@@ -184,16 +187,37 @@ import { ref, onMounted, watch, toRef, reactive } from "vue";
 import $ from 'jquery'
 import { useRouter } from "vue-router";
 import VuePdfEmbed from 'vue-pdf-embed'
+import useDocumentRequestsAPI from "@/api/document/index.js";
+
 
 const router = useRouter();
+const formData = ref({
+    name: "",
+    email: "",
+    document_id: 1
+});
 
-const source = "https://lpl.unbosque.edu.co/wp-content/uploads/08-Guia-Resumen.pdf"
+const source = "https://leo.uniandes.edu.co/images/Guias/Gua-para-resumen.pdf"
 const props = defineProps({
     dataFile: Object,
 });
 
 const dataFile = toRef(props, "dataFile");
 const data = ref("");
+
+const addRequest = async => {
+    console.log(formData.value)
+    useDocumentRequestsAPI.addSigned(formData.value)
+    .then((res) => {
+    });
+    // resetData();
+}
+
+function resetData(){
+    formData.value.email = null;
+    formData.value.name = "";
+    formData.value.document_id = "";  
+}
 
 
 
@@ -208,4 +232,5 @@ function dataReceived() {
     // data.value = router.params.datafile
     console.log();
 }
+
 </script>
