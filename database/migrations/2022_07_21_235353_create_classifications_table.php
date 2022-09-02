@@ -19,10 +19,10 @@ class CreateClassificationsTable extends Migration
             $table->unsignedBigInteger("background_id");
             $table->unsignedBigInteger("section_id");
             $table->string("series", 20);
-            $table->string("subseries", 20);
+            $table->string("subseries", 20)->nullable();
             $table->unsignedBigInteger("production_area_id");
             $table->integer("start_period");
-            $table->integer("end_period");
+            $table->integer("end_period")->nullable();
             $table->integer("consecutive_number");
 
             //Relations

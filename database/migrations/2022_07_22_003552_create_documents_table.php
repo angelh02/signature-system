@@ -19,21 +19,23 @@ class CreateDocumentsTable extends Migration
             $table->unsignedBigInteger("user_id");
             $table->unsignedBigInteger("container_id");
             $table->unsignedBigInteger("classification_id");
+            $table->unsignedBigInteger("document_type_id");
             $table->text("url");
             $table->date("effective_date");
             $table->boolean("signed")->default(false);
-            $table->boolean("signed_at")->nullable();
+            $table->date("signed_at")->nullable();
             $table->boolean("canceled")->default(false);
-            $table->date("canceled_at");
+            $table->date("canceled_at")->nullable();
             $table->date("created_at");
             $table->date("updated_at");
-            $table->boolean("reminder");
-            $table->integer("days_to_remind");
+            $table->boolean("reminder")->default(false);
+            $table->integer("days_to_remind")->default(3);
 
             //Relations
             $table->foreign("user_id")->references("id")->on("users")->onDelete("cascade");
             $table->foreign("container_id")->references("id")->on("containers")->onDelete("cascade");
             $table->foreign("classification_id")->references("id")->on("classifications")->onDelete("cascade");
+            $table->foreign("document_type_id")->references("id")->on("document_types")->onDelete("cascade");
         });
     }
 

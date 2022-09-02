@@ -1,0 +1,12 @@
+<svg width="800" height="800" xmlns="http://www.w3.org/2000/svg">
+ <g>
+  <title>Layer 1</title>
+  <g fill-opacity="0.22" id="svg_1">
+   <circle fill="#ffffff" cx="400" cy="400" r="600" id="svg_2"/>
+   <circle fill="#c9bbbb" cx="400" cy="400" r="500" id="svg_3"/>
+   <circle fill="#c7a7a7" cx="400" cy="400" r="300" id="svg_4"/>
+   <circle fill="#C88A8A" cx="400" cy="400" r="200" id="svg_5"/>
+   <circle fill="#BF7776" cx="400" cy="400" r="100" id="svg_6"/>
+  </g>
+ </g>
+</svg>
