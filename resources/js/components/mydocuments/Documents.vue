@@ -20,13 +20,11 @@
                                 >click aquí para seleccionar uno</a
                             ></label
                         >
-                        <input
-                            class="dropzoneFile btn-check"
-                        />
+                        <input class="dropzoneFile btn-check" />
                     </h4>
-                    </div>
                 </div>
             </div>
+        </div>
         <!-- <DocumentUpload
             @drop.prevent="drop"
             @change="selectedFile"
@@ -62,115 +60,141 @@
         </div>
         <div v-else></div> -->
         <div class="mt-3">
-            <h5>Filtros rapidos
-            </h5>
-            <hr/>
+            <h5>Filtros rapidos</h5>
+            <hr />
         </div>
         <div class="row">
-        <div class="col-xl-3 col-lg-4">
-            <div class="card tilebox-one">
-                <div class="card-body">
-                    <DocumentSearch @clasification="clasificationData" @container="containerData" @typeDocument="typeDocumentData"></DocumentSearch>
-                </div> 
+            <div class="col-xl-3 col-lg-4">
+                <div class="card tilebox-one">
+                    <div class="card-body">
+                        <DocumentSearch
+                            @clasification="clasificationData"
+                            @container="containerData"
+                            @typeDocument="typeDocumentData"
+                        ></DocumentSearch>
+                    </div>
+                </div>
             </div>
-        </div>
-        <div class="col-xl-9 col-lg-8">
-            <div class="card card-h-100">
-                <div class="card-body">
-                    <!-- <div class="alert alert-warning alert-dismissible fade show mb-3" role="alert">
+            <div class="col-xl-9 col-lg-8">
+                <div class="card card-h-100">
+                    <div class="card-body">
+                        <!-- <div class="alert alert-warning alert-dismissible fade show mb-3" role="alert">
                         <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
                         Property HY1xx is not receiving hits. Either your site is not receiving any sessions or it is not tagged correctly.
                     </div> -->
-                    <TableDocuments></TableDocuments>
-                </div> 
-            </div> 
+                        <TableDocuments></TableDocuments>
+                    </div>
+                </div>
+            </div>
         </div>
+        <Modal
+            :clasifications="clasifications"
+            :dataFile="dataFile"
+            :containers="containers"
+            :typesDocument="typesDocument"
+            :show="showModal"
+            @showPreparation="showPreparation"
+            @close="showModal = false"
+            @resFile="resFile"
+        ></Modal>
     </div>
-        <Modal :clasifications="clasifications"  :containers="containers" :typesDocument="typesDocument" :show="showModal" @showPreparation="showPreparation" @close="showModal = false"></Modal>
+    <div>
+        <DocumentsPreparation
+            v-show="showPrepa"
+            :dataFile="dataFile"
+            :resFiles="resFIles"
+        ></DocumentsPreparation>
     </div>
-    <div >
-            <DocumentsPreparation v-show="showPrepa" :dataFile="dataFile"></DocumentsPreparation>
-    </div >
 </template>
 
 <script setup>
 import DocumentUpload from "../elements/DropZone.vue";
-import $ from 'jquery';
+import $ from "jquery";
 import { ref, reactive } from "vue";
-import DocumentSearch from "./DocumentSearch.vue"; 
-import DocumentsPreparation from "./DocumentsPreparation.vue"
+import DocumentSearch from "./DocumentSearch.vue";
+import DocumentsPreparation from "./DocumentsPreparation.vue";
 import Home from "../Home.vue";
-import TableDocuments from "../mydocuments/TableDocuments.vue"
-import Modal from "../elements/Modal.vue"
+import TableDocuments from "../mydocuments/TableDocuments.vue";
+import Modal from "../elements/Modal.vue";
 import { useDropzone } from "vue3-dropzone";
-import {useRouter} from 'vue-router';
+import { useRouter } from "vue-router";
 const router = useRouter();
 
 const emit = defineEmits(["data"]);
-const showModal = ref(false)
-const clasifications = ref("")
-const containers = ref("")
-const typesDocument = ref("")
-const showPrepa = ref("")
+const showModal = ref(false);
+const clasifications = ref("");
+const containers = ref("");
+const typesDocument = ref("");
+const showPrepa = ref("");
+const resFiles = ref("")
 
-const dataFile = ref("")
-const shadow = ref(false)
+const dataFile = ref("");
+const shadow = ref(false);
 const url = "{your_url}"; // Your url on the server side
-    const saveFiles = (files) => {
-        const formData = new FormData();
-        for (var x = 0; x < files.length; x++) {
+const saveFiles = (files) => {
+    const formData = new FormData();
+    for (var x = 0; x < files.length; x++) {
         formData.append("images[]", files[x]);
-        }
-        console.log(files)
-
-        // axios
-        // .post(url, formData, {
-        //     headers: {
-        //     "Content-Type": "multipart/form-data",
-        //     },
-        // })
-        // .then((response) => {
-        //     console.info(response.data);
-        // })
-        // .catch((err) => {
-        //     console.error(err);
-        // });
-    };
-
-    function onDrop(acceptFiles, rejectReasons) {
-        saveFiles(acceptFiles);       
     }
+    // dataFile.value = formData
+    // axios
+    // .post(url, formData, {
+    //     headers: {
+    //     "Content-Type": "multipart/form-data",
+    //     },
+    // })
+    // .then((response) => {
+    //     console.info(response.data);
+    // })
+    // .catch((err) => {
+    //     console.error(err);
+    // });
+};
 
-    function clasificationData(clasification) {
-        clasifications.value = clasification
-    }
+function onDrop(acceptFiles, rejectReasons) {
+    saveFiles(acceptFiles);
+}
 
-    function containerData(container) {
-        containers.value = container
-    }
+function clasificationData(clasification) {
+    clasifications.value = clasification;
+}
 
-    function typeDocumentData(typeDocument) {
-        typesDocument.value = typeDocument
-    }
+function containerData(container) {
+    containers.value = container;
+}
 
-    function showPreparation(data) {
-        showPrepa.value = data
-    }
+function typeDocumentData(typeDocument) {
+    typesDocument.value = typeDocument;
+}
 
-    function onDropAccepted(acceptFiles) {
-        saveFiles(acceptFiles); 
-        dataFile.value = acceptFiles
-        console.log(dataFile)
-        showModal.value = true;
-        
+function showPreparation(data) {
+    showPrepa.value = data;
+}
 
-        // $('#standard-modal').modal('show');
+function resFile(resFile) {
+    resFiles.value = resFile;
+}
 
-        // router.push({ name: "DocumentsPreparation"
-        //             , params: {datafile: JSON.stringify(dataFile)}})
-       
-    }
+function onDropAccepted(acceptFiles) {
+    saveFiles(acceptFiles);
+    // dataFile.value = acceptFiles;
+    var encoded = btoa(JSON.stringify(acceptFiles))
+    var actual = JSON.parse(atob(encoded))
+    console.log(actual);
+    console.log(encoded);
+    dataFile.value = encoded;
 
-    const { getRootProps, getInputProps, ...rest } = useDropzone({ onDrop, onDropAccepted });
-   
+
+    showModal.value = true;
+
+    // $('#standard-modal').modal('show');
+
+    // router.push({ name: "DocumentsPreparation"
+    //             , params: {datafile: JSON.stringify(dataFile)}})
+}
+
+const { getRootProps, getInputProps, ...rest } = useDropzone({
+    onDrop,
+    onDropAccepted,
+});
 </script>
