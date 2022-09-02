@@ -1,6 +1,6 @@
 <template>
 <div class="table-responsive">
-    <table class="table table-hover table-bordered" id="example">
+    <table class="table table-hover table-bordered" id="documentstable">
         <thead>
             <tr>
                 <th>Nombre</th>
@@ -37,7 +37,20 @@
                             Firmar
                     </a>  
                 </td>
-            </tr>    
+               
+                <td>
+                    <div class="dropdown" >
+                        <a  class="btn btn-outline-info dropdown-toggle" href="#" role="button" id="dropdownMenuLink" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                        </a>                                   
+                        <div class="dropdown-menu" aria-labelledby="dropdownMenuLink">
+                            <a class="dropdown-item" href="#">Ver detalles</a>
+                            <a class="dropdown-item" href="#">Ver original</a>
+                            <a class="dropdown-item" href="#">Descaragar documento original</a>
+                            <a class="dropdown-item" href="#">Eliminar documento</a>
+                        </div>
+                    </div> 
+                </td>
+            </tr> 
         </tbody>
     </table>
 </div>
@@ -49,18 +62,17 @@
 </template>
 
 <script setup>
-import { ref, onMounted, watch, toRefs, reactive } from "vue";
+import { ref, onMounted, watch, toRefs, reactive, nextTick} from "vue";
 import $ from "jquery";
 import ModalEdit from "../elements/ModalEdit.vue";
 import { dataTable, row, destroy, draw } from "datatables";
 import { useDocumentsRequests } from "@/js/composables/document-apis/useDocumentTableRequest.js";
 import useFileClasificationRequestsAPI from "@/api/index.js";
 
-const { containerColumns, getDocuments } = useDocumentsRequests();
+const {getDocuments } = useDocumentsRequests();
 const documents = ref("")
 onMounted(async () => {
     getRequests();
-    // console.log(data)
 });
 
 const createTable = async () => {
@@ -73,20 +85,14 @@ const createTable = async () => {
     //     scrollCollapse: false,
     //     destroy: true
     // });
-   
-        $("#example").DataTable({
-        language: {
-            url: "//cdn.datatables.net/plug-ins/1.10.11/i18n/Spanish.json",
-        },
-    }); 
-}
-
-function tabla () {
-   
-        $("#example").DataTable({
-        language: {
-            url: "//cdn.datatables.net/plug-ins/1.10.11/i18n/Spanish.json",
-        },
+    await nextTick(function() {
+        $("#documentstable").DataTable({
+            language: {
+                url: "//cdn.datatables.net/plug-ins/1.10.11/i18n/Spanish.json",
+            },
+            scrollCollapse: false,
+        });
+        
     }); 
 }
 
@@ -94,9 +100,9 @@ const getRequests = async (refresh = false) => {
     const results = await getDocuments([]);
     documents.value = results;
     console.log(documents.value)
-    // $("#example").DataTable();
-    // $("#example").DataTable().destroy();
-    //createTable()
+    var dT = $('#documentstable').DataTable();
+    dT.destroy();
+    createTable()
     // if(!refresh)
     //     createTable();
     // else
