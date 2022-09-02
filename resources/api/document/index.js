@@ -14,6 +14,19 @@ const Host  = 'https://127.0.0.1:8000'
 
 
 // CONTAINERS
+// GET TYPE DOCUMENT
+async function getDocumentsType() {
+  return await axios
+  .get(`/api/document-type/get-all`, 
+  // {
+  // headers: { 'content-type': 'application/json' },
+  // }
+  )
+  .then((res) => {
+  if (res.status != 200) throw new Error("Response Failed");
+  return res.data;
+  })  
+}
 // GET DOCUMENTS
 async function getDocuments() {
     return await axios
@@ -70,6 +83,19 @@ return await axios
     return res.data;
   })
 }
+// FRIMANTES
+// AGReGAR FIRMANTE
+async function addSigned(formData) {
+  return await axios
+    .post(`/api/document/signer/assign`, formData, {
+      headers: { 'content-type': 'multipart/form-data' },
+    }
+    )
+    .then((res) => {
+      if (res.status != 200) throw new Error("Response Failed");
+      return res.data;
+    })
+}
 
 // const deleteClassification = async (id) => {
 //   try {
@@ -80,4 +106,4 @@ return await axios
 //   }
 // }
 
-export default {getDocument,getDocuments,addDocument,editDocument,deleteDocument}
+export default {getDocument,getDocuments,addDocument,editDocument,deleteDocument,getDocumentsType,addSigned}
