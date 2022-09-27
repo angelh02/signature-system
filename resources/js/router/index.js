@@ -6,6 +6,10 @@ const Containers = () => import("../components/containers/Containers.vue")
 const DocumentsPreparation = () => import("../components/mydocuments/DocumentsPreparation.vue")
 const DocumentStatus = () => import("../components/mydocuments/DocumentStatus.vue");
 const DocumentSign = () => import("../components/document-sign/DocumentSign.vue");
+const Request = () => import("../components/admin/request/Request.vue");
+const UserAdmin = () => import("../components/admin/user-admin/UserAdmin.vue");
+const Catalogs = () => import("../components/admin/catalogs/GlobalCatalogs.vue");
+
 
 
 // import Home from './components/Home.vue';
@@ -43,6 +47,21 @@ const routes = [
         path: '/document/sign/:id',
         name: 'DocumentSign',
         component: DocumentSign
+    },
+    {
+        path: '/request',
+        name: 'Request',
+        component: Request
+    },
+    {
+        path: '/user-admin',
+        name: 'UserAdmin',
+        component: UserAdmin
+    },
+    {
+        path: '/catalogs',
+        name: 'Catalogs',
+        component: Catalogs
     }
 
 ]
