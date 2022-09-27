@@ -23,14 +23,23 @@ Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
 //Background routes
 Route::get('/classification/background/get-all', 'BackgroundController@getAll');
 Route::get('/classification/background/get/{id}', 'BackgroundController@getBackground');
+Route::post('/classification/background/store', 'BackgroundController@store');
+Route::post('/classification/background/update', 'BackgroundController@update');
+Route::delete('/classification/background/delete/{id}', 'BackgroundController@delete');
 
 //Section routes
 Route::get('/classification/section/get-all', 'SectionController@getAll');
 Route::get('/classification/section/get/{id}', 'SectionController@getSection');
+Route::post('/classification/section/store', 'SectionController@store');
+Route::post('/classification/section/update', 'SectionController@update');
+Route::delete('/classification/section/delete/{id}', 'SectionController@delete');
 
 //Production area routes
 Route::get('/classification/production-area/get-all', 'ProductionAreaController@getAll');
 Route::get('/classification/production-area/get/{id}', 'ProductionAreaController@getProductionArea');
+Route::post('/classification/production-area/store', 'ProductionAreaController@store');
+Route::post('/classification/production-area/update', 'ProductionAreaController@update');
+Route::delete('/classification/production-area/delete/{id}', 'ProductionAreaController@delete');
 
 //Classification routes
 Route::get('/classification/get-all', 'ClassificationController@getAll');
