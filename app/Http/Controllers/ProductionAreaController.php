@@ -17,7 +17,7 @@ class ProductionAreaController extends Controller
                 return response()->json(['message' => 'PRODUCTION_AREA_DOES_NOT_EXIST'], 422);
             $productionArea->delete();
             DB::commit();
-            return response()->json($productionArea, 200);
+            return response()->json(['message' => 'OK'], 200);
         } catch (\Exception $e) {
             DB::rollBack();
             return response()->json(["message" => $e->getMessage()], 500);

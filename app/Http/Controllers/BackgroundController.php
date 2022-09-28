@@ -17,7 +17,7 @@ class BackgroundController extends Controller
                 return response()->json(['message' => 'BACKGROUND_DOES_NOT_EXIST'], 422);
             $background->delete();
             DB::commit();
-            return response()->json($background, 200);
+            return response()->json(['message' => 'OK'], 200);
         } catch (\Exception $e) {
             DB::rollBack();
             return response()->json(["message" => $e->getMessage()], 500);

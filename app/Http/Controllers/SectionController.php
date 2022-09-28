@@ -17,7 +17,7 @@ class SectionController extends Controller
                 return response()->json(['message' => 'SECTION_DOES_NOT_EXIST'], 422);
             $section->delete();
             DB::commit();
-            return response()->json($section, 200);
+            return response()->json(['message' => 'OK'], 200);
         } catch (\Exception $e) {
             DB::rollBack();
             return response()->json(["message" => $e->getMessage()], 500);

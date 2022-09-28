@@ -52,22 +52,37 @@ Route::delete('/classification/delete/{id}', 'ClassificationController@delete');
 //Conservation times routes
 Route::get('/container/conservation-time/get-all', 'ConservationTimeController@getAll');
 Route::get('/container/conservation-time/get/{id}', 'ConservationTimeController@getConservationTime');
+Route::post('/container/conservation-time/store', 'ConservationTimeController@store');
+Route::post('/container/conservation-time/update', 'ConservationTimeController@update');
+Route::delete('/container/conservation-time/delete/{id}', 'ConservationTimeController@delete');
 
 //Conservation types routes
 Route::get('/container/conservation-type/get-all', 'ConservationTypeController@getAll');
 Route::get('/container/conservation-type/get/{id}', 'ConservationTypeController@getConservationType');
+Route::post('/container/conservation-type/store', 'ConservationTypeController@store');
+Route::post('/container/conservation-type/update', 'ConservationTypeController@update');
+Route::delete('/container/conservation-type/delete/{id}', 'ConservationTypeController@delete');
 
 //Document values routes
 Route::get('/container/document-value/get-all', 'DocumentValueController@getAll');
 Route::get('/container/document-value/get/{id}', 'DocumentValueController@getDocumentValue');
+Route::post('/container/document-value/store', 'DocumentValueController@store');
+Route::post('/container/document-value/update', 'DocumentValueController@update');
+Route::delete('/container/document-value/delete/{id}', 'DocumentValueController@delete');
 
 //Information types routes
 Route::get('/container/information-type/get-all', 'InformationTypeController@getAll');
 Route::get('/container/information-type/get/{id}', 'InformationTypeController@getInformationType');
+Route::post('/container/information-type/store', 'InformationTypeController@store');
+Route::post('/container/information-type/update', 'InformationTypeController@update');
+Route::delete('/container/information-type/delete/{id}', 'InformationTypeController@delete');
 
 //Selection techniques routes
 Route::get('/container/selection-technique/get-all', 'SelectionTechniqueController@getAll');
 Route::get('/container/selection-technique/get/{id}', 'SelectionTechniqueController@getSelectionTechnique');
+Route::post('/container/selection-technique/store', 'SelectionTechniqueController@store');
+Route::post('/container/selection-technique/update', 'SelectionTechniqueController@update');
+Route::delete('/container/selection-technique/delete/{id}', 'SelectionTechniqueController@delete');
 
 //Container routes
 Route::get('/container/get-all', 'ContainerController@getAll');
@@ -79,6 +94,9 @@ Route::delete('/container/delete/{id}', 'ContainerController@delete');
 //Document Types routes
 Route::get('/document-type/get-all', 'DocumentTypeController@getAll');
 Route::get('/document-type/get/{id}', 'DocumentTypeController@getDocumentType');
+Route::post('/document-type/store', 'DocumentTypeController@store');
+Route::post('/document-type/update', 'DocumentTypeController@update');
+Route::delete('/document-type/delete/{id}', 'DocumentTypeController@delete');
 
 //Container routes
 Route::get('/document/get-all', 'DocumentController@getAll');
