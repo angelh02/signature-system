@@ -112,3 +112,11 @@ Route::delete('/document/signer/delete/{id}', 'DocumentController@deleteSigner')
 
 //Sign Document
 Route::post('/document/sign', 'DocumentController@signDocument');
+
+//User CRUD routes
+Route::get('/user/get-all', 'UserController@getAll');
+Route::get('/user/get/{id}', 'UserController@getUser');
+Route::post('/user/store', 'UserController@store');
+Route::post('/user/update', 'UserController@update');
+Route::delete('/user/delete/{id}', 'UserController@delete');
+Route::post('/user/reset-password', 'UserController@resetPassword');
