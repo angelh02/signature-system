@@ -126,14 +126,16 @@ class DocumentController extends Controller
             "documentType",
             "documentSigned",
             "documentSigners"
-        ])->get();
+        ])->where([["canceled", null], ["canceled_at", null]])->get();
 
         return response()->json($documents, 200);
     }
 
     public function getDocument($id)
     {
-        $document = Document::where("id", $id)->with([
+        $document = Document::where("id", $id)
+        ->where([["canceled", null], ["canceled_at", null]])
+        ->with([
             "classification",
             "container",
             "documentType",
