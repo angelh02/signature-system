@@ -13,9 +13,9 @@ use Illuminate\Support\Facades\Route;
 |
 */
 
-Route::get('/', function () {
-    return view('auth.login');
-});
+// Route::get('/', function () {
+//     return view('auth.login');
+// });
 
 Auth::routes();
 
@@ -32,7 +32,7 @@ Route::middleware(['auth'])->group(function() {
     // Route::get('/{any}', function () {
     //     return view('home');
     // });
-    Route::view('/{any}','home')
+    Route::view('/{any}','admin.index')
     ->middleware(['auth'])
     ->where('any','.*');
 });

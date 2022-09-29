@@ -1,4 +1,5 @@
 import {createRouter, createWebHistory} from "vue-router"
+import { adminRoutes } from "./admin"
 const Home = () => import("../components/mydocuments/Documents.vue")
 const Documents = () => import("../components/mydocuments/Documents.vue")
 const FileClasification = () => import("../components/fileclasification/FileClasification.vue")
@@ -17,6 +18,7 @@ const Catalogs = () => import("../components/admin/catalogs/GlobalCatalogs.vue")
 // import FileClasification from './components/FileClasification.vue';
 
 const routes = [
+    ...adminRoutes,
     {
         path: '/documents',
         name: 'Documents',
@@ -48,21 +50,21 @@ const routes = [
         name: 'DocumentSign',
         component: DocumentSign
     },
-    {
-        path: '/request',
-        name: 'Request',
-        component: Request
-    },
-    {
-        path: '/user-admin',
-        name: 'UserAdmin',
-        component: UserAdmin
-    },
-    {
-        path: '/catalogs',
-        name: 'Catalogs',
-        component: Catalogs
-    }
+    // {
+    //     path: '/request',
+    //     name: 'Request',
+    //     component: Request
+    // },
+    // {
+    //     path: '/user-admin',
+    //     name: 'UserAdmin',
+    //     component: UserAdmin
+    // },
+    // {
+    //     path: '/catalogs',
+    //     name: 'Catalogs',
+    //     component: Catalogs
+    // }
 
 ]
 
