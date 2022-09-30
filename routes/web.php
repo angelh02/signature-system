@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\HomeController;
 use Illuminate\Support\Facades\Route;
 
 /*
@@ -32,7 +33,16 @@ Route::middleware(['auth'])->group(function() {
     // Route::get('/{any}', function () {
     //     return view('home');
     // });
-    Route::view('/{any}','home')
-    ->middleware(['auth'])
-    ->where('any','.*');
+    Route::get('/', [HomeController::class, 'index']);
+    Route::group(['middleware' => ['role:Firmante']], function () {
+        Route::view('/mis-documentos','home');
+        Route::view('/clasificaciones-archivisticas','home');
+        Route::view('/contenedores','home');
+    });
+    Route::group(['middleware' => ['role:Administrador']], function () {
+        Route::view('/solicitudes','admin.index');
+        Route::view('/usuarios','admin.index');
+        Route::view('/catalogo/{any}','admin.index')->where('any', '.*');
+    });
+    
 });
