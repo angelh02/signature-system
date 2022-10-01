@@ -40,8 +40,8 @@ class ConservationTypeController extends Controller
 
     public function store(Request $request){
         $validator = Validator::make($request->all(), [
-            'code' => 'required|min:4|max:10|unique:sections,code',
-            'name' => 'required|min:10|max:255'
+            'code' => 'required|min:1|max:10|unique:sections,code',
+            'name' => 'required|min:5|max:255'
         ]);
         if($validator->fails())
             return response()->json($validator->errors(), 422);
@@ -63,8 +63,8 @@ class ConservationTypeController extends Controller
     public function update(Request $request){
         $validator = Validator::make($request->all(), [
             'id' => 'required|numeric|exists:sections,id',
-            'code' => 'required|min:4|max:10|unique:sections,code,'.$request->input('id'),
-            'name' => 'required|min:10|max:255'
+            'code' => 'required|min:1|max:10|unique:sections,code,'.$request->input('id'),
+            'name' => 'required|min:5|max:255'
         ]);
         if($validator->fails())
             return response()->json($validator->errors(), 422);

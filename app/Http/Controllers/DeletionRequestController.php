@@ -71,7 +71,7 @@ class DeletionRequestController extends Controller
 
     public function rejectRequest(Request $request){
         $validator = Validator::make($request->all(), [
-
+            'id' => 'required|numeric|exists:deletion_request,id',
         ]);
         if($validator->fails())
             return response()->json($validator->errors(), 422);

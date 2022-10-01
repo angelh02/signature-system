@@ -28,14 +28,14 @@ class UserController extends Controller
 
     public function getAll()
     {
-        $users = User::all();
+        $users = User::with('roles')->get();
 
         return response()->json($users, 200);
     }
 
-    public function getSelectionTechnique($id)
+    public function getUser($id)
     {
-        $user = User::where("id", $id)->first();
+        $user = User::where("id", $id)->with('roles')->first();
 
         return response()->json($user, 200);
     }
@@ -67,7 +67,7 @@ class UserController extends Controller
         $validator = Validator::make($request->all(), [
             'name' => 'required|min:10|max:255',
             'surnames' => 'required|min:10|max:255',
-            'user_name' => 'required|min:10|max:255',
+            'user_name' => 'required|min:5|max:255',
             'email' => 'required|email:rfc,dns|max:255|unique:users,email',
             'active' => 'required|boolean',
             'role_id' => 'required|exists:roles,id'
@@ -105,7 +105,7 @@ class UserController extends Controller
             'id' => 'required|numeric|exists:users,id',
             'name' => 'required|min:10|max:255',
             'surnames' => 'required|min:10|max:255',
-            'user_name' => 'required|min:10|max:255',
+            'user_name' => 'required|min:5|max:255',
             'email' => 'required|email:rfc,dns|max:255|unique:users,email,' . $request->input('id'),
             'active' => 'required|boolean',
             'role_id' => 'required|exists:roles,id'

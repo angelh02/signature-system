@@ -55,7 +55,7 @@ class ContainerController extends Controller
     public function store(Request $request)
     {
         $validator = Validator::make($request->all(), [
-            'name' => 'required|min:10|max:30|unique:containers,name',
+            'name' => 'required|min:5|max:30|unique:containers,name',
             'document_value_id' => 'required|numeric|exists:document_values,id',
             'conservation_time_id' => 'required|numeric|exists:conservation_times,id',
             'selection_technique_id' => 'required|numeric|exists:selection_techniques,id',
@@ -106,7 +106,7 @@ class ContainerController extends Controller
     {
         $validator = Validator::make($request->all(), [
             'id' => 'required|numeric|exists:containers,id',
-            'name' => 'required|min:10|max:30|unique:containers,name,'.$request->input("id"),
+            'name' => 'required|min:5|max:30|unique:containers,name,'.$request->input("id"),
             'document_value_id' => 'required|numeric|exists:document_values,id',
             'conservation_time_id' => 'required|numeric|exists:conservation_times,id',
             'selection_technique_id' => 'required|numeric|exists:selection_techniques,id',
