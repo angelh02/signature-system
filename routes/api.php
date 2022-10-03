@@ -122,9 +122,9 @@ Route::delete('/user/delete/{id}', 'UserController@delete');
 Route::post('/user/reset-password', 'UserController@resetPassword');
 
 //Deletion Requests CRUD routes
-Route::get('/deletion-request/get-all', 'UserController@getAll');
-Route::get('/deletion-request/get/{id}', 'UserController@getUser');
-Route::post('/deletion-request/store', 'UserController@store');
-Route::delete('/deletion-request/delete/{id}', 'UserController@delete');
-Route::post('/deletion-request/accept-request', 'UserController@acceptRequest');
-Route::post('/deletion-request/reject-request', 'UserController@rejectRequest');
+Route::get('/deletion-request/get-all', 'DeletionRequestController@getAll');
+Route::get('/deletion-request/get/{id}', 'DeletionRequestController@getDeletionRequest');
+Route::post('/deletion-request/store', 'DeletionRequestController@store');
+Route::delete('/deletion-request/delete/{id}', 'DeletionRequestController@delete');
+Route::post('/deletion-request/accept', 'DeletionRequestController@acceptRequest');
+Route::post('/deletion-request/reject', 'DeletionRequestController@rejectRequest');
