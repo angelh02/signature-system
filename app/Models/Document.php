@@ -23,6 +23,10 @@ class Document extends Model
         return $this->belongsTo(Container::class, "container_id");
     }
 
+    public function deletionRequest(){
+        return $this->hasMany(DeletionRequest::class);
+    }
+
     public function documentType(){
         return $this->belongsTo(DocumentType::class, "document_type_id");
     }
