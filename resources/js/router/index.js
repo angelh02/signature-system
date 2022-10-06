@@ -20,12 +20,12 @@ const Catalogs = () => import("../components/admin/catalogs/GlobalCatalogs.vue")
 const routes = [
     ...adminRoutes,
     {
-        path: '/documents',
+        path: '/mis-documentos',
         name: 'Documents',
         component: Documents
     },
     {
-        path: '/documents/preparation/:id',
+        path: '/mis-documentos/preparacion/:id',
         name: 'DocumentsPreparation',
         props:true,
         component: DocumentsPreparation

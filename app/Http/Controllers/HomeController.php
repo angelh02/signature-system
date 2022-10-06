@@ -27,6 +27,6 @@ class HomeController extends Controller
         $user = Auth::user();
         if($user->hasRole('Administrador'))
             return redirect('/solicitudes');
-        return redirect('/documentos');
+        return redirect('/mis-documentos');
     }
 }

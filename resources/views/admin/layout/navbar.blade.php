@@ -9,14 +9,19 @@
         <div class="col nav">
             <ul class="nav nav-tabs nav-bordered navbar-collapse collapse" id="navbarSupportedContent">
                 <li class="nav-item " >
-                        <router-link class="nav-link py-2 text-body" active-class="active" to="/request">
-                            <h5>SOLICITUDES</h5>
-                        </router-link>
+                    <router-link class="nav-link py-2 text-body" active-class="active" to="/request">
+                        <h5>SOLICITUDES</h5>
+                    </router-link>
                 </li>
                 <li class="nav-item" >
-                        <router-link class="nav-link py-2 text-body" active-class="active" to="/user-admin">
-                            <h5>ADMINISTRACION DE USUARIOS</h5>
-                        </router-link>
+                    <router-link class="nav-link py-2 text-body" active-class="active" to="/user-admin">
+                        <h5>ADMINISTRACION DE USUARIOS</h5>
+                    </router-link>
+                </li>
+                <li class="nav-item" >
+                    <router-link class="nav-link py-2 text-body" active-class="active" to="/catalogo/tipos-documentos">
+                        <h5>TIPOS DE DOCUMENTOS</h5>
+                    </router-link>
                 </li>
                 <li class="nav-item" >
                     <div class="dropdown">
@@ -24,13 +29,13 @@
                             CATOLOGOS DE CLASIFICACIÓN
                         </a>
                         <div class="dropdown-menu" aria-labelledby="clasification">
-                            <router-link class="text-body btn-online-ligth dropdown-item" active-class="active" to="/catalogs">
+                            <router-link class="text-body btn-online-ligth dropdown-item" active-class="active" to="/catalogo/fondos">
                                 <h5>Fondos</h5>
                             </router-link>
-                            <router-link class="text-body btn-online-ligth dropdown-item" active-class="active" to="/">
+                            <router-link class="text-body btn-online-ligth dropdown-item" active-class="active" to="/catalogo/secciones">
                                 <h5>Secciones</h5>
                             </router-link>
-                            <router-link class="text-body btn-online-ligth dropdown-item" active-class="active" to="/catalogs">
+                            <router-link class="text-body btn-online-ligth dropdown-item" active-class="active" to="/catalogo/areas-productoras">
                                 <h5>Areas productoras</h5>
                             </router-link>
                         </div>
@@ -42,19 +47,19 @@
                             CATOLOGOS DE CONTENEDORES
                         </a>
                         <div class="dropdown-menu" aria-labelledby="containers">
-                            <router-link class="text-body btn-online-ligth dropdown-item" active-class="active" to="/catalogs">
+                            <router-link class="text-body btn-online-ligth dropdown-item" active-class="active" to="/catalogo/tiempos-conservacion">
                                 <h5>Tiempos de conservación</h5>
                             </router-link>
-                            <router-link class="text-body btn-online-ligth dropdown-item" active-class="active" to="/catalogs">
+                            <router-link class="text-body btn-online-ligth dropdown-item" active-class="active" to="/catalogo/tipos-conservacion">
                                 <h5>Tipos de conservación</h5>
                             </router-link>
-                            <router-link class="text-body btn-online-ligth dropdown-item" active-class="active" to="/catalogs">
+                            <router-link class="text-body btn-online-ligth dropdown-item" active-class="active" to="/catalogo/valores-documentales">
                                 <h5>Valores documentales</h5>
                             </router-link>
-                            <router-link class="text-body btn-online-ligth dropdown-item" active-class="active" to="/catalogs">
-                                <h5>Tipos de conservación</h5>
+                            <router-link class="text-body btn-online-ligth dropdown-item" active-class="active" to="/catalogo/tipos-informacion">
+                                <h5>Tipos de información</h5>
                             </router-link>
-                            <router-link class="text-body btn-online-ligth dropdown-item" active-class="active" to="/catalogs">
+                            <router-link class="text-body btn-online-ligth dropdown-item" active-class="active" to="/catalogo/tecnicas-seleccion">
                                 <h5>Tecnicas de selección</h5>
                             </router-link>
                         </div>

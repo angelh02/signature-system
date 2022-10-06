@@ -1,0 +1,162 @@
+<template>
+    <table
+        id="example"
+        class="table table-striped cell-border"
+        style="width: 100%"
+    ></table>
+</template>
+
+<script setup>
+import { ref, onMounted, watch, toRefs, reactive } from "vue";
+import $ from "jquery";
+import { useRouter, useRoute } from "vue-router";
+// import ModalEdit from "../elements/ModalEdit.vue";
+import { dataTable, table, row, destroy, draw } from "datatables";
+import { useCatalogsRequests } from "@/js/composables/admin-apis/useCatalogsRequest.js";
+// clasificaciones
+import useFileCatalogsBackgroundAPI from "@/api/admin/catalogs/classification/background.js";
+import useFileCatalogsProductionAPI from "@/api/admin/catalogs/classification/production-area.js";
+import useFileCatalogsSectionAPI from "@/api/admin/catalogs/classification/section.js";
+// contenedores
+import useFileCatalogsTimeAPI from "@/api/admin/catalogs/container/conservation-time.js";
+import useFileCatalogsTypeAPI from "@/api/admin/catalogs/container/conservation-type.js";
+import useFileCatalogsValueAPI from "@/api/admin/catalogs/container/document-value.js";
+import useFileCatalogsInfoAPI from "@/api/admin/catalogs/container/information-type.js";
+import useFileCatalogsSelectionAPI from "@/api/admin/catalogs/container/selection-technique.js";
+// tipos de documentos
+import useFileCatalogsDocumentAPI from "@/api/admin/catalogs/document-type.js";
+
+const props = defineProps({
+    filesClasification: Object,
+    updated: Boolean,
+});
+
+const router = useRouter();
+const route = useRoute();
+
+// const { filesClasification } = toRefs(props)
+const { updated } = toRefs(props);
+const emit = defineEmits(["data"]);
+
+const catalogs = ref("");
+const name = ref("");
+const fila = ref("");
+const visible = ref(false);
+const refresh = ref(false);
+const formData = reactive({
+    id:"",
+    name: "",
+    code: "",
+});
+
+const apisGet = {
+    'tipos-documentos':useFileCatalogsDocumentAPI,
+    fondos: useFileCatalogsBackgroundAPI,
+    secciones: useFileCatalogsSectionAPI,
+    'areas-productoras': useFileCatalogsProductionAPI,
+    'tiempos-conservacion':useFileCatalogsTimeAPI,
+    'tipos-conservacion':useFileCatalogsTypeAPI,
+    'valores-documentales':useFileCatalogsValueAPI,
+    'tipos-informacion':useFileCatalogsInfoAPI,
+    'tecnicas-seleccion':useFileCatalogsSelectionAPI
+}
+
+const globalTable = ref("");
+
+const { catalogsColumns } = useCatalogsRequests();
+
+
+onMounted(async () => {
+    getRequests();
+});
+
+const refreshTable = async() => {
+    globalTable.value = $("#example").DataTable({
+        language: {
+            url: "//cdn.datatables.net/plug-ins/1.10.11/i18n/Spanish.json",
+        },
+        data: catalogs.value,
+        columns: catalogsColumns,
+        scrollY: "50vh",
+        scrollCollapse: true,
+        destroy: true,
+    });
+}
+
+const createTable = async () => {
+    globalTable.value = $("#example").DataTable({
+        language: {
+            url: "//cdn.datatables.net/plug-ins/1.10.11/i18n/Spanish.json",
+        },
+        data: catalogs.value,
+        columns: catalogsColumns,
+        scrollY: "50vh",
+        scrollCollapse: true,
+        destroy: true,
+    });
+    globalTable.value.on("click", "#btn_editar", function () {
+        fila.value = $(this).closest("tr");
+        let catalog = catalogs.value;
+        let catalogsId = parseInt(globalTable.value.rows(fila.value).data()[0].id);
+        let index = catalog.findIndex(x => x.id == catalogsId);
+        formData.id = catalog[index].id;
+        formData.name = catalog[index].name;
+        formData.code = catalog[index].code;
+        console.log(catalogsId)
+        emit("data", formData);
+      
+    });
+
+    globalTable.value.on("click", "#btn_borrar", function(){
+        fila.value = $(this).closest("tr");           
+        const id = parseInt(globalTable.value.rows(fila.value).data()[0].id); 
+        deleteRequests(id);      
+    }); 
+};
+
+const getRequests = async (refresh = false) => {
+    const get = apisGet[route.params.name]
+    const info = await get.getAll([]);
+    catalogs.value = info;
+    if(!refresh)
+        createTable();
+    else
+        refreshTable();
+};
+
+const deleteRequests = async (id) => {
+    const get = apisGet[route.params.name]
+    get.drop(id)
+    .then((res) => {
+        getRequests(true);
+    });
+   
+};
+
+
+watch(
+    () => updated,
+    (updated, oldUpdated) => {
+        getRequests(true);
+    },
+    { deep: true },    
+);
+
+watch(  
+    () => route.params.name,
+    (route, oldRoute) => {
+        getRequests(true);
+    },
+    { deep: true },
+);
+
+const openModal = () => {
+    // $("#signup-modal").modal("show")
+
+    visible.value = true;
+};
+
+const close = async () => {
+    visible.value = false;
+};
+</script>

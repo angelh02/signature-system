@@ -4,17 +4,17 @@ const Catalogs = () => import("../components/admin/catalogs/GlobalCatalogs.vue")
 
 const adminRoutes = [
     {
-        path: '/request',
+        path: '/solicitudes',
         name: 'Request',
         component: Request
     },
     {
-        path: '/user-admin',
+        path: '/usuarios',
         name: 'UserAdmin',
         component: UserAdmin
     },
     {
-        path: '/catalogs',
+        path: '/catalogo/:name',
         name: 'Catalogs',
         component: Catalogs
     }
