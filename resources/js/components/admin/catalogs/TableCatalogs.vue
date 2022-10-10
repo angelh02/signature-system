@@ -25,6 +25,9 @@ import useFileCatalogsInfoAPI from "@/api/admin/catalogs/container/information-t
 import useFileCatalogsSelectionAPI from "@/api/admin/catalogs/container/selection-technique.js";
 // tipos de documentos
 import useFileCatalogsDocumentAPI from "@/api/admin/catalogs/document-type.js";
+import {useToast} from "vue-toastification";
+
+const toast = useToast();
 
 const props = defineProps({
     filesClasification: Object,
@@ -128,6 +131,9 @@ const deleteRequests = async (id) => {
     const get = apisGet[route.params.name]
     get.drop(id)
     .then((res) => {
+        toast.error("Se ha eliminado el folio "+ id + " correctamente", {
+          timeout: 2000,
+        });
         getRequests(true);
     });
    
@@ -150,13 +156,4 @@ watch(
     { deep: true },
 );
 
-const openModal = () => {
-    // $("#signup-modal").modal("show")
-
-    visible.value = true;
-};
-
-const close = async () => {
-    visible.value = false;
-};
 </script>

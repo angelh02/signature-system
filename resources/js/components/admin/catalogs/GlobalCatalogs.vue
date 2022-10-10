@@ -44,15 +44,11 @@
     const param = ref("");
 
     const dataForm = ref({
-        // id:"",
-        // name: "",
-        // code: "",
+        id:"",
+        name: "",
+        code: "",
     });
 
-    // onMounted(async () => {   
-    //     param.value = route.params.name
-    //     console.log(route.params.name)
-    // });
     function receivedData(data) {
         edit.value = true;
         dataForm.value = data
@@ -62,6 +58,10 @@
     }
 
     function cancelUpdate(){
+        dataForm.value = {
+            name : "",
+            code : ""
+        };
         edit.value = false;
     }
 </script>
