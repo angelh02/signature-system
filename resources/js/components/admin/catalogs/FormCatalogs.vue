@@ -1,5 +1,8 @@
 <template>
-    <div class="card-title">
+    <div v-if="route.params.name === 'tipos-documentos'">
+        <h4>Agregar nuevo tipo de documento</h4>
+    </div>
+    <div v-else class="card-title">
         <h4>Agregar nueva clasificación</h4>
     </div>
     <form class="needs-validation" @submit.prevent="onSubmit" novalidate>
@@ -43,25 +46,6 @@
                 </div>
             </div>
         </div>
-        <div class="mb-3">
-
-        <!-- <div :class="{ error: v$.firstName.$errors.length }">
-            <input v-model="state.firstName">
-                <div class="input-errors" v-for="error of v$.firstName.$errors" :key="error.$uid">
-                    <div class="error-msg">{{ error.$message }}</div>
-                </div>
-        </div> -->
-        <!-- <div>
-        <div :class="{ valid: !v$.$error && v$.$dirty, error: v$.$error }">
-                <input type="text" v-model="v$.number.$model" />
-                </div>
-                <div v-for="(error, index) in v$.number.$errors" :key="index">
-                {{ error.$message }}
-                </div>
-                <button @click="showAll = !showAll">Toggle All Ouput</button>
-                <pre v-show="showAll">{{ v$ }}</pre>
-        </div> -->
-    </div>
         <div class="row justify-items-center">
             <button v-if="!edit" class="btn btn-primary mb-2" type="submit" @click.prevent="addClassification" :disabled="v$.$errors.length > 0 || v$.$silentErrors.length > 0">
                 AGREGAR CLASIFICACIÓN
@@ -116,27 +100,8 @@ const backGround = ref("");
 
 const formData = reactive(dataForm);
 
-// Configuracion Vuelidate
-// const state = reactive({
-//     firstName: '',
-//     lastName: '',
-//     contact: {
-//     email: ''
-//     }
-// })
-// const rules = {
-//     firstName: { required }, // Matches state.firstName
-//     lastName: { required }, // Matches state.lastName
-//     contact: {
-//     email: { required, email } // Matches state.contact.email
-//     }
-// }
 const showAll = ref(false);
     const rules = {
-      /* number: {
-        required: helpers.withMessage('Este campo no debe estar vacio', required),
-        minLength: helpers.withMessage('Acepta como minimo el valor 5', minValue(5)),
-      }, */
       code: {
         required: helpers.withMessage('Este campo no debe estar vacio', required),
         minLength: helpers.withMessage('Minimo debe ser un caracter', minLength(0)),

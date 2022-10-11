@@ -5,7 +5,7 @@
                 <h1 class="page-title">Tipos de documentos</h1>
             </div>
             <div v-else class="page-title-box">
-                <h1 class="page-title">Catálogo de clasificación archivística ({{route.params.name}})</h1>
+                <h1 class="page-title">Catálogo de {{route.params.name}}</h1>
             </div>
         </div>
     </div>
