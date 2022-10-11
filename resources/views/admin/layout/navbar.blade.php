@@ -9,12 +9,12 @@
         <div class="col nav">
             <ul class="nav nav-tabs nav-bordered navbar-collapse collapse" id="navbarSupportedContent">
                 <li class="nav-item " >
-                    <router-link class="nav-link py-2 text-body" active-class="active" to="/request">
+                    <router-link class="nav-link py-2 text-body" active-class="active" to="/solicitudes">
                         <h5>SOLICITUDES</h5>
                     </router-link>
                 </li>
                 <li class="nav-item" >
-                    <router-link class="nav-link py-2 text-body" active-class="active" to="/user-admin">
+                    <router-link class="nav-link py-2 text-body" active-class="active" to="/usuarios">
                         <h5>ADMINISTRACION DE USUARIOS</h5>
                     </router-link>
                 </li>
