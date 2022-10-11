@@ -1,7 +1,10 @@
 <template>
     <div class="row">
         <div class="col-12">
-            <div class="page-title-box">
+            <div v-if="route.params.name === 'tipos-documentos'" class="page-title-box">
+                <h1 class="page-title">Tipos de documentos</h1>
+            </div>
+            <div v-else class="page-title-box">
                 <h1 class="page-title">Catálogo de clasificación archivística ({{route.params.name}})</h1>
             </div>
         </div>
