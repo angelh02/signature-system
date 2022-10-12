@@ -131,6 +131,7 @@ function filterDocuments(){
 
 const getRequests = async (refresh = false) => {
     const results = await getDocuments([]);
+    console.log(results)
     documents.value = results;
     var dT = $('#documentstable').DataTable();
     dT.destroy();

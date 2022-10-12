@@ -2,16 +2,16 @@
     <div class="card-title">
         <h4>¿Qué documentos te gustaría encontrar?</h4>
     </div>
-    <form class="needs-validation" novalidate>
-        <div>
+    <form class="row align-items-center" novalidate>
+        <!-- <div>
             <label class="form-label"
                 >SÓLO MOSTRAR DOCUMENTOS QUE REQUIEREN FIRMA</label
             >
             <input type="checkbox" id="switch0" data-switch="none" v-model="filterData.signed " @change="returnFilterData"/>
             <label for="switch0" data-on-label="" data-off-label=""></label>
-        </div>
+        </div> -->
 
-        <div class="mb-3">
+        <div class="col mb-3">
             <label class="form-label" for="validationCustom06"
                 >NOMBRE DEL DOCUMENTO</label
             >
@@ -80,7 +80,7 @@
                 </div>
             </div>
         </div> -->
-        <div class="mb-3">
+        <div class="col mb-3">
             <label class="form-label" for="background_id"
                 >TIPO DE DOCUMENTO</label
             >
@@ -99,7 +99,7 @@
             </select>
             <!-- <div class="mensajeError">Debe escoger una opcion</div> -->
         </div>
-        <div class="mb-3">
+        <div class="col mb-3">
             <label class="form-label" for="background_id">CLASIFICACIÓN</label>
             <select
                 class="form-select"
@@ -116,7 +116,7 @@
             </select>
             <!-- <div class="mensajeError">Debe escoger una opcion</div> -->
         </div>
-        <div class="mb-3">
+        <div class="col mb-3">
             <label class="form-label" for="background_id">CONTENEDORES</label>
             <select
                 class="form-select"

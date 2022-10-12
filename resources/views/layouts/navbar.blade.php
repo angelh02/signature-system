@@ -9,7 +9,7 @@
         <div class="col nav">
             <ul class="nav nav-tabs nav-bordered navbar-collapse collapse" id="navbarSupportedContent">
                 <li class="nav-item " >
-                        <router-link class="nav-link py-2 text-body" active-class="active" to="/documents">
+                        <router-link class="nav-link py-2 text-body" active-class="active" to="/mis-documentos">
                             <h4>MIS DOCUMENTOS</h2>
                         </router-link>
                 </li>

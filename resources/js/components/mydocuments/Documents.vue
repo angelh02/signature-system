@@ -1,6 +1,6 @@
 <template>
     <div v-if="!showPrepa" class="px-4">
-        <div class="row">
+        <!-- <div class="row">
             <div class="col-12">
                 <div class="page-title-box">
                     <h1 class="page-title">
@@ -8,9 +8,16 @@
                     </h1>
                 </div>
             </div>
-        </div>
+        </div> -->
         <div>
-            <div class="dropzone" v-bind="getRootProps()">
+            <DocumentSearch
+                @clasification="clasificationData"
+                @container="containerData"
+                @typeDocument="typeDocumentData"
+                @filterData="filterData"
+                
+            ></DocumentSearch>
+            <!-- <div class="dropzone" v-bind="getRootProps()">
                 <div class="dz-message needsclick row align-items-center">
                     <input v-bind="getInputProps()" />
                     <h4 class="text-muted mdi mdi-file-upload-outline">
@@ -23,7 +30,7 @@
                         <input class="dropzoneFile btn-check" />
                     </h4>
                 </div>
-            </div>
+            </div> -->
         </div>
         <!-- <DocumentUpload
             @drop.prevent="drop"
@@ -67,13 +74,27 @@
             <div class="col-xl-3 col-lg-4">
                 <div class="card tilebox-one">
                     <div class="card-body">
-                        <DocumentSearch
+                        <!-- <DocumentSearch
                             @clasification="clasificationData"
                             @container="containerData"
                             @typeDocument="typeDocumentData"
                             @filterData="filterData"
                             
-                        ></DocumentSearch>
+                        ></DocumentSearch> -->
+                        <div class="dropzone" v-bind="getRootProps()">
+                            <div class="dz-message needsclick row align-items-center">
+                                <input v-bind="getInputProps()" />
+                                <h4 class="text-muted mdi mdi-file-upload-outline">
+                                    Arrastra tu documetos a la página o
+                                    <label
+                                        ><a class="text-primary"
+                                            >click aquí para seleccionar uno</a
+                                        ></label
+                                    >
+                                    <input class="dropzoneFile btn-check" />
+                                </h4>
+                            </div>
+                        </div>
                     </div>
                 </div>
             </div>
