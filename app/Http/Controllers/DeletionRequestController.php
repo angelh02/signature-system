@@ -21,7 +21,7 @@ class DeletionRequestController extends Controller
         try {
             DB::beginTransaction();
             //Change the deletion request status
-            $deletionRequest = DeletionRequest::where('id',$request->input('id'))->first();
+            $deletionRequest = DeletionRequest::where('id',$request->input('id'))->where('status', 'Pendiente')->first();
             if(!$deletionRequest)
                 return response()->json(['message' => 'DELETION_REQUEST_DOES_NOT_EXIST'], 422);
             $deletionRequest->status = "Aceptado";
@@ -32,7 +32,7 @@ class DeletionRequestController extends Controller
             if(!$document)
                 return response()->json(['message' => 'DOCUMENT_DOES_NOT_EXIST'], 422);
             $document->canceled = true;
-            $document->candeled_at = date('Y-m-d');
+            $document->canceled_at = date('Y-m-d');
             $document->save();
             DB::commit();
             return response()->json($deletionRequest, 200);
@@ -58,13 +58,13 @@ class DeletionRequestController extends Controller
     }
 
     public function getAll(){
-        $deletionRequests = DeletionRequest::with('document.user')->get();
+        $deletionRequests = DeletionRequest::with('document.user', 'document.classification', 'document.container', 'document.documentType')->get();
 
         return response()->json($deletionRequests, 200);
     }
 
     public function getDeletionRequest($id){
-        $deletionRequest = DeletionRequest::where('id', $id)->with('document.user')->first();
+        $deletionRequest = DeletionRequest::where('id', $id)->with('document.user', 'document.classification', 'document.container', 'document.documentType' )->first();
 
         return response()->json($deletionRequest, 200);
     }
