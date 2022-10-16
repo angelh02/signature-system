@@ -31,22 +31,22 @@ const routes = [
         component: DocumentsPreparation
     },
     {
-        path: '/fileclasification',
+        path: '/clasificaciones-archivisticas',
         name: 'FileClasification',
         component: FileClasification
     },
     {
-        path: '/containers',
+        path: '/contenedores',
         name: 'Containers',
         component: Containers
     },
     {
-        path: '/document/status/:id',
+        path: '/mis-documentos/estado/:id',
         name: 'DocumentStatus',
         component: DocumentStatus
     },
     {
-        path: '/document/sign/:id',
+        path: '/documento/firmar/:id',
         name: 'DocumentSign',
         component: DocumentSign
     },

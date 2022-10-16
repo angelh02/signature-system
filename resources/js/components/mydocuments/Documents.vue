@@ -1,6 +1,6 @@
 <template>
     <div v-if="!showPrepa" class="px-4">
-        <div class="row">
+        <!-- <div class="row">
             <div class="col-12">
                 <div class="page-title-box">
                     <h1 class="page-title">
@@ -8,9 +8,15 @@
                     </h1>
                 </div>
             </div>
-        </div>
+        </div> -->
         <div>
-            <div class="dropzone" v-bind="getRootProps()">
+            <DocumentSearch
+                @filterData="filterData"
+                :classifications="classifications"
+                :containers="containers"
+                :documentTypes="documentTypes"
+            ></DocumentSearch>
+            <!-- <div class="dropzone" v-bind="getRootProps()">
                 <div class="dz-message needsclick row align-items-center">
                     <input v-bind="getInputProps()" />
                     <h4 class="text-muted mdi mdi-file-upload-outline">
@@ -23,7 +29,7 @@
                         <input class="dropzoneFile btn-check" />
                     </h4>
                 </div>
-            </div>
+            </div> -->
         </div>
         <!-- <DocumentUpload
             @drop.prevent="drop"
@@ -59,21 +65,35 @@
             </div>
         </div>
         <div v-else></div> -->
-        <div class="mt-3">
-            <h5>Filtros rapidos</h5>
+        <div>
+            <h4>Documentos</h4>
             <hr />
         </div>
         <div class="row">
             <div class="col-xl-3 col-lg-4">
                 <div class="card tilebox-one">
                     <div class="card-body">
-                        <DocumentSearch
+                        <!-- <DocumentSearch
                             @clasification="clasificationData"
                             @container="containerData"
                             @typeDocument="typeDocumentData"
                             @filterData="filterData"
                             
-                        ></DocumentSearch>
+                        ></DocumentSearch> -->
+                        <div class="dropzone" v-bind="getRootProps()">
+                            <div class="dz-message needsclick row align-items-center">
+                                <input v-bind="getInputProps()" />
+                                <h4 class="text-muted mdi mdi-file-upload-outline">
+                                    Arrastra tu documetos a la página o
+                                    <label
+                                        ><a class="text-primary"
+                                            >click aquí para seleccionar uno</a
+                                        ></label
+                                    >
+                                    <input class="dropzoneFile btn-check" />
+                                </h4>
+                            </div>
+                        </div>
                     </div>
                 </div>
             </div>
@@ -89,17 +109,13 @@
                 </div>
             </div>
         </div>
-        <Modal
-            v-if="showModal"
-            :clasifications="clasifications"
+        <CreateDocumentModal
+            @cancel="cancelCreation"
+            :classifications="classifications"
             :dataFile="dataFile"
             :containers="containers"
-            :typesDocument="typesDocument"
-            :show="showModal"
-            @showPreparation="showPreparation"
-            @close="showModal = false"
-            @resFile="resFile"
-        ></Modal>
+            :documentTypes="documentTypes"
+        ></CreateDocumentModal>
     </div>
     <div>
         <!-- <DocumentsPreparation
@@ -111,31 +127,68 @@
 </template>
 
 <script setup>
+//Components
 import DocumentUpload from "../elements/DropZone.vue";
-import $ from "jquery";
-import { ref, reactive } from "vue";
 import DocumentSearch from "./DocumentSearch.vue";
-import DocumentsPreparation from "./DocumentsPreparation.vue";
-import Home from "../Home.vue";
 import TableDocuments from "../mydocuments/TableDocuments.vue";
-import Modal from "../elements/Modal.vue";
+import CreateDocumentModal from "./CreateDocumentModal.vue";
+//Libraries
+import $ from "jquery";
+import { Modal } from "bootstrap";
+import { onMounted, ref, reactive } from "vue";
 import { useDropzone } from "vue3-dropzone";
 import { useRouter } from "vue-router";
+//Apis
+import { useDocumentsRequests } from "@/js/composables/document-apis/useDocumentsRequest.js";
+
+//Consts to use api functions
+const { getDocumentsType, getClasification,getContainers } =
+    useDocumentsRequests();
+
+//Consts to use dropezone functions
+const { getRootProps, getInputProps, ...rest } = useDropzone({
+    onDrop,
+    onDropAccepted,
+});
+
+
+const documentModal = ref({});
 const router = useRouter();
 
 const emit = defineEmits(["data"]);
 const showModal = ref(false);
-const clasifications = ref("");
-const containers = ref("");
-const typesDocument = ref("");
+const classifications = ref({});
+const containers = ref({});
+const documentTypes = ref({});
 const showPrepa = ref("");
 const resFiles = ref("")
 
 // varible para filtros
 const  dataFilter =  ref({})
 
+//Life Cycle
+onMounted(async () => {
+    await getRequests();
+});
 
+//Functions
+function cancelCreation(){
+    documentModal.value.hide();
+}
 
+const getRequests = async () => {
+    const resdocumentType = await getDocumentsType("");
+    documentTypes.value = resdocumentType;
+
+    const resClasification = await getClasification("");
+    classifications.value = resClasification;
+
+    const resContainer = await getContainers("");
+    containers.value = resContainer;
+
+    showModal.value = true;
+    documentModal.value = new Modal($("#create-modal"));
+};
 
 const dataFile = ref("");
 const shadow = ref(false);
@@ -145,6 +198,7 @@ const saveFiles = (files) => {
     for (var x = 0; x < files.length; x++) {
         formData.append("images[]", files[x]);
     }
+    console.log("🚀 ~ file: Documents.vue ~ line 195 ~ saveFiles ~ formData", formData)
     // dataFile.value = formData
     // axios
     // .post(url, formData, {
@@ -168,18 +222,6 @@ function filterData(filterData) {
     dataFilter.value = filterData;
 }
 
-function clasificationData(clasification) {
-    clasifications.value = clasification;
-}
-
-function containerData(container) {
-    containers.value = container;
-}
-
-function typeDocumentData(typeDocument) {
-    typesDocument.value = typeDocument;
-}
-
 function showPreparation(data) {
     showPrepa.value = data;
 }
@@ -190,12 +232,13 @@ function resFile(resFile) {
 
 function onDropAccepted(acceptFiles) {
     saveFiles(acceptFiles);
+    console.log("🚀 ~ file: Documents.vue ~ line 228 ~ onDropAccepted ~ acceptFiles", acceptFiles)
     var encoded = btoa(JSON.stringify(acceptFiles))
     var actual = JSON.parse(atob(encoded))
-    dataFile.value = actual[0].path;
-    console.log(actual);
-    console.log(encoded);
-    showModal.value = true;
+    dataFile.value = acceptFiles;
+    /* console.log(actual);
+    console.log(encoded); */
+    documentModal.value.show();
 
     // $('#standard-modal').modal('show');
 
@@ -203,8 +246,4 @@ function onDropAccepted(acceptFiles) {
     //             , params: {datafile: JSON.stringify(dataFile)}})
 }
 
-const { getRootProps, getInputProps, ...rest } = useDropzone({
-    onDrop,
-    onDropAccepted,
-});
 </script>

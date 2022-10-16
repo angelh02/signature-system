@@ -86,7 +86,6 @@ const createTable = async () => {
         formData.end_period = classifications[index].end_period;
         formData.consecutive_number = classifications[index].consecutive_number;
         emit("data", formData);
-      
     });
 
     $(document).on("click", "#btn_borrar", function(){
