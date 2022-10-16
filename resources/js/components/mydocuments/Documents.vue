@@ -82,7 +82,7 @@
                         ></DocumentSearch> -->
                         <div class="dropzone" v-bind="getRootProps()">
                             <div class="dz-message needsclick row align-items-center">
-                                <input v-bind="getInputProps()" />
+                                <input v-bind="getInputProps()" accept="application/pdf"/>
                                 <h4 class="text-muted mdi mdi-file-upload-outline">
                                     Arrastra tu documetos a la página o
                                     <label

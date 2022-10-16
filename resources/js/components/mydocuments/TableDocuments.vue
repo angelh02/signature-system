@@ -50,8 +50,8 @@
                             <router-link class="dropdown-item" :to="'/document/status/'+document?.id">Ver Detalles</router-link>
                             <!-- <a class="dropdown-item" href="#">Ver original</a> -->
                             <a class="dropdown-item" :href="document?.url">Descargar documento original</a>
-                            <a v-if="document.deletion_requests.length = 0 && document.signed == 0" class="dropdown-item" @click="openDeletionRequest(document.id)">Eliminar documento</a>
-                            <a v-else class="dropdown-item" @click="openDeletionRequest(document.id)">Eliminar documento</a>
+                            <a v-if="document.signed == 0" class="dropdown-item" @click="deleteDocument(document.id)">Eliminar documento</a>
+                            <a v-if="document.deletion_requests.length == 0" class="dropdown-item" @click="openDeletionRequest(document.id)">Eliminar documento</a>
                         </div>
                     </div> 
                 </td>
@@ -64,6 +64,11 @@
         @stored="storedDeletionRequest"
     >
     </CreateDeletionRequestModal>
+    <ConfirmationModal
+        :title="'Confirmacion de Eliminación'"
+        :message="'Estas seguro de eliminar el siguiente documento'"
+        @response="confirmationResponse"
+    ></ConfirmationModal>
 </div>
 </template>
 
@@ -89,6 +94,7 @@ const dataFilter = toRef(props, "dataFilter");
 const documentsTable = ref("");
 
 const deletionRequestModal = ref({});
+const confirmationModal= ref({});
 const documentIdSelected = ref(0);
 
 const {getDocuments } = useDocumentsRequests();
@@ -114,6 +120,12 @@ function cancelDeletionRequest(){
     deletionRequestModal.value.hide();
 }
 
+function confirmationResponse(response){
+    confirmationModal.value.hide();
+    if(response)
+        deleteRequests(documentIdSelected.value);
+}
+
 const createTable = async () => {
     await nextTick(function() {
         documentsTable.value = $("#documentstable").DataTable({
@@ -128,6 +140,15 @@ const createTable = async () => {
             destroy : true
         });
     });
+}
+
+function deleteRequests(){
+    alert(documentIdSelected.value);
+}
+
+function deleteDocument(documentId){
+    documentIdSelected.value = documentId;
+    confirmationModal.show();
 }
 
 function filterDocuments(){
@@ -161,6 +182,7 @@ const getRequests = async (refresh = false) => {
     filteredDocuments.value = documents.value;
     createTable();
     deletionRequestModal.value = new Modal($("#deletion-request-modal"))
+    confirmationModal.value = new Modal($("#confirmation-modal"))
 };
 
 function storedDeletionRequest(){

@@ -4,12 +4,18 @@
         class="table table-striped cell-border"
         style="width: 100%"
     ></table>
+    <ConfirmationModal
+        :title="'Confirmacion de Eliminación'"
+        :message="'Estas seguro de eliminar el siguiente registro, esto hara que se eliminen los documentos referenciados a este contenedor'"
+        @response="confirmationResponse"
+    ></ConfirmationModal>
 </template>
 
 <script setup>
 import { ref, onMounted, watch, toRefs, reactive } from "vue";
 import $ from "jquery";
-import ModalEdit from "../elements/ModalEdit.vue";
+import { Modal } from "bootstrap";
+import ConfirmationModal from '../elements/ConfirmationModal.vue';
 import { dataTable, table, row, draw, destroy } from "datatables";
 import { useContainersRequests } from "@/js/composables/container-apis/useContainerRequest.js";
 import useContainersRequestsAPI from "@/api/container/index.js";
@@ -23,6 +29,10 @@ const props = defineProps({
 // const { containersData } = toRefs(props)
 const { updated } = toRefs(props);
 const emit = defineEmits(["data"]);
+
+//Modal const
+const confirmationModal = ref({});
+const containerId = ref(0);
 
 const containersData = ref("");
 const name = ref("");
@@ -45,6 +55,12 @@ const { containerColumns, getContainers } = useContainersRequests();
 onMounted(async () => {
     getRequests();
 });
+
+function confirmationResponse(response){
+    confirmationModal.value.hide();
+    if(response)
+        deleteRequests(containerId.value);
+}
 
 const refreshTable = async() => {
     containerTable.value = $("#containers_table").DataTable({
@@ -90,13 +106,15 @@ const createTable = async () => {
     containerTable.value.on("click", "#btn_borrar", function(){
         fila.value = $(this).closest("tr");      
         const id = parseInt(containerTable.value.rows(fila.value).data()[0].id);   
-        deleteRequests(id);      
+        containerId.value = id;
+        confirmationModal.value.show();      
     });
 };
 
 const getRequests = async (refresh = false) => {
     const results = await getContainers([]);
     containersData.value = results;
+    confirmationModal.value = new Modal("#confirmation-modal")
     if(!refresh)
         createTable();
     else
@@ -108,7 +126,6 @@ const deleteRequests = async (id) => {
     .then((res) => {
         getRequests(true);
     });
-   
 };
 
 
