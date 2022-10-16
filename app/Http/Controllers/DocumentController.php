@@ -125,7 +125,10 @@ class DocumentController extends Controller
             "container",
             "documentType",
             "documentSigned",
-            "documentSigners"
+            "documentSigners",
+            "deletionRequests" => function($query){
+                $query->where("status", "Pendiente");
+            }
         ])->where([["canceled", false], ["canceled_at", null]])->get();
         
         return response()->json($documents, 200);
@@ -140,7 +143,10 @@ class DocumentController extends Controller
             "container",
             "documentType",
             "documentSigned",
-            "documentSigners"
+            "documentSigners",
+            "deletionRequests" => function($query){
+                $query->where("status", "Pendiente");
+            }
         ])->first();
 
         return response()->json($document, 200);

@@ -50,20 +50,30 @@
                             <router-link class="dropdown-item" :to="'/document/status/'+document?.id">Ver Detalles</router-link>
                             <!-- <a class="dropdown-item" href="#">Ver original</a> -->
                             <a class="dropdown-item" :href="document?.url">Descargar documento original</a>
-                            <a class="dropdown-item" href="#">Eliminar documento</a>
+                            <a v-if="document.deletion_requests.length = 0 && document.signed == 0" class="dropdown-item" @click="openDeletionRequest(document.id)">Eliminar documento</a>
+                            <a v-else class="dropdown-item" @click="openDeletionRequest(document.id)">Eliminar documento</a>
                         </div>
                     </div> 
                 </td>
             </tr> 
         </tbody>
     </table>
+    <CreateDeletionRequestModal
+        :document-id="documentIdSelected"
+        @cancel="cancelDeletionRequest"
+        @stored="storedDeletionRequest"
+    >
+    </CreateDeletionRequestModal>
 </div>
 </template>
 
 <script setup>
+//Components
+import CreateDeletionRequestModal from "./CreateDeletionRequestModal.vue";
 //Libraries
 import { ref, onMounted, toRef, watch, toRefs, reactive, nextTick} from "vue";
 import $ from "jquery";
+import { Modal } from "bootstrap";
 import { dataTable, row, destroy, draw } from "datatables";
 //Api
 import { useDocumentsRequests } from "@/js/composables/document-apis/useDocumentTableRequest.js";
@@ -77,6 +87,9 @@ const dataFilter = toRef(props, "dataFilter");
 
 //Data table
 const documentsTable = ref("");
+
+const deletionRequestModal = ref({});
+const documentIdSelected = ref(0);
 
 const {getDocuments } = useDocumentsRequests();
 const documents = ref("")
@@ -97,6 +110,10 @@ watch(
 );
 
 //Functions
+function cancelDeletionRequest(){
+    deletionRequestModal.value.hide();
+}
+
 const createTable = async () => {
     await nextTick(function() {
         documentsTable.value = $("#documentstable").DataTable({
@@ -143,7 +160,18 @@ const getRequests = async (refresh = false) => {
     documents.value = results;
     filteredDocuments.value = documents.value;
     createTable();
+    deletionRequestModal.value = new Modal($("#deletion-request-modal"))
 };
+
+function storedDeletionRequest(){
+    documentsTable.value.destroy();
+    createTable();
+}
+
+function openDeletionRequest(documentId){
+    documentIdSelected.value = documentId;
+    deletionRequestModal.value.show();
+}
 </script>
 <style>
 .dataTables_wrapper .dataTables_scroll div.dataTables_scrollBody {

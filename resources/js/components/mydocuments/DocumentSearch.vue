@@ -22,7 +22,7 @@
                 placeholder="Ingrese Nombre"
                 maxlength="30"
                 v-model="filterData.name"
-                @keyup.enter="returnFilterData"
+                @keyup="returnFilterData"
                 required
             />
             <div v-if="submit " class="mensajeError">
