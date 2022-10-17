@@ -78,9 +78,15 @@
                         <td>{{request.document.user.name}}</td>
                         <td>{{request.status}}</td>
                         <td class="d-flex">
-                            <button id="btn_editar" @click="aceptRequest(request)" class="mx-1 btn btn-success mdi mdi-check-outline"></button> 
-                            <button id="btn_borrar" @click="rejectRequests(request)" class="mx-1 btn btn-danger mdi mdi-cancel"></button>
-                            <button id="btn_detalles" @click="modalRequests(request)" class="mx-1 btn btn-info mdi mdi-eye"></button>
+                            <div v-if="tab === 'Pendiente'">
+                                <button id="btn_editar" @click="aceptRequest(request)" class="mx-1 btn btn-success mdi mdi-check-outline"></button> 
+                            </div>
+                            <div v-if="tab === 'Pendiente'">
+                                <button id="btn_borrar" @click="rejectRequests(request)" class="mx-1 btn btn-danger mdi mdi-cancel"></button>
+                            </div>
+                            <div :class="tab != 'Pendiente' && 'mx-4'">
+                                <button id="btn_detalles" @click="modalRequests(request)" class="mx-1 btn btn-info mdi mdi-eye"></button>
+                            </div>
                         </td>
                     </tr> 
                 </tbody>
