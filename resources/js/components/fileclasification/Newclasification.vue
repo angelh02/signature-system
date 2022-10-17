@@ -30,7 +30,7 @@
                 v-model="formData.section_id"
                 required
             >
-                <option :value="''" selected>Selecciona una opción...</option>
+                <option :value="0" selected>Selecciona una opción...</option>
                 <option v-for="res in section" :value="res.id">
                     {{ `${res.code}` }} - {{ `${res.name}` }}
                 </option>
@@ -79,7 +79,7 @@
                 v-model="formData.production_area_id"
                 required
             >
-                <option :value="''" selected>Selecciona una opción...</option>
+                <option :value="0" disabled selected>Selecciona una opción...</option>
                 <option v-for="res in productionArea" :value="res.id">
                     {{ `${res.code}` }} - {{ `${res.name}` }}
                 </option>

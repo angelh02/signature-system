@@ -2,36 +2,26 @@
     <div class="row">
         <div class="col-12">
             <div class="page-title-box">
-                <h1 class="page-title">Catálogo de clasificación archivística</h1>
+                <h1 class="page-title">Solicitudes</h1>
             </div>
         </div>
     </div>
-    <!-- <div class="row">
-        <div class="col-xl-3 col-lg-4">
-            <div class="card tilebox-one">
-                <div class="card-body">
-                    <FormCatalogs :edit="edit" :route="route" :param="param" :dataForm="dataForm" @update="dataUpdated" @cancel="cancelUpdate"></FormCatalogs>
-                </div> 
-            </div>
-        </div>
-
-        <div class="col-xl-9 col-lg-8">
+    <div class="row">
+        <div class="col">
             <div class="card card-h-100">
-                <div class="card-body">
-                   
-                    <TableCatalogs  @data="receivedData" :updated="updated"></TableCatalogs>
+                <div class="card-body">              
+                    <TableRequests  @data="receivedData" :updated="updated"></TableRequests>
                 </div> 
             </div> 
         </div>
-    </div> -->
+    </div>
 </template>
 
 <script setup>
     import { ref, onMounted, watch, toRef, reactive } from "vue";
     import $ from 'jquery'
     import { useRouter, useRoute } from "vue-router";
-    // import FormCatalogs from "./FormRequest.vue";
-    // import TableCatalogs from "./TableRequest.vue";
+    import TableRequests from "./TableRequests.vue";
     
     const router = useRouter();
     const route = useRoute();
