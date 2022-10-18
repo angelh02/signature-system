@@ -1,18 +1,18 @@
 <template>
-<div class="table-responsive">
-    <table class="table table-hover table-bordered" id="documentstable">
+<div >
+    <table class="table table-striped" id="documentstable">
         <thead>
             <tr>
                 <th>Nombre</th>
                 <th>Tipo de documento</th>
                 <th>Clasificación</th>
                 <th>Contenedor</th>
-                <th></th>
-                <th></th>
+                <th class="no-sort"></th>
+                <th class="no-sort"></th>
             </tr>
         </thead>
         <tbody>
-            <tr v-for="document in documents">
+            <tr v-for="document in filteredDocuments">
                 <td>{{document.name}}</td>
                 <td>{{document.document_type.name}}</td>
                 <td>{{document.classification.name}}</td>
@@ -40,9 +40,8 @@
                         :to="`/document/sign/${document?.id}`"
                     >
                         FIRMAR
-                    </router-link>  
+                    </router-link>
                 </td>
-               
                 <td>
                     <div class="dropdown" >
                         <a  class="btn btn-outline-secondary dropdown-toggle" href="#" role="button" id="dropdownMenuLink" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
@@ -51,29 +50,39 @@
                             <router-link class="dropdown-item" :to="'/document/status/'+document?.id">Ver Detalles</router-link>
                             <!-- <a class="dropdown-item" href="#">Ver original</a> -->
                             <a class="dropdown-item" :href="document?.url">Descargar documento original</a>
-                            <a class="dropdown-item" href="#">Eliminar documento</a>
+                            <a v-if="document.signed == 0" class="dropdown-item" @click="deleteDocument(document.id)">Eliminar documento</a>
+                            <a v-if="document.deletion_requests.length == 0" class="dropdown-item" @click="openDeletionRequest(document.id)">Eliminar documento</a>
                         </div>
                     </div> 
                 </td>
             </tr> 
         </tbody>
     </table>
+    <CreateDeletionRequestModal
+        :document-id="documentIdSelected"
+        @cancel="cancelDeletionRequest"
+        @stored="storedDeletionRequest"
+    >
+    </CreateDeletionRequestModal>
+    <ConfirmationModal
+        :title="'Confirmacion de Eliminación'"
+        :message="'Estas seguro de eliminar el siguiente documento'"
+        @response="confirmationResponse"
+    ></ConfirmationModal>
 </div>
-    <!-- <table v-if="!documents.value"
-        id="example"
-        class="table table-striped cell-border"
-        style="width: 100%"
-    ></table> -->
 </template>
 
 <script setup>
+//Components
+import CreateDeletionRequestModal from "./CreateDeletionRequestModal.vue";
+//Libraries
 import { ref, onMounted, toRef, watch, toRefs, reactive, nextTick} from "vue";
 import $ from "jquery";
-import ModalEdit from "../elements/ModalEdit.vue";
+import { Modal } from "bootstrap";
 import { dataTable, row, destroy, draw } from "datatables";
+//Api
 import { useDocumentsRequests } from "@/js/composables/document-apis/useDocumentTableRequest.js";
 import useFileClasificationRequestsAPI from "@/api/index.js";
-
 
 const props = defineProps({
     dataFilter: Object,
@@ -81,51 +90,88 @@ const props = defineProps({
 
 const dataFilter = toRef(props, "dataFilter");
 
+//Data table
+const documentsTable = ref("");
+
+const deletionRequestModal = ref({});
+const confirmationModal= ref({});
+const documentIdSelected = ref(0);
+
 const {getDocuments } = useDocumentsRequests();
 const documents = ref("")
+const filteredDocuments = ref("");
+
+//Life Cycle
 onMounted(async () => {
     getRequests();
 });
 
+//Watchs
+watch(
+    () => dataFilter,
+    (dataFilter, olddataFilter) => {
+        filterDocuments();
+    },
+    { deep: true },   
+);
+
+//Functions
+function cancelDeletionRequest(){
+    deletionRequestModal.value.hide();
+}
+
+function confirmationResponse(response){
+    confirmationModal.value.hide();
+    if(response)
+        deleteRequests(documentIdSelected.value);
+}
+
 const createTable = async () => {
-    // $("#example").DataTable({
-    //     language: {
-    //         url: "//cdn.datatables.net/plug-ins/1.10.11/i18n/Spanish.json",
-    //     },
-    //     // columns: containerColumns,
-    //     scrollY: "45vh",
-    //     scrollCollapse: false,
-    //     destroy: true
-    // });
     await nextTick(function() {
-        $("#documentstable").DataTable({
+        documentsTable.value = $("#documentstable").DataTable({
             language: {
                 url: "//cdn.datatables.net/plug-ins/1.10.11/i18n/Spanish.json",
             },
             scrollCollapse: false,
+            columnDefs : [ {
+                targets: 'no-sort',
+                orderable: false,
+            } ],
+            destroy : true
         });
-        
-    }); 
+    });
+}
+
+function deleteRequests(){
+    alert(documentIdSelected.value);
+}
+
+function deleteDocument(documentId){
+    documentIdSelected.value = documentId;
+    confirmationModal.show();
 }
 
 function filterDocuments(){
+    let filters = {};
+    for(const [key, value] of Object.entries(dataFilter.value)){
+        if(value != "" | value != 0)
+            filters[key] = value;
+    }
     function filterFun(document){
-        if(dataFilter.value.signed == 0 && dataFilter.value.name == "" && dataFilter.value.document_type == 0 && dataFilter.value.classification == 0 && dataFilter.value.container == 0)
-            return document;
-        else if(dataFilter.value.signed == 0 && dataFilter.value.name == "" && dataFilter.value.document_type == 0 && dataFilter.value.classification == 0 && dataFilter.value.container > 0)
-            return document.container_id == dataFilter.value.container;
-        else if(dataFilter.value.signed == 0 && dataFilter.value.name == "" && dataFilter.value.document_type == 0 && dataFilter.value.classification > 0 && dataFilter.value.container == 0)
-            return document.classification_id == dataFilter.value.classification;
-        else if(dataFilter.value.signed == 0 && dataFilter.value.name == "" && dataFilter.value.document_type > 0 && dataFilter.value.classification == 0 && dataFilter.value.container == 0)
-            return document.document_type_id == dataFilter.value.document_type;
-        else if(dataFilter.value.signed == 0 && dataFilter.value.name != "" && dataFilter.value.document_type == 0 && dataFilter.value.classification == 0 && dataFilter.value.container > 0)
-            return dataFilter.value.name.includes(document.name);
-        else if(dataFilter.value.signed == 1 && dataFilter.value.name == "" && dataFilter.value.document_type == 0 && dataFilter.value.classification == 0 && dataFilter.value.container == 0)
-            return document.signed == 1
-    }   
-    documents.value = documents.value.filter(filterFun);
-    var dT = $('#documentstable').DataTable();
-    dT.destroy();
+        let flag = true;       
+        for(const [key, value] of Object.entries(filters)){
+            if(key == "name")
+                flag = flag && document[key].includes(value);
+            else
+                flag = flag && document[key] == value;
+        }
+        return flag;
+    } 
+    if(Object.keys(filters).length > 0)
+        filteredDocuments.value = documents.value.filter(filterFun);
+    else
+        filteredDocuments.value = documents.value;
+    documentsTable.value.destroy();
     createTable();
 }
 
@@ -133,22 +179,21 @@ const getRequests = async (refresh = false) => {
     const results = await getDocuments([]);
     console.log(results)
     documents.value = results;
-    var dT = $('#documentstable').DataTable();
-    dT.destroy();
-    createTable()
-    // if(!refresh)
-    //     createTable();
-    // else
-    //     refreshTable();
+    filteredDocuments.value = documents.value;
+    createTable();
+    deletionRequestModal.value = new Modal($("#deletion-request-modal"))
+    confirmationModal.value = new Modal($("#confirmation-modal"))
 };
 
-watch(
-    () => dataFilter,
-    (dataFilter, olddataFilter) => {
-        //filterDocuments();
-    },
-    { deep: true },   
-);
+function storedDeletionRequest(){
+    documentsTable.value.destroy();
+    createTable();
+}
+
+function openDeletionRequest(documentId){
+    documentIdSelected.value = documentId;
+    deletionRequestModal.value.show();
+}
 </script>
 <style>
 .dataTables_wrapper .dataTables_scroll div.dataTables_scrollBody {

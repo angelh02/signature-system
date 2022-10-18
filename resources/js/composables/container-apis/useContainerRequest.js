@@ -6,7 +6,7 @@ export function useContainersRequests(from = null, to = null) {
         {
             title: "Id",
             data: "id",
-            visible: true
+            visible: false
         },
         {
             title: "Nombre",
@@ -14,23 +14,23 @@ export function useContainersRequests(from = null, to = null) {
         },
         {
             title: "TC",
-            data: "conservation_time.code",
+            data: "conservation_time.name",
         },
         {
             title: "TC",
-            data: "conservation_type.code",
+            data: "conservation_type.name",
         },
         {
             title: "VD",
-            data: "document_value.code",
+            data: "document_value.name",
         },
         {
             title: "IT",
-            data: "information_type.code",
+            data: "information_type.name",
         },
         {
             title: "ST",
-            data: "selection_technique.code",
+            data: "selection_technique.name",
         },
         {
             targets: -1,

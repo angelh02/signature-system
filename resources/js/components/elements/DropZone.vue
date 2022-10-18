@@ -23,6 +23,7 @@
                             type="file"
                             id="dropzoneFile"
                             class="dropzoneFile btn-check"
+                            accept="application/pdf"
                         />
                     </h4>
             </div>

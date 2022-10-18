@@ -5,6 +5,7 @@ const Documents = () => import("../components/mydocuments/Documents.vue")
 const FileClasification = () => import("../components/fileclasification/FileClasification.vue")
 const Containers = () => import("../components/containers/Containers.vue")
 const DocumentsPreparation = () => import("../components/mydocuments/DocumentsPreparation.vue")
+const DocumentDetails = () => import("../components/mydocuments/DocumentDetails.vue")
 const DocumentStatus = () => import("../components/mydocuments/DocumentStatus.vue");
 const DocumentSign = () => import("../components/document-sign/DocumentSign.vue");
 const Request = () => import("../components/admin/request/Request.vue");
@@ -25,28 +26,36 @@ const routes = [
         component: Documents
     },
     {
-        path: '/mis-documentos/preparacion/:id',
+        path: '/mis-documentos/detalles/:id',
         name: 'DocumentsPreparation',
         props:true,
-        component: DocumentsPreparation
+        component: DocumentDetails
     },
     {
-        path: '/fileclasification',
-        name: 'FileClasification',
-        component: FileClasification
-    },
-    {
-        path: '/containers',
-        name: 'Containers',
-        component: Containers
-    },
-    {
-        path: '/document/status/:id',
+        path: '/mis-documentos/estado/:id',
         name: 'DocumentStatus',
         component: DocumentStatus
     },
     {
-        path: '/document/sign/:id',
+        path: '/mis-documentos/preparacion',
+        name: 'DocumentsPreparation',
+        component: DocumentsPreparation,
+        props: (route) => {
+            route.params
+        }
+    },
+    {
+        path: '/clasificaciones-archivisticas',
+        name: 'FileClasification',
+        component: FileClasification
+    },
+    {
+        path: '/contenedores',
+        name: 'Containers',
+        component: Containers
+    },
+    {
+        path: '/documento/firmar/:id',
         name: 'DocumentSign',
         component: DocumentSign
     },

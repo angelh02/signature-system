@@ -125,22 +125,28 @@ class DocumentController extends Controller
             "container",
             "documentType",
             "documentSigned",
-            "documentSigners"
-        ])->where([["canceled", null], ["canceled_at", null]])->get();
-
+            "documentSigners",
+            "deletionRequests" => function($query){
+                $query->where("status", "Pendiente");
+            }
+        ])->where([["canceled", false], ["canceled_at", null]])->get();
+        
         return response()->json($documents, 200);
     }
 
     public function getDocument($id)
     {
         $document = Document::where("id", $id)
-        ->where([["canceled", null], ["canceled_at", null]])
+        ->where([["canceled", false], ["canceled_at", null]])
         ->with([
             "classification",
             "container",
             "documentType",
             "documentSigned",
-            "documentSigners"
+            "documentSigners",
+            "deletionRequests" => function($query){
+                $query->where("status", "Pendiente");
+            }
         ])->first();
 
         return response()->json($document, 200);

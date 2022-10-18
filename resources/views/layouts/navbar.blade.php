@@ -14,12 +14,12 @@
                         </router-link>
                 </li>
                 <li class="nav-item" >
-                        <router-link class="nav-link py-2 text-body" active-class="active" to="/fileclasification">
+                        <router-link class="nav-link py-2 text-body" active-class="active" to="/clasificaciones-archivisticas">
                             <h4>CLASIFICACIÓN DE ARCHIVOS</h4>
                         </router-link>
                 </li>
                 <li class="nav-item" >
-                        <router-link class="nav-link py-2 text-body" active-class="active" to="/containers">
+                        <router-link class="nav-link py-2 text-body" active-class="active" to="/contenedores">
                             <h4>CONTENEDORES</h4>
                         </router-link>
                 </li>

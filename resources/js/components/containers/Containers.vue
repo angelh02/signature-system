@@ -40,11 +40,11 @@ const updated = ref(false);
 const edit = ref(false);
 const dataForm = ref({
     id:"",
-    conservation_time_id: 0,
-    conservation_type_id: 0,
-    document_value_id: 0,
-    information_type_id: 0,
-    selection_technique_id: 0,
+    conservation_time_id: "",
+    conservation_type_id: "",
+    document_value_id: "",
+    information_type_id: "",
+    selection_technique_id: "",
     effective_date: "",
 });
 // const id = ref("");
