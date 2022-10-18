@@ -1,8 +1,11 @@
 <template>
     <div class="row">
         <div class="col-12">
-            <div class="page-title-box">
-                <h1 class="page-title">Catálogo de clasificación archivística ({{route.params.name}})</h1>
+            <div v-if="route.params.name === 'tipos-documentos'" class="page-title-box">
+                <h1 class="page-title">Tipos de documentos</h1>
+            </div>
+            <div v-else class="page-title-box">
+                <h1 class="page-title">Catálogo de {{route.params.name}}</h1>
             </div>
         </div>
     </div>
@@ -44,15 +47,11 @@
     const param = ref("");
 
     const dataForm = ref({
-        // id:"",
-        // name: "",
-        // code: "",
+        id:"",
+        name: "",
+        code: "",
     });
 
-    // onMounted(async () => {   
-    //     param.value = route.params.name
-    //     console.log(route.params.name)
-    // });
     function receivedData(data) {
         edit.value = true;
         dataForm.value = data
@@ -62,6 +61,10 @@
     }
 
     function cancelUpdate(){
+        dataForm.value = {
+            name : "",
+            code : ""
+        };
         edit.value = false;
     }
 </script>

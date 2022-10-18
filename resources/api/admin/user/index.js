@@ -9,8 +9,18 @@ import axios from "axios";
 //         console.error(err);
 //     }
 // };
+// GET ALL ROLES
+async function getRoles() {
+  return await axios
+  .get(`/api/spatie/role/get-all`, 
+  )
+  .then((res) => {
+    if (res.status != 200) throw new Error("Response Failed");
+    return res.data;
+  })  
+}
 
-// GET ALL DOCUMENTS
+// GET ALL USERS
 async function getAll() {
     return await axios
     .get(`/api/user/get-all`, 
@@ -44,6 +54,7 @@ async function store(formData) {
 }
 // POST, UPDATE A USER
 async function update(formData) {
+  console.log(formData);
   return await axios
   .post(`/api/user/update`,formData, {
     headers: { 'content-type': 'multipart/form-data' },
@@ -77,4 +88,4 @@ async function resetPassword(formData) {
   })  
 }
 
-export default {getAll, getUser, store, update, drop, resetPassword}
+export default {getRoles, getAll, getUser, store, update, drop, resetPassword}

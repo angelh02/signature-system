@@ -1,5 +1,8 @@
 <template>
-    <div class="card-title">
+    <div v-if="route.params.name === 'tipos-documentos'">
+        <h4>Agregar nuevo tipo de documento</h4>
+    </div>
+    <div v-else class="card-title">
         <h4>Agregar nueva clasificación</h4>
     </div>
     <form class="needs-validation" @submit.prevent="onSubmit" novalidate>
@@ -7,42 +10,50 @@
             <label class="form-label"
                 >Codigo</label
             >
-            <input
-                type="text"
-                class="form-control"
-                id="code"
-                placeholder="Ingrese"
-                minlength="1"
-                maxlength="10"
-                v-model="formData.code"
-                required
-            />
-            <div class="invalid-feedback">Please provide a valid zip.</div>
+            <div :class="{ valid: !v$.$error && v$.$dirty, error: v$.$error }">
+                <input
+                    type="text"
+                    class="form-control"
+                    id="code"
+                    placeholder="Ingrese"
+                    minlength="1"
+                    maxlength="10"
+                    v-model="v$.code.$model"
+                    required
+                />
+                <div v-for="(error, index) in v$.code.$errors" :key="index" class="invalid-feedback d-block">
+                    {{ error.$message }}
+                </div>
+            </div>
         </div>
         <div class="mb-3">
             <label class="form-label"
                 >Nombre</label
             >
-            <input
-                type="text"
-                class="form-control"
-                id="name"
-                placeholder="Ingrese"
-                minlength="5"
-                maxlength="255"
-                v-model="formData.name"
-                required
-            />
-            <div class="invalid-feedback">Please provide a valid zip.</div>
+            <div :class="{ valid: !v$.$error && v$.$dirty, error: v$.$error }">
+                <input
+                    type="text"
+                    class="form-control"
+                    id="name"
+                    placeholder="Ingrese"
+                    minlength="5"
+                    maxlength="255"
+                    v-model="v$.name.$model"
+                    required
+                />
+                <div v-for="(error, index) in v$.name.$errors" :key="index" class="invalid-feedback d-block">
+                    {{ error.$message }}
+                </div>
+            </div>
         </div>
         <div class="row justify-items-center">
-            <button v-if="!edit" class="btn btn-primary mb-2" type="submit" @click.prevent="addClassification">
+            <button v-if="!edit" class="btn btn-primary mb-2" type="submit" @click.prevent="addClassification" :disabled="v$.$errors.length > 0 || v$.$silentErrors.length > 0">
                 AGREGAR CLASIFICACIÓN
             </button>
-            <button v-if="edit" class="btn btn-primary mb-2" type="submit" @click.prevent="editRequest">
+            <button v-if="edit" class="btn btn-primary mb-2" type="submit" @click.prevent="editRequest" :disabled="v$.$errors.length > 0 || v$.$silentErrors.length > 0">
                 ACTUALIZAR CLASIFICACIÓN
             </button>
-            <button class="btn btn-light mb-2" type="submit" @click="resetData">CANCELAR</button>
+            <button class="btn btn-light mb-2" type="submit" @click="resetData()">CANCELAR</button>
         </div>
     </form>
 </template>
@@ -51,6 +62,8 @@
 import { ref, toRef, onMounted, reactive} from 'vue';
 import { useRouter, useRoute } from "vue-router";
 import $ from "jquery";
+import { useVuelidate } from '@vuelidate/core'
+import { required, email ,minValue, helpers, minLength, maxLength} from '@vuelidate/validators'
 
 // clasificaciones
 import useFileCatalogsBackgroundAPI from "@/api/admin/catalogs/classification/background.js";
@@ -87,13 +100,24 @@ const backGround = ref("");
 
 const formData = reactive(dataForm);
 
+const showAll = ref(false);
+    const rules = {
+      code: {
+        required: helpers.withMessage('Este campo no debe estar vacio', required),
+        minLength: helpers.withMessage('Minimo debe ser un caracter', minLength(0)),
+        maxLength: helpers.withMessage('Maximo debe ser 10 caracteres', maxLength(10)),
+      },
+      name: {
+        required: helpers.withMessage('Este campo no debe estar vacio', required),
+        minLength: helpers.withMessage('Minimo debe ser 5 caracteres', minLength(5)),
+        maxLength: helpers.withMessage('Maximo debe ser 255 caracteres', maxLength(255)),
+      },
+    };
+    const state = reactive(dataForm);
 
-// const formData = ref(
-//     {
-//         code: "",
-//         name: ""
-//     }
-// )
+const v$ = useVuelidate(rules, formData);
+ 
+
 
 const apisGet = {
     'tipos-documentos':useFileCatalogsDocumentAPI,
@@ -108,18 +132,21 @@ const apisGet = {
 }
 
 const onSubmit = async (values) => {
-    // alert("yep")
-    // submit.value = true
-    // if($v.$invalid){
-    //     return;
+    // if(v$.$invalid){
+    //     console.log("Es invalido");
+    //     return
+        
     // }
+   
 };
 
 onMounted(async () => {
     await getRequests();
+    console.log(v$._value);
 });
 
 const addClassification = async () => {
+    onSubmit();
     const get = apisGet[route.params.name]
     get.store(formData.value)
     .then((res) => {
@@ -128,7 +155,7 @@ const addClassification = async () => {
         });
     })
     .catch(error => 
-        toast.warning("No se ha posido Agregar", {
+        toast.warning("No se ha podido Agregar", {
           timeout: 2000,
         })
     );
@@ -142,24 +169,21 @@ const editRequest = async => {
     const get = apisGet[route.params.name]
     get.update(formData.value)
     .then((res) => {
-    //     $.NotificationApp.send(
-    //     "Correcto",
-    //     formData.value.id
-    //         ? "El formulario del estudiante se actualizo correctamente"
-    //         : "El formulario del estudiante se registro correctamente",
-    //     "bottom-right",
-    //     "DarkGreen",
-    //     "success"
-    // );
+        toast.success("El registro se ha actualizado corectamente", {
+          timeout: 2000,
+        })
+    })
+    .catch((error) =>{
+        toast.error("El registro no se ha actualizado", {
+          timeout: 2000,
+        });
     });
     emit('update');
     resetData();
 }
 
 function resetData(){
-    formData.value.id = null;
-    formData.value.name = "";
-    formData.value.code = "";
+    v$._value.$reset();
     emit('cancel');
 }
 
@@ -174,10 +198,7 @@ const getRequests = async () => {
     const resProductionArea = await useFileCatalogsSectionAPI.getAll("");
     section.value = resProductionArea;
 
-}
-
-
-
+};
 
 
 </script>

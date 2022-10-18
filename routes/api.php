@@ -128,3 +128,6 @@ Route::post('/deletion-request/store', 'DeletionRequestController@store');
 Route::delete('/deletion-request/delete/{id}', 'DeletionRequestController@delete');
 Route::post('/deletion-request/accept', 'DeletionRequestController@acceptRequest');
 Route::post('/deletion-request/reject', 'DeletionRequestController@rejectRequest');
+
+//Spatie routes
+Route::get('/spatie/role/get-all', 'UserController@getRoles');

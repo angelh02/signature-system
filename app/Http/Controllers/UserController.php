@@ -26,6 +26,12 @@ class UserController extends Controller
         }
     }
 
+    public function getRoles(){
+        $roles = Role::all();
+
+        return response()->json($roles, 200);
+    }
+
     public function getAll()
     {
         $users = User::with('roles')->get();
@@ -53,7 +59,7 @@ class UserController extends Controller
             $user = User::where('id',$request->input('id'))->first();
             if(!$user)
                 return response()->json(['message' => 'USER_DOES_NOT_EXIST'], 200);
-            $user->active = Hash::make('contraseña');
+            $user->password = Hash::make('contraseña');
             $user->save();
             DB::commit();
             return response()->json($user, 200);

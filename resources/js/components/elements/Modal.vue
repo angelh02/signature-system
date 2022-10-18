@@ -87,7 +87,7 @@ const addRequest = (async) => {
     useDocumentRequestsAPI.addDocument(formData.value)
     .then((res) => {
         // resFile.value = res
-        router.push({ path: '/documents/preparation/' + res.id })       
+        router.push({ path: '/mis-documentos/preparacion/' + res.id })       
     });
     // resetData();
 };
