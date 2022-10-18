@@ -1,6 +1,6 @@
 <template>
     <table
-        id="example"
+        id="classification-table"
         class="table table-striped cell-border"
         style="width: 100%"
     ></table>
@@ -12,12 +12,14 @@
 </template>
 
 <script setup>
+//Libraries
 import { ref, onMounted, watch, toRefs, reactive } from "vue";
 import $ from "jquery";
 import { Modal } from "bootstrap";
-import ConfirmationModal from '../elements/ConfirmationModal.vue';
-import ModalEdit from "../elements/ModalEdit.vue";
 import { dataTable, table, row, destroy, draw } from "datatables";
+//Components
+import ConfirmationModal from '../elements/ConfirmationModal.vue';
+//Api functions
 import { useFileClasificationRequests } from "@/js/composables/useFileClasificationRequest.js";
 import useFileClasificationRequestsAPI from "@/api/index.js";
 
@@ -66,7 +68,7 @@ function confirmationResponse(response){
 }
 
 const refreshTable = async() => {
-    classificationTable.value = $("#example").dataTable({
+    classificationTable.value = $("#classification-table").DataTable({
         language: {
             url: "//cdn.datatables.net/plug-ins/1.10.11/i18n/Spanish.json",
         },
@@ -79,7 +81,7 @@ const refreshTable = async() => {
 }
 
 const createTable = async () => {
-    classificationTable.value = $("#example").DataTable({
+    classificationTable.value = $("#classification-table").DataTable({
         language: {
             url: "//cdn.datatables.net/plug-ins/1.10.11/i18n/Spanish.json",
         },
@@ -127,7 +129,6 @@ const getRequests = async (refresh = false) => {
 const deleteRequests = async (id) => {
     useFileClasificationRequestsAPI.deleteClassification(id)
     .then((res) => {
-        $("#example").DataTable().destroy();
         getRequests(true);
     });
    
@@ -137,19 +138,8 @@ const deleteRequests = async (id) => {
 watch(
     () => updated,
     (updated, oldUpdated) => {
-        $("#example").DataTable().destroy();
         getRequests(true);
     },
     { deep: true },   
 );
-
-const openModal = () => {
-    // $("#signup-modal").modal("show")
-
-    visible.value = true;
-};
-
-const close = async () => {
-    visible.value = false;
-};
 </script>

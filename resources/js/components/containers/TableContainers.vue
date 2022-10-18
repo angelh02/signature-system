@@ -1,6 +1,6 @@
 <template>
     <table
-        id="containers_table"
+        id="containers-table"
         class="table table-striped cell-border"
         style="width: 100%"
     ></table>
@@ -12,11 +12,14 @@
 </template>
 
 <script setup>
+//Libraries
 import { ref, onMounted, watch, toRefs, reactive } from "vue";
 import $ from "jquery";
 import { Modal } from "bootstrap";
-import ConfirmationModal from '../elements/ConfirmationModal.vue';
 import { dataTable, table, row, draw, destroy } from "datatables";
+//Components
+import ConfirmationModal from '../elements/ConfirmationModal.vue';
+//Api functions
 import { useContainersRequests } from "@/js/composables/container-apis/useContainerRequest.js";
 import useContainersRequestsAPI from "@/api/container/index.js";
 
@@ -63,7 +66,7 @@ function confirmationResponse(response){
 }
 
 const refreshTable = async() => {
-    containerTable.value = $("#containers_table").DataTable({
+    containerTable.value = $("#containers-table").DataTable({
         language: {
             url: "//cdn.datatables.net/plug-ins/1.10.11/i18n/Spanish.json",
         },
@@ -76,7 +79,7 @@ const refreshTable = async() => {
 }
 
 const createTable = async () => {
-    containerTable.value = $("#containers_table").DataTable({
+    containerTable.value = $("#containers-table").DataTable({
         language: {
             url: "//cdn.datatables.net/plug-ins/1.10.11/i18n/Spanish.json",
         },
@@ -136,14 +139,4 @@ watch(
     },
     { deep: true },   
 );
-
-const openModal = () => {
-    // $("#signup-modal").modal("show")
-
-    visible.value = true;
-};
-
-const close = async () => {
-    visible.value = false;
-};
 </script>
