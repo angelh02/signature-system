@@ -6,9 +6,27 @@
                     <div class="modal-body">
                         <div class="row">
                             <div class="col-8">
-                                <div class="d-flex align-items-center" v-if="!pdfLoaded">
-                                    <strong>Loading...</strong>
-                                    <div class="spinner-border ms-auto" role="status" aria-hidden="true"></div>
+                                <div
+                                    class="card bg-secondary text-white rounded m-0"
+                                    style="background-color: #a1a5ad"
+                                >
+                                    <div class="d-flex justify-content-between pe-2 ps-2 pt-1 pb-1" v-if="dataFiles.length > 1">
+                                        <span class="align-middle">
+                                            <button class="btn btn-light btn-sm p-0 me-1" :disabled="pdfIndex <= 1" @click="pdfIndex--">
+                                                <i class="uil uil-angle-left fs-5"></i>
+                                            </button>
+                                            {{pdfIndex}} / {{dataFiles.length}}
+                                            <button class="btn btn-light btn-sm p-0 ms-1" :disabled="pdfIndex >= dataFiles.length" @click="pdfIndex++">
+                                                <i class="uil uil-angle-right fs-5"></i>
+                                            </button>
+                                        </span>
+                                        <label class="align-middle">
+                                            {{dataFiles[pdfIndex-1]?.path}}
+                                        </label>
+                                    </div>
+                                </div>
+                                <div class="d-flex justify-content-center h-50" v-if="!pdfLoaded">
+                                    <div class="spinner-border mt-auto" style="width: 3rem; height: 3rem;" role="status" aria-hidden="true"></div>
                                 </div>
                                 <div
                                     class="card bg-secondary text-white rounded"
@@ -40,27 +58,21 @@
                                                     >NOMBRE DEL
                                                     DOCUMENTO</label
                                                 >
-                                                <input
-                                                    ref="nameInput"
-                                                    type="text"
-                                                    class="form-control"
-                                                    id="name"
-                                                    placeholder="Ingrese Nombre"
-                                                    maxlength="30"
-                                                    v-model="formData.name"
-                                                    required
-                                                />
-                                                <div
-                                                    v-if=""
-                                                    class="mensajeError"
-                                                >
-                                                    Debe ingresar un nombre
-                                                </div>
-                                                <div
-                                                    class="invalid-feedback"
-                                                >
-                                                    Please provide a valid
-                                                    zip.
+                                                <div :class="{ valid: !v$.$error && v$.$dirty, error: v$.$error }">
+                                                    <input
+                                                        ref="nameInput"
+                                                        type="text"
+                                                        class="form-control"
+                                                        id="name"
+                                                        placeholder="Ingrese Nombre"
+                                                        maxlength="30"
+                                                        v-model="v$.name.$model"
+                                                        :disabled="true"
+                                                        required
+                                                    />
+                                                    <div v-for="(error, index) in v$.name.$errors" :key="index" class="invalid-feedback d-block">
+                                                        {{ error.$message }}
+                                                    </div>
                                                 </div>
                                             </div>
                                             <div class="mb-3">
@@ -70,32 +82,36 @@
                                                     >TIPO DE
                                                     DOCUMENTO</label
                                                 >
-                                                <select
-                                                    v-model="
-                                                        formData.document_type_id
-                                                    "
-                                                    class="form-select"
-                                                    id="background_id"
-                                                    name="background_id"
-                                                    required
-                                                >
-                                                    <option
-                                                        :value="''"
-                                                        selected
+                                                <div :class="{ valid: !v$.$error && v$.$dirty, error: v$.$error }">
+                                                    <select
+                                                        v-model="
+                                                            v$.document_type_id.$model
+                                                        "
+                                                        class="form-select"
+                                                        id="background_id"
+                                                        name="background_id"
+                                                        required
                                                     >
-                                                        Selecciona una
-                                                        opción...
-                                                    </option>
-                                                    <option
-                                                        v-for="res in documentTypes"
-                                                        :value="res.id"
-                                                    >
-                                                        {{ `${res.code}` }}
-                                                        -
-                                                        {{ `${res.name}` }}
-                                                    </option>
-                                                </select>
-                                                <!-- <div class="mensajeError">Debe escoger una opcion</div> -->
+                                                        <option
+                                                            :value="''"
+                                                            selected
+                                                        >
+                                                            Selecciona una
+                                                            opción...
+                                                        </option>
+                                                        <option
+                                                            v-for="res in documentTypes"
+                                                            :value="res.id"
+                                                        >
+                                                            {{ `${res.code}` }}
+                                                            -
+                                                            {{ `${res.name}` }}
+                                                        </option>
+                                                    </select>
+                                                    <div v-for="(error, index) in v$.document_type_id.$errors" :key="index" class="invalid-feedback d-block">
+                                                        {{ error.$message }}
+                                                    </div>
+                                                </div>
                                             </div>
                                             <div class="mb-3">
                                                 <label
@@ -103,30 +119,34 @@
                                                     for="background_id"
                                                     >CLASIFICACIÓN</label
                                                 >
-                                                <select
-                                                    v-model="
-                                                        formData.classification_id
-                                                    "
-                                                    class="form-select"
-                                                    id="background_id"
-                                                    name="background_id"
-                                                    required
-                                                >
-                                                    <option
-                                                        :value="''"
-                                                        selected
+                                                <div :class="{ valid: !v$.$error && v$.$dirty, error: v$.$error }">
+                                                    <select
+                                                        v-model="
+                                                            v$.classification_id.$model
+                                                        "
+                                                        class="form-select"
+                                                        id="background_id"
+                                                        name="background_id"
+                                                        required
                                                     >
-                                                        Selecciona una
-                                                        opción...
-                                                    </option>
-                                                    <option
-                                                        v-for="res in classifications"
-                                                        :value="res.id"
-                                                    >
-                                                        {{ `${res.name}` }}
-                                                    </option>
-                                                </select>
-                                                <!-- <div class="mensajeError">Debe escoger una opcion</div> -->
+                                                        <option
+                                                            :value="''"
+                                                            selected
+                                                        >
+                                                            Selecciona una
+                                                            opción...
+                                                        </option>
+                                                        <option
+                                                            v-for="res in classifications"
+                                                            :value="res.id"
+                                                        >
+                                                            {{ `${res.name}` }}
+                                                        </option>
+                                                    </select>
+                                                    <div v-for="(error, index) in v$.classification_id.$errors" :key="index" class="invalid-feedback d-block">
+                                                        {{ error.$message }}
+                                                    </div>
+                                                </div>
                                             </div>
                                             <div class="mb-3">
                                                 <label
@@ -134,30 +154,34 @@
                                                     for="background_id"
                                                     >CONTENEDORES</label
                                                 >
-                                                <select
-                                                    v-model="
-                                                        formData.container_id
-                                                    "
-                                                    class="form-select"
-                                                    id="background_id"
-                                                    name="background_id"
-                                                    required
-                                                >
-                                                    <option
-                                                        :value="''"
-                                                        selected
+                                                <div :class="{ valid: !v$.$error && v$.$dirty, error: v$.$error }">
+                                                    <select
+                                                        v-model="
+                                                            v$.container_id.$model
+                                                        "
+                                                        class="form-select"
+                                                        id="background_id"
+                                                        name="background_id"
+                                                        required
                                                     >
-                                                        Selecciona una
-                                                        opción...
-                                                    </option>
-                                                    <option
-                                                        v-for="res in containers"
-                                                        :value="res.id"
-                                                    >
-                                                        {{ `${res.name}` }}
-                                                    </option>
-                                                </select>
-                                                <!-- <div class="mensajeError">Debe escoger una opcion</div> -->
+                                                        <option
+                                                            :value="''"
+                                                            selected
+                                                        >
+                                                            Selecciona una
+                                                            opción...
+                                                        </option>
+                                                        <option
+                                                            v-for="res in containers"
+                                                            :value="res.id"
+                                                        >
+                                                            {{ `${res.name}` }}
+                                                        </option>
+                                                    </select>
+                                                    <div v-for="(error, index) in v$.container_id.$errors" :key="index" class="invalid-feedback d-block">
+                                                        {{ error.$message }}
+                                                    </div>
+                                                </div>
                                             </div>
                                             <div class="d-flex justify-content-around">
                                                 <button
@@ -166,6 +190,7 @@
                                                     @click.prevent="
                                                         sendDocument
                                                     "
+                                                    :disabled="v$.$errors.length > 0 || v$.$silentErrors.length > 0"
                                                 >
                                                     CONTINUAR
                                                 </button>
@@ -176,8 +201,6 @@
                                                     CANCELAR
                                                 </button>
                                             </div>
-                                            {{ dataFile[0]?.path }}
-                                            {{ dataFile[0]?.type }}
                                         </div>
                                     </div>
                                 </div>
@@ -190,14 +213,16 @@
     </div>
 </template>
 <script setup>
-    import { toRef, ref, onMounted, watch, nextTick } from "vue";
+    import { toRef, ref, onMounted, watch, nextTick, reactive } from "vue";
     import VuePdfEmbed from "vue-pdf-embed";
+    import { useVuelidate } from '@vuelidate/core';
+    import { required, email ,minValue, helpers, minLength, maxLength} from '@vuelidate/validators';
     import useDocumentRequestsAPI from "@/api/document/index.js";
     import { useRouter, useRoute } from "vue-router";
     import $ from "jquery";
     import { Modal } from "bootstrap";
 
-    const emit = defineEmits(['cancel']);
+    const emit = defineEmits(['cancel', 'preparation']);
 
     const router = useRouter();
 
@@ -206,19 +231,21 @@
         classifications: Object,
         documentTypes: Object,
         containers: Object,
-        dataFile: Object
+        dataFiles: Object
     });
 
     const source = ref("");
     const pdfViewer = ref(null);
     const pdfLoaded = ref(false);
+    //Const to count pdf files
+    const pdfIndex = ref(1);
 
+    //Info to fill select controls
     const classifications = toRef(props, "classifications");
     const documentTypes = toRef(props, "documentTypes");
     const containers = toRef(props, "containers");
-    const dataFile = toRef(props, "dataFile");
+    const dataFiles = toRef(props, "dataFiles");
     const resFile = ref("");
-    const url = ref(dataFile)
 
     const documentsFiles = ref([
         {
@@ -243,7 +270,7 @@
         },
     ])
 
-    // const data = dataFile.map();
+    // const data = dataFiles.map();
     const formData = ref({
         name: "",
         container_id: "",
@@ -251,22 +278,42 @@
         document_type_id: "",
         url: "",
     });
+
+
+    //Consts to vuelidate controls
+    const rules = {
+        name:{
+            required: helpers.withMessage('Este campo no debe estar vacio', required),
+        },
+        container_id: {
+            required: helpers.withMessage('Debes seleccionar una opción', required),
+        },
+        classification_id: {
+            required: helpers.withMessage('Debes seleccionar una opción', required),
+        },
+        document_type_id: {
+            required: helpers.withMessage('Debes seleccionar una opción', required),
+        },
+    };
+    const state = reactive(formData);
+    const v$ = useVuelidate(rules, formData);
+
     //Life cycle
     onMounted(async () => {
     });
 
     //Watchs
     watch(
-        () => dataFile,
-        (dataFile, oldDataFile) => {
-            console.log(dataFile.value);
-            if(/* dataFile[0] !== undefined && dataFile[0].path !== undefined */dataFile !== undefined && dataFile.value.length > 0){
+        () => dataFiles,
+        (dataFiles, oldDataFiles) => {
+            console.log(dataFiles.value);
+            if(/* dataFiles[0] !== undefined && dataFiles[0].path !== undefined */dataFiles !== undefined && dataFiles.value.length > 0){
                 /* source.value = ""; */
                 pdfLoaded.value = false;
-                formData.value.name = dataFile.value[0].path;
+                formData.value.name = dataFiles.value[0].path;
                 let index = documentsFiles.value.findIndex(x => x.name == formData.value.name);
                 formData.value.url = index == -1? documentsFiles.value[0].url : documentsFiles.value[index].url;
-                getBase64(dataFile.value[0]);
+                getBase64(dataFiles.value[0]);
             }
         },
         { deep: true },   
@@ -279,12 +326,35 @@
             }
         },
         {deep:true}
-    )
+    );
+    watch(
+      () => pdfIndex,
+      (pdfIndex, oldPdfIndex) => {
+            if(source.value != ""){
+                pdfLoaded.value = false;
+                source.value = "";
+                formData.value.name = dataFiles.value[pdfIndex.value-1].path;
+                let index = documentsFiles.value.findIndex(x => x.name == formData.value.name);
+                formData.value.url = index == -1? documentsFiles.value[0].url : documentsFiles.value[index].url;
+                getBase64(dataFiles.value[pdfIndex.value-1]);
+            }
+      },
+      {deep:true} 
+    );
 
     //Methods
     function cancel(){
+        formData.value = {
+            name: "",
+            container_id: "",
+            classification_id: "",
+            document_type_id: "",
+            url: "",
+        };
         pdfLoaded.value = false;
         source.value = "";
+        pdfIndex.value = 1;
+        v$._value.$reset();
         emit("cancel");
     }
     function filter () { 
@@ -324,20 +394,31 @@
     };
 
     function sendDocument() {
-        /* showPreparation.value = true;
-        emit("showPreparation", showPreparation.value);
-        emit("close"); */
         addRequest();
-        console.log(index);
     }
 
     const addRequest = (async) => {
-        console.log(documentTypes.value[0].id)
-        useDocumentRequestsAPI.addDocument(formData.value)
+        let newFiles = [];
+        console.log("🚀 ~ file: CreateDocumentModal.vue ~ line 402 ~ addRequest ~ dataFiles.value", dataFiles.value)
+        //Method to create a file information array with all files
+        for(let i = 0; i < dataFiles.value.length; i++){
+            newFiles.push({
+                name: dataFiles.value[i].path,
+                document_type_id: formData.value.document_type_id,
+                classification_id: formData.value.classification_id,
+                container_id: formData.value.container_id,
+                file: dataFiles.value[i]
+            })
+        }
+        console.log("🚀 ~ file: CreateDocumentModal.vue ~ line 367 ~ addRequest ~ newFiles", newFiles)
+        emit('preparation', newFiles);
+        //Router push with params
+
+        /* useDocumentRequestsAPI.addDocument(formData.value)
         .then((res) => {
             // resFile.value = res
             router.push({ path: '/mis-documentos/preparacion/' + res.id })       
         });
-        // resetData();
+        // resetData(); */
     };
 </script>

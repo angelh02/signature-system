@@ -101,6 +101,7 @@ function cancel(){
         subject : "",
         description : ""
     }
+    v$._value.$reset();
     emit("cancel");
 }
 

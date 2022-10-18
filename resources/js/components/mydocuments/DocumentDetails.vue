@@ -231,12 +231,11 @@ const documentDownload = ref("");
 const source = ref("");
 
 const props = defineProps({
-    dataFiles: Object,
+    dataFile: Object,
     resFiles: Object
 });
 
-const dataFiles = toRef(props, "dataFiles");
-const dataDocuments = ref({});
+const dataFile = toRef(props, "dataFile");
 const resFiles = toRef(props, "resFiles");
 
 const data = ref("");
@@ -271,9 +270,7 @@ function resetData(){
 
 
 onMounted(async () => {   
-    console.log(route.params)
-    dataDocuments.value = route.props.documentsData;
-    console.log("🚀 ~ file: DocumentsPreparation.vue ~ line 276 ~ onMounted ~ dataDocuments", dataDocuments.value);
+    console.log(route.params.id)
     documentId.value = parseInt(route.params.id);
     formData.value.document_id = documentId.value;
     getDocumentData();

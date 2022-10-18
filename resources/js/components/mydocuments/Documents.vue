@@ -111,8 +111,9 @@
         </div>
         <CreateDocumentModal
             @cancel="cancelCreation"
+            @preparation="documentsPreparation"
             :classifications="classifications"
-            :dataFile="dataFile"
+            :dataFiles="dataFiles"
             :containers="containers"
             :documentTypes="documentTypes"
         ></CreateDocumentModal>
@@ -120,7 +121,7 @@
     <div>
         <!-- <DocumentsPreparation
             v-show="showPrepa"
-            :dataFile="dataFile"
+            :dataFiles="dataFiles"
             :resFiles="resFIles"
         ></DocumentsPreparation> -->
     </div>
@@ -176,6 +177,15 @@ function cancelCreation(){
     documentModal.value.hide();
 }
 
+function documentsPreparation(newFiles){
+    console.log("🚀 ~ file: Documents.vue ~ line 181 ~ documentsPreparation ~ newFiles", newFiles.value)
+    documentModal.value.hide();
+    router.push({
+        name : 'DocumentsPreparation',
+        params: {files: newFiles}
+    });
+}
+
 const getRequests = async () => {
     const resdocumentType = await getDocumentsType("");
     documentTypes.value = resdocumentType;
@@ -190,7 +200,7 @@ const getRequests = async () => {
     documentModal.value = new Modal($("#create-modal"));
 };
 
-const dataFile = ref("");
+const dataFiles = ref({});
 const shadow = ref(false);
 const url = "{your_url}"; // Your url on the server side
 const saveFiles = (files) => {
@@ -199,19 +209,6 @@ const saveFiles = (files) => {
         formData.append("images[]", files[x]);
     }
     console.log("🚀 ~ file: Documents.vue ~ line 195 ~ saveFiles ~ formData", formData)
-    // dataFile.value = formData
-    // axios
-    // .post(url, formData, {
-    //     headers: {
-    //     "Content-Type": "multipart/form-data",
-    //     },
-    // })
-    // .then((response) => {
-    //     console.info(response.data);
-    // })
-    // .catch((err) => {
-    //     console.error(err);
-    // });
 };
 
 function onDrop(acceptFiles, rejectReasons) {
@@ -235,15 +232,8 @@ function onDropAccepted(acceptFiles) {
     console.log("🚀 ~ file: Documents.vue ~ line 228 ~ onDropAccepted ~ acceptFiles", acceptFiles)
     var encoded = btoa(JSON.stringify(acceptFiles))
     var actual = JSON.parse(atob(encoded))
-    dataFile.value = acceptFiles;
-    /* console.log(actual);
-    console.log(encoded); */
+    dataFiles.value = acceptFiles;
     documentModal.value.show();
-
-    // $('#standard-modal').modal('show');
-
-    // router.push({ name: "DocumentsPreparation"
-    //             , params: {datafile: JSON.stringify(dataFile)}})
 }
 
 </script>
