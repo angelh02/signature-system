@@ -27,7 +27,7 @@ const routes = [
     },
     {
         path: '/mis-documentos/detalles/:id',
-        name: 'DocumentsPreparation',
+        name: 'DocumentsDetails',
         props:true,
         component: DocumentDetails
     },

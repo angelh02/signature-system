@@ -2,6 +2,7 @@
 
 use App\Http\Controllers\HomeController;
 use Illuminate\Support\Facades\Route;
+use App\Http\Controllers\Auth\ResetPasswordController;
 
 /*
 |--------------------------------------------------------------------------
@@ -28,8 +29,8 @@ Auth::routes();
     
 Route::middleware(['auth'])->group(function() {
     // Route::view('/', 'layout.content');
-    // Route::view('/reset-password', 'auth.passwords.reset')->name('reset-password');
-    // Route::post('/reset-password', [ResetPasswordController::class, 'resetUserPassword'])->name('reset-password');
+    Route::view('/reset-password', 'auth.passwords.reset')->name('reset-password');
+    Route::post('/reset-password', [ResetPasswordController::class, 'resetUserPassword'])->name('reset-password');
     // Route::get('/{any}', function () {
     //     return view('home');
     // });
@@ -44,5 +45,7 @@ Route::middleware(['auth'])->group(function() {
         Route::view('/usuarios','admin.index');
         Route::view('/catalogo/{any}','admin.index')->where('any', '.*');
     });
+    // Route::view('/reset-password', 'auth.passwords.reset')->name('reset-password');
+
     
 });
