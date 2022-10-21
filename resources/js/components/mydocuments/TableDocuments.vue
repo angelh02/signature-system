@@ -37,7 +37,7 @@
                     <router-link
                         v-if="document.signed == 0"
                         class="btn btn-primary"
-                        :to="`/document/sign/${document?.id}`"
+                        :to="`/documento/firmar/${document?.id}`"
                     >
                         FIRMAR
                     </router-link>

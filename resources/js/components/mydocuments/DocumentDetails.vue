@@ -15,7 +15,7 @@
                                     <a
                                         href="#home1"
                                         data-bs-toggle="tab"
-                                        aria-expanded="false"
+                                        aria-expanded="true"
                                         class="nav-link rounded-0 active"
                                     >
                                         <i
@@ -30,7 +30,7 @@
                                     <a
                                         href="#profile1"
                                         data-bs-toggle="tab"
-                                        aria-expanded="true"
+                                        aria-expanded="false"
                                         class="nav-link rounded-0"
                                     >
                                         <i
