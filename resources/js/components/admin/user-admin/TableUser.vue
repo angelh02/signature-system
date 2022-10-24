@@ -4,6 +4,11 @@
         class="table table-striped cell-border"
         style="width: 100%"
     ></table>
+    <ConfirmationModal
+        :title="'Confirmacion de Eliminación'"
+        :message="'Estas seguro que deseas eliminar a este usuario'"
+        @response="confirmationResponse"
+    ></ConfirmationModal>
 </template>
 
 <script setup>
@@ -14,11 +19,12 @@ import { useRouter, useRoute } from "vue-router";
 import { dataTable, table, row, destroy, draw } from "datatables";
 import { useAdminUser } from "@/js/composables/admin-apis/useAdminUser.js";
 import useFileUserAPI from "@/api/admin/user/index.js";
-
+import ConfirmationModal from "../../elements/ConfirmationModal.vue"
+import { Modal } from "bootstrap";
 import {useToast} from "vue-toastification";
 
 const toast = useToast();
-
+const confirmationModal= ref({});
 const props = defineProps({
     filesClasification: Object,
     updated: Boolean,
@@ -34,7 +40,7 @@ const emit = defineEmits(["data"]);
 const users = ref("");
 const name = ref("");
 const fila = ref("");
-const id = Object;
+const userId = ref(0);
 const visible = ref(false);
 const refresh = ref(false);
 const formData = reactive({
@@ -57,6 +63,12 @@ const { userColumns } = useAdminUser();
 onMounted(async () => {
     getUser();
 });
+
+function confirmationResponse(response){
+    confirmationModal.value.hide();
+    if(response)
+        deleteUser(userId.value);
+}
 
 const refreshTable = async() => {
     userTable.value = $("#example").DataTable({
@@ -102,7 +114,9 @@ const createTable = async () => {
     userTable.value.on("click", "#btn_borrar", function(){
         fila.value = $(this).closest("tr");           
         const id = parseInt(userTable.value.rows(fila.value).data()[0].id); 
-        deleteUser(id);      
+        userId.value = id;
+        confirmationModal.value.show();
+        // deleteUser(id);      
     }); 
 
     userTable.value.on("click", "#btn_reset", function(){
@@ -115,6 +129,7 @@ const createTable = async () => {
 const getUser = async (refresh = false) => {
     const info = await useFileUserAPI.getAll([]);
     users.value = info;
+    confirmationModal.value = new Modal($("#confirmation-modal"))
     if(!refresh)
         createTable();
     else

@@ -48,10 +48,10 @@
         </div>
         <div class="row justify-items-center">
             <button v-if="!edit" class="btn btn-primary mb-2" type="submit" @click.prevent="addClassification" :disabled="v$.$errors.length > 0 || v$.$silentErrors.length > 0">
-                AGREGAR CLASIFICACIÓN
+                AGREGAR 
             </button>
             <button v-if="edit" class="btn btn-primary mb-2" type="submit" @click.prevent="editRequest" :disabled="v$.$errors.length > 0 || v$.$silentErrors.length > 0">
-                ACTUALIZAR CLASIFICACIÓN
+                ACTUALIZAR 
             </button>
             <button class="btn btn-light mb-2" type="submit" @click="resetData()">CANCELAR</button>
         </div>
