@@ -48,7 +48,7 @@
         </div>
         <div class="row justify-items-center">
             <button v-if="!edit" class="btn btn-primary mb-2" type="submit" @click.prevent="addClassification" :disabled="v$.$errors.length > 0 || v$.$silentErrors.length > 0">
-                AGREGAR 
+                AGREGAR {{btn}}
             </button>
             <button v-if="edit" class="btn btn-primary mb-2" type="submit" @click.prevent="editRequest" :disabled="v$.$errors.length > 0 || v$.$silentErrors.length > 0">
                 ACTUALIZAR 
@@ -59,7 +59,7 @@
 </template>
 
 <script setup>
-import { ref, toRef, onMounted, reactive} from 'vue';
+import { ref, toRef, onMounted, reactive, watch} from 'vue';
 import { useRouter, useRoute } from "vue-router";
 import $ from "jquery";
 import { useVuelidate } from '@vuelidate/core'
@@ -97,7 +97,7 @@ const param = toRef(props, 'param');
 const productionArea = ref([]);
 const section = ref("");
 const backGround = ref("");
-
+const btn = ref("")
 const formData = reactive(dataForm);
 
 const showAll = ref(false);
@@ -130,6 +130,19 @@ const apisGet = {
     'tipos-informacion':useFileCatalogsInfoAPI,
     'tecnicas-seleccion':useFileCatalogsSelectionAPI
 }
+
+const buttonTag = {
+    'tipos-documentos':"NUEVO DOCUMENTO",
+    fondos: "FONDO",
+    secciones: "SECCIÓN",
+    'areas-productoras': "NUEVA ARÉA",
+    'tiempos-conservacion':"NUEVO TIEMPO",
+    'tipos-conservacion':"NUEVA CONSEVACIÓN",
+    'valores-documentales':"VALOR",
+    'tipos-informacion':"NUEVA INFORMACIÓN",
+    'tecnicas-seleccion':"TECNICA"
+}
+
 
 const onSubmit = async (values) => {
     // if(v$.$invalid){
@@ -189,6 +202,8 @@ function resetData(){
 
 
 const getRequests = async () => {
+    btn.value = buttonTag[route.params.name]
+
     const resBackground =  await useFileCatalogsBackgroundAPI.getAll("");
     backGround.value = resBackground;
 
@@ -199,6 +214,14 @@ const getRequests = async () => {
     section.value = resProductionArea;
 
 };
+
+watch(  
+    () => route.params.name,
+    (route, oldRoute) => {
+        getRequests();
+    },
+    { deep: true },
+);
 
 
 </script>

@@ -209,12 +209,12 @@ const addUser = async () => {
     data.active = data.active ? 1 : 0;
     useFileUserAPI.store(data)
     .then((res) => {
-        toast.success("Se ha agragado corectamente", {
+        toast.success("Se ha agregado corectamente", {
           timeout: 2000,
         });
     })
     .catch(error => 
-        toast.warning("No se ha podido Agregar", {
+        toast.warning("No se ha podido agregar", {
           timeout: 2000,
         })
     );
@@ -235,7 +235,7 @@ const editUser = async => {
         })
     })
     .catch((error) =>{
-        toast.error("El registro no se ha actualizado", {
+        toast.error("El registro no se ha podido actualizado", {
           timeout: 2000,
         });
     });

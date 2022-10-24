@@ -79,10 +79,16 @@
                         <td>{{request.status}}</td>
                         <td class="d-flex">
                             <div v-if="tab === 'Pendiente'">
-                                <button id="btn_editar" @click="aceptRequest(request)" class="mx-1 btn btn-success mdi mdi-check-outline"></button> 
+                                <button id="btn_editar" @click="() =>{
+                                  func = '2'
+                                  openModalConfim(request)}" 
+                                  class="mx-1 btn btn-success mdi mdi-check-outline"></button> 
                             </div>
                             <div v-if="tab === 'Pendiente'">
-                                <button id="btn_borrar" @click="openModalConfim(request)" class="mx-1 btn btn-danger mdi mdi-cancel"></button>
+                                <button id="btn_borrar" @click="() =>{
+                                  func = '1'
+                                  openModalConfim(request)}" 
+                                  class="mx-1 btn btn-danger mdi mdi-cancel"></button>
                             </div>
                             <div :class="tab != 'Pendiente' && 'mx-4'">
                                 <button id="btn_detalles" @click="modalRequests(request)" class="mx-1 btn btn-info mdi mdi-eye"></button>
@@ -95,8 +101,8 @@
         </div>
         <ModalRequest :tab="tab" :formData="formData" @cancel="closeModal"/>
         <ConfirmationModal
-            :title="'Confirmacion de rechazo'"
-            :message="'Estas seguro que deseas rechazar'"
+            :title="func === '1' ? 'Confirmacion de rechazo' : 'Confirmacion de aceptación'"
+            :message="func === '1' ? 'Estas seguro que deseas rechazar esta solicitud' : 'Estas seguro que deseas aceptar esta solicitud'"
             @response="confirmationResponse"
         ></ConfirmationModal>
     </div>
@@ -137,6 +143,7 @@ const requests = ref("");
 const allRequests = ref({});
 const refresh = ref(false);
 const tab = ref("Pendiente")
+const func = ref("");
 const formData = reactive({
     id:"",
     subject:"",
@@ -162,8 +169,12 @@ const documentModal = ref({});
 const documents = ref("");
 function confirmationResponse(response){
     confirmationModal.value.hide();
-    if(response)     
+    if(response && func.value === "1")     
         rejectRequests(id);
+    else if (response && func.value === "2")
+        aceptRequest(id)
+        else
+        console.log("Nose que paso")
 }
 
 onMounted(async () => {
@@ -216,13 +227,13 @@ const getRequests = async (refresh = false) => {
     confirmationModal.value = new Modal("#confirmation-modal")
 };
 
-const aceptRequest = async (request) => {
-    const id = {
-        id: request.id
-    }
+const aceptRequest = async (id) => {
+    // const id = {
+    //     id: request.id
+    // }
     useFileRquestAPI.acceptRequest(id)
     .then((res) => {
-        toast.success("Se ha aceptado el folio "+ id + " correctamente", {
+        toast.success("Se ha aceptado el folio "+ id.id + " correctamente", {
           timeout: 2000,
         });
         getRequests(true);
@@ -237,7 +248,7 @@ const rejectRequests = async (id) => {
     console.log(id)
     useFileRquestAPI.rejectRequest(id)
     .then((res) => {
-        toast.success("Se ha rechazado el folio "+ id + " correctamente", {
+        toast.success("Se ha rechazado el folio "+ id.id + " correctamente", {
           timeout: 2000,
         });
         getRequests(true);
