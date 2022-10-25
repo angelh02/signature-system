@@ -64,7 +64,7 @@
                                 <div class="col-7">
                                     <h2 class="text-black">Participantes</h2>
                                     <p class="h5 text-black-50">En esta sección, puedes revisar el estatus actual de cada participante. También puedes
-                                       verificar los RFCs de las personas que ya frimaron</p>
+                                       verificar los RFCs de las personas que ya firmaron</p>
                                 </div>
                                 <div class="card border border-2">
                                 <div class="card-body">
@@ -84,7 +84,7 @@
                                                 <a
                                                     class="btn btn-info mx-1 mb-2"
                                                     type="button"
-                                                    v-if="documentData?.id != null"
+                                                    :disabled="signer.signed === 1"
                                                     @click="deleteDocument"
                                                 >
                                                     <span class="uil uil-bell font-16"></span>
@@ -119,11 +119,16 @@
                                 <button
                                     class="btn btn-outline-danger col-3 py-xxl-0"
                                     type="button"
+                                    :disabled="documentData.signed === 1"
                                     @click="openModal"
                                 >
                                     <h4 class="uil-plus-circle">Añadir firmante</h4>
                                         
                                 </button>
+                                <div v-if="documentData.signed === 1"  class="my-2 alert alert-warning alert-dismissible fade show" role="alert">
+                                    <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                                    <strong>Aviso - </strong> Este documento ya ha sido firmado, no se puede agregar mas firmantes
+                                </div>
                             </div>
                                
                             </div>
@@ -285,6 +290,7 @@ function getDocumentData(){
         documentData.value = res;
         signers.value = res?.document_signers;
         source.value = res.url
+        console.log(documentData.value)
         
     });
 }
