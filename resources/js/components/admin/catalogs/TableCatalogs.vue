@@ -6,7 +6,7 @@
     ></table>
     <ConfirmationModal
         :title="'Confirmacion de Eliminación'"
-        :message="'Estas seguro que deseas eliminar'"
+        :message="'Estas seguro que deseas eliminar ' + tags"
         @response="confirmationResponse"
     ></ConfirmationModal>
 </template>
@@ -53,6 +53,7 @@ const catalogs = ref("");
 const catalogsId = ref(0);
 const name = ref("");
 const fila = ref("");
+const tags = ref("");
 const visible = ref(false);
 const refresh = ref(false);
 const formData = reactive({
@@ -71,6 +72,18 @@ const apisGet = {
     'valores-documentales':useFileCatalogsValueAPI,
     'tipos-informacion':useFileCatalogsInfoAPI,
     'tecnicas-seleccion':useFileCatalogsSelectionAPI
+}
+
+const Tag = {
+    'tipos-documentos':"el tipo de documento",
+    fondos: "el fondo",
+    secciones: "la sección",
+    'areas-productoras': "el área",
+    'tiempos-conservacion':"el tiempo de conservación",
+    'tipos-conservacion':"el tipo de conservación",
+    'valores-documentales':"el valor documental",
+    'tipos-informacion':"tipo de información",
+    'tecnicas-seleccion':"la tecnica de selección"
 }
 
 function confirmationResponse(response){
@@ -135,6 +148,7 @@ const createTable = async () => {
 };
 
 const getRequests = async (refresh = false) => {
+    tags.value = Tag[route.params.name]
     const get = apisGet[route.params.name]
     const info = await get.getAll([]);
     catalogs.value = info;
