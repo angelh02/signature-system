@@ -305,7 +305,6 @@ const signData = ref({
 });
 
 onMounted(async () => {
-    console.log(route.params);
     documentId.value = parseInt(route.params.id);
     searchDocument();
    $("#tab-pdf").addClass("active");
@@ -343,7 +342,6 @@ function changeTab(tab){
 
 //Events to pdf viewer
 function handleDocumentRender() {
-    console.log("hola")
     isLoading.value = false
 };
 function handlePasswordRequest(callback, retry) {
@@ -361,10 +359,8 @@ function onDrop(acceptFiles, rejectReasons) {
 function onDropAccepted(acceptFiles) {
     saveFilesCer(acceptFiles); 
     dataFile.value = acceptFiles
-    console.log(dataFile)
     step.value ++;
     if(step.value == 1){
-        console.log(step.value);
         $("#up-cer-btn").attr('aria-expanded', "false");
         $("#up-cer-btn").addClass("collapsed");
         $("#up-cer").removeClass("show");
@@ -376,7 +372,6 @@ function onDropAccepted(acceptFiles) {
         $("#password-tab").removeClass("show");
     }
     else if(step.value == 2){
-        console.log(step.value);
         $("#up-key-btn").attr('aria-expanded', "false");
         $("#up-key-btn").addClass("collapsed");
         $("#up-key").removeClass("show");
@@ -404,20 +399,16 @@ const saveFilesKey = (files) => {
     for (var x = 0; x < files.length; x++) {
         formData.append("images[]", files[x]);
     }
-    console.log(files)
 };
 const searchDocument = async () => {
     documentData.value = await getDocument(documentId.value);
-    console.log(documentsFiles.value[0]);
     let index = documentsFiles.value.findIndex(x => x.name == documentData.value.name);
-    console.log(index);
     index = index == -1 ? 0 : index;
     source.value = "/pdf/"+(documentsFiles.value[index].name);
     documentDownload.value = documentsFiles.value[index].url;
     signData.value.id = documentData.value.id;
     signData.value.pdf_url = documentsFiles.value[index].pdf_url;
     signData.value.xml_url = documentsFiles.value[index].xml_url;
-    console.log(documentData.value.classification);
 };
 const signDocument = async () => {
     submit.value = true;

@@ -155,7 +155,6 @@ const onSubmit = async (values) => {
 
 onMounted(async () => {
     await getRequests();
-    console.log(v$._value);
 });
 
 const addClassification = async () => {

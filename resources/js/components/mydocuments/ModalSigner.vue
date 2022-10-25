@@ -103,7 +103,6 @@
     const v$ = useVuelidate(rules, dataForm);
     
     const addSigners = async => {
-        console.log(dataForm.value)
         useDocumentRequestsAPI.addSigner(dataForm.value)
         .then((res) => {
             // signers.value = res;

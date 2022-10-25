@@ -173,8 +173,6 @@ function confirmationResponse(response){
         rejectRequests(id);
     else if (response && func.value === "2")
         aceptRequest(id)
-        else
-        console.log("Nose que paso")
 }
 
 onMounted(async () => {
@@ -245,7 +243,6 @@ const rejectRequests = async (id) => {
     // const id = {
     //     id: request.id
     // }
-    console.log(id)
     useFileRquestAPI.rejectRequest(id)
     .then((res) => {
         toast.success("Se ha rechazado el folio "+ id.id + " correctamente", {

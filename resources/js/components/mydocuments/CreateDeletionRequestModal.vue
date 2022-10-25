@@ -106,7 +106,6 @@ function cancel(){
 }
 
 function storeRequest(){
-    console.log(requestData.value);
     if(v$.$errors.length > 0 || v$.$silentErrors.length > 0){
         let data = {
             document_id : documentId.value,

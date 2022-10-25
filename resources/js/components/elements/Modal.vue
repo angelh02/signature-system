@@ -71,11 +71,9 @@ function sendDocument() {
     emit("showPreparation", showPreparation.value);
     emit("close"); */
     addRequest();
-    console.log(index);
 }
 
 onMounted(async () => {
-    console.log(dataFile);
     formData.value.name = dataFile;
     let index = documentsFiles.value.findIndex(x => x.name == formData.value.name);
     source.value = "/pdf/"+(index == -1? documentsFiles.value[0].name : documentsFiles.value[index].name);
@@ -83,7 +81,6 @@ onMounted(async () => {
 });
 
 const addRequest = (async) => {
-    console.log(typesDocument.value[0].id)
     useDocumentRequestsAPI.addDocument(formData.value)
     .then((res) => {
         // resFile.value = res

@@ -109,7 +109,6 @@ const createTable = async () => {
         formData.email = user[index].email;
         formData.active = user[index].active == 1 ? true : false;
         formData.role_id = user[index].roles[0].id;
-        console.log(usersId)
         emit("data", formData);
       
     });
@@ -147,8 +146,6 @@ const restartPass = async (id) => {
     const userid = {
         id: id
     }
-    // console.log(userid)
-    console.log(id)
     useFileUserAPI.resetPassword(userid)
     .then((res) => {
         toast.success("Se restablecio la contreaseña corecctamente", {

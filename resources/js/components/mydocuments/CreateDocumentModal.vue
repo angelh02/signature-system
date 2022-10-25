@@ -306,7 +306,6 @@
     watch(
         () => dataFiles,
         (dataFiles, oldDataFiles) => {
-            console.log(dataFiles.value);
             if(/* dataFiles[0] !== undefined && dataFiles[0].path !== undefined */dataFiles !== undefined && dataFiles.value.length > 0){
                 /* source.value = ""; */
                 pdfLoaded.value = false;

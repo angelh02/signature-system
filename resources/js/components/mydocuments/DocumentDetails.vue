@@ -225,7 +225,6 @@ function openModal(){
 }
 
 const addSigners = async(add) => {
-    console.log("Esto se envia",formData.value) 
     // formData.value = add
     useDocumentRequestsAPI.addSigner(formData.value)
     .then((res) => {
@@ -267,12 +266,10 @@ function resetData(){
 
 
 onMounted(async () => {   
-    console.log(route.params.id)
     documentId.value = parseInt(route.params.id);
     formData.value.document_id = documentId.value;
     documentModal.value = new Modal($("#request-info-modal"));
     getDocumentData();
-    // console.log(data)fddd
 });
 
 function deleteDocument(){
@@ -286,37 +283,11 @@ function getDocumentData(){
     useDocumentRequestsAPI.getDocument(documentId.value)
     .then((res) => {
         documentData.value = res;
-        console.log(documentData.value)
         signers.value = res?.document_signers;
         source.value = res.url
-        // console.log(documentsFiles.value[0]);
-        // let index = documentsFiles.value.findIndex(x => x.name == res.name);
-        // console.log(index);
-        // source.value = "/pdf/"+(index == -1? documentsFiles.value[0].name : documentsFiles.value[index].name);
-        // documentDownload.value = index == -1? documentsFiles.value[0].url : documentsFiles.value[index].url;
+        
     });
 }
 
-// const documentsFiles = ref([
-//     {
-//         name:"minuta_reunion.pdf",
-//         url:"https://drive.google.com/uc?id=1e4Pg3SkXZh6NEldfTNTUmzTGxE3VQlvd&export=download",
-//     },
-//     {
-//         name:"lista_asistencia.pdf",
-//         url:"https://drive.google.com/uc?id=1sJ1hGDWhFW-3etoSo5gnUAatUxiImXrj&export=download",
-//     },
-//     {
-//         name:"constancia_servicio_social.pdf",
-//         url:"https://drive.google.com/uc?id=1QvAC2oJqRnUHddwkJiUOkxIQJ5jyb5ln&export=download",
-//     },
-//     {
-//         name:"carta_no_adeudo.pdf",
-//         url:"https://drive.google.com/uc?id=1IO2e-rsr0WKXRSF9VrwTBz92VSqthpyK&export=download",
-//     },
-//     {
-//         name:"acta_calificaciones.pdf",
-//         url:"https://drive.google.com/uc?id=1tEg_1Kt6N97-waTcHtmIVsR2Tm_ztOl7&export=download",
-//     },
-// ]);
+
 </script>

@@ -200,7 +200,6 @@ const onSubmit = async (values) => {
 
 onMounted(async () => {
     await getRequests();
-    console.log(v$._value);
 });
 
 const addUser = async () => {
@@ -225,7 +224,6 @@ const addUser = async () => {
 
 const editUser = async => {
     onSubmit()
-    //console.log(formData.value)
     let data = formData.value;
     data.active = data.active ? 1 : 0;
     useFileUserAPI.update(data)

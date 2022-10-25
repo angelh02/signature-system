@@ -242,7 +242,6 @@ const resFiles = toRef(props, "resFiles");
 const data = ref("");
 
 const addRequest = async => {
-    console.log(formData.value)
     useDocumentRequestsAPI.addSigner(formData.value)
     .then((res) => {
         signers.value = res;
@@ -271,13 +270,11 @@ function resetData(){
 
 
 onMounted(async () => {   
-    console.log(route.params)
     dataDocuments.value = route.props.documentsData;
     console.log("🚀 ~ file: DocumentsPreparation.vue ~ line 276 ~ onMounted ~ dataDocuments", dataDocuments.value);
     documentId.value = parseInt(route.params.id);
     formData.value.document_id = documentId.value;
     getDocumentData();
-    // console.log(data)fddd
 });
 
 function deleteDocument(){
@@ -292,9 +289,7 @@ function getDocumentData(){
     .then((res) => {
         documentData.value = res;
         signers.value = res?.document_signers;
-        console.log(documentsFiles.value[0]);
         let index = documentsFiles.value.findIndex(x => x.name == res.name);
-        console.log(index);
         source.value = "/pdf/"+(index == -1? documentsFiles.value[0].name : documentsFiles.value[index].name);
         documentDownload.value = index == -1? documentsFiles.value[0].url : documentsFiles.value[index].url;
     });

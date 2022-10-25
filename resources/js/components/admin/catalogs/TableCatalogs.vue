@@ -133,7 +133,6 @@ const createTable = async () => {
         formData.id = catalog[index].id;
         formData.name = catalog[index].name;
         formData.code = catalog[index].code;
-        console.log(catalogsId)
         emit("data", formData);
       
     });
