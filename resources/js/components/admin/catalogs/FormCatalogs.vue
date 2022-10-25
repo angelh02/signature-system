@@ -162,12 +162,12 @@ const addClassification = async () => {
     const get = apisGet[route.params.name]
     get.store(formData.value)
     .then((res) => {
-        toast.success("Se ha agragado corectamente", {
+        toast.success("Se ha agregado corectamente", {
           timeout: 2000,
         });
     })
     .catch(error => 
-        toast.warning("No se ha podido Agregar", {
+        toast.warning("No se ha podido agregar", {
           timeout: 2000,
         })
     );
