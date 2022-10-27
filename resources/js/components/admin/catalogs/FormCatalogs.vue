@@ -48,10 +48,10 @@
         </div>
         <div class="row justify-items-center">
             <button v-if="!edit" class="btn btn-primary mb-2" type="submit" @click.prevent="addClassification" :disabled="v$.$errors.length > 0 || v$.$silentErrors.length > 0">
-                AGREGAR CLASIFICACIÓN
+                AGREGAR {{btn}}
             </button>
             <button v-if="edit" class="btn btn-primary mb-2" type="submit" @click.prevent="editRequest" :disabled="v$.$errors.length > 0 || v$.$silentErrors.length > 0">
-                ACTUALIZAR CLASIFICACIÓN
+                ACTUALIZAR 
             </button>
             <button class="btn btn-light mb-2" type="submit" @click="resetData()">CANCELAR</button>
         </div>
@@ -59,7 +59,7 @@
 </template>
 
 <script setup>
-import { ref, toRef, onMounted, reactive} from 'vue';
+import { ref, toRef, onMounted, reactive, watch} from 'vue';
 import { useRouter, useRoute } from "vue-router";
 import $ from "jquery";
 import { useVuelidate } from '@vuelidate/core'
@@ -97,7 +97,7 @@ const param = toRef(props, 'param');
 const productionArea = ref([]);
 const section = ref("");
 const backGround = ref("");
-
+const btn = ref("")
 const formData = reactive(dataForm);
 
 const showAll = ref(false);
@@ -131,6 +131,19 @@ const apisGet = {
     'tecnicas-seleccion':useFileCatalogsSelectionAPI
 }
 
+const buttonTag = {
+    'tipos-documentos':"NUEVO DOCUMENTO",
+    fondos: "FONDO",
+    secciones: "SECCIÓN",
+    'areas-productoras': "NUEVA ARÉA",
+    'tiempos-conservacion':"NUEVO TIEMPO",
+    'tipos-conservacion':"NUEVA CONSEVACIÓN",
+    'valores-documentales':"VALOR",
+    'tipos-informacion':"NUEVA INFORMACIÓN",
+    'tecnicas-seleccion':"TECNICA"
+}
+
+
 const onSubmit = async (values) => {
     // if(v$.$invalid){
     //     console.log("Es invalido");
@@ -142,7 +155,6 @@ const onSubmit = async (values) => {
 
 onMounted(async () => {
     await getRequests();
-    console.log(v$._value);
 });
 
 const addClassification = async () => {
@@ -150,12 +162,12 @@ const addClassification = async () => {
     const get = apisGet[route.params.name]
     get.store(formData.value)
     .then((res) => {
-        toast.success("Se ha agragado corectamente", {
+        toast.success("Se ha agregado corectamente", {
           timeout: 2000,
         });
     })
     .catch(error => 
-        toast.warning("No se ha podido Agregar", {
+        toast.warning("No se ha podido agregar", {
           timeout: 2000,
         })
     );
@@ -189,6 +201,8 @@ function resetData(){
 
 
 const getRequests = async () => {
+    btn.value = buttonTag[route.params.name]
+
     const resBackground =  await useFileCatalogsBackgroundAPI.getAll("");
     backGround.value = resBackground;
 
@@ -199,6 +213,14 @@ const getRequests = async () => {
     section.value = resProductionArea;
 
 };
+
+watch(  
+    () => route.params.name,
+    (route, oldRoute) => {
+        getRequests();
+    },
+    { deep: true },
+);
 
 
 </script>

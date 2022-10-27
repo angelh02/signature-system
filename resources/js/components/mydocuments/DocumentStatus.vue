@@ -91,6 +91,5 @@ onMounted(async () => {
 
 const searchDocument = async () => {
     documentData.value = await getDocument(documentId.value);
-    console.log(documentData.value.classification);
 };
 </script>

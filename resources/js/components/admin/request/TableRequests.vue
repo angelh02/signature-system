@@ -79,10 +79,16 @@
                         <td>{{request.status}}</td>
                         <td class="d-flex">
                             <div v-if="tab === 'Pendiente'">
-                                <button id="btn_editar" @click="aceptRequest(request)" class="mx-1 btn btn-success mdi mdi-check-outline"></button> 
+                                <button id="btn_editar" @click="() =>{
+                                  func = '2'
+                                  openModalConfim(request)}" 
+                                  class="mx-1 btn btn-success mdi mdi-check-outline"></button> 
                             </div>
                             <div v-if="tab === 'Pendiente'">
-                                <button id="btn_borrar" @click="rejectRequests(request)" class="mx-1 btn btn-danger mdi mdi-cancel"></button>
+                                <button id="btn_borrar" @click="() =>{
+                                  func = '1'
+                                  openModalConfim(request)}" 
+                                  class="mx-1 btn btn-danger mdi mdi-cancel"></button>
                             </div>
                             <div :class="tab != 'Pendiente' && 'mx-4'">
                                 <button id="btn_detalles" @click="modalRequests(request)" class="mx-1 btn btn-info mdi mdi-eye"></button>
@@ -94,13 +100,17 @@
         </div>
         </div>
         <ModalRequest :tab="tab" :formData="formData" @cancel="closeModal"/>
+        <ConfirmationModal
+            :title="func === '1' ? 'Confirmacion de rechazo' : 'Confirmacion de aceptación'"
+            :message="func === '1' ? 'Estas seguro que deseas rechazar esta solicitud' : 'Estas seguro que deseas aceptar esta solicitud'"
+            @response="confirmationResponse"
+        ></ConfirmationModal>
     </div>
 </template>
     
 <script setup>
 import { ref, onMounted, watch, toRefs, reactive, nextTick } from "vue";
 import $ from "jquery";
-import { Modal, Popover } from "bootstrap";
 import { useRouter, useRoute } from "vue-router";
 import ModalRequest from "../request/ModalRequest.vue"
 // import ModalEdit from "../elements/ModalEdit.vue";
@@ -109,6 +119,10 @@ import { useRequests } from "@/js/composables/admin-apis/useRequest.js";
 // clasificaciones
 import useFileRquestAPI from "@/api/admin/deletion-request/index.js";
 import {useToast} from "vue-toastification";
+//Components
+import ConfirmationModal from "../../elements/ConfirmationModal.vue"
+import { Modal } from "bootstrap";
+
 
 const toast = useToast();
 
@@ -120,17 +134,16 @@ const props = defineProps({
 const router = useRouter();
 const route = useRoute();
 
-// const { filesClasification } = toRefs(props)
 const { updated } = toRefs(props);
 const emit = defineEmits(["data"]);
 
+const confirmationModal= ref({});
+
 const requests = ref("");
 const allRequests = ref({});
-const name = ref("");
-const fila = ref("");
-const visible = ref(false);
 const refresh = ref(false);
 const tab = ref("Pendiente")
+const func = ref("");
 const formData = reactive({
     id:"",
     subject:"",
@@ -147,16 +160,21 @@ const formData = reactive({
         }
     }
 });
-
+const id = {
+        id: ""
+}
 
 //Modal const
-const documentModal = ref({});
+const documentModal = ref({});   
+const documents = ref("");
+function confirmationResponse(response){
+    confirmationModal.value.hide();
+    if(response && func.value === "1")     
+        rejectRequests(id);
+    else if (response && func.value === "2")
+        aceptRequest(id)
+}
 
-    
-    
-    
-// const {getDocuments } = useDocumentsRequests();
-const documents = ref("")
 onMounted(async () => {
     getRequests();
 });
@@ -183,30 +201,20 @@ function filterRequests(refresh = false){
         var dT = $('#requests-table').DataTable();
         dT.destroy();
         createTable()
-        // if(!refresh)
-        //     createTable();
-        // else
-        //     refreshTable();
+       
     }
     else if (tab.value === "Aceptado"){
         requests.value = allRequests.value.filter(n=>n.status==="Aceptado")
         var dT = $('#requests-table').DataTable();
         dT.destroy();
         createTable()
-        // if(!refresh)
-        //     createTable();
-        // else
-        //     refreshTable();
+        
     }
     else if(tab.value === "Pendiente"){
         requests.value = allRequests.value.filter(n=>n.status==="Pendiente")
         var dT = $('#requests-table').DataTable();
         dT.destroy();
-        createTable()
-        // if(!refresh)
-        //     createTable();
-        // else
-        //     refreshTable();
+        createTable();
     }
 }
 
@@ -214,15 +222,16 @@ const getRequests = async (refresh = false) => {
     allRequests.value = await useFileRquestAPI.getAll([]);
     filterRequests(refresh);
     documentModal.value = new Modal($("#request-info-modal"));
+    confirmationModal.value = new Modal("#confirmation-modal")
 };
 
-const aceptRequest = async (request) => {
-    const id = {
-        id: request.id
-    }
+const aceptRequest = async (id) => {
+    // const id = {
+    //     id: request.id
+    // }
     useFileRquestAPI.acceptRequest(id)
     .then((res) => {
-        toast.error("Se ha eliminado el folio "+ id + " correctamente", {
+        toast.success("Se ha aceptado el folio "+ id.id + " correctamente", {
           timeout: 2000,
         });
         getRequests(true);
@@ -230,13 +239,13 @@ const aceptRequest = async (request) => {
    
 };
 
-const rejectRequests = async (request) => {
-    const id = {
-        id: request.id
-    }
+const rejectRequests = async (id) => {
+    // const id = {
+    //     id: request.id
+    // }
     useFileRquestAPI.rejectRequest(id)
     .then((res) => {
-        toast.error("Se ha eliminado el folio "+ id + " correctamente", {
+        toast.success("Se ha rechazado el folio "+ id.id + " correctamente", {
           timeout: 2000,
         });
         getRequests(true);
@@ -256,6 +265,11 @@ const modalRequests = async (request) => {
     formData.document.user.surnames = request.document.user.surnames;
     documentModal.value.show();
    
+};
+
+function openModalConfim(request){
+    id.id = request.id
+    confirmationModal.value.show();
 };
     
 watch(

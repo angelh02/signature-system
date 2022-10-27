@@ -37,7 +37,7 @@
                     <router-link
                         v-if="document.signed == 0"
                         class="btn btn-primary"
-                        :to="`/document/sign/${document?.id}`"
+                        :to="`/documento/firmar/${document?.id}`"
                     >
                         FIRMAR
                     </router-link>
@@ -47,7 +47,7 @@
                         <a  class="btn btn-outline-secondary dropdown-toggle" href="#" role="button" id="dropdownMenuLink" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
                         </a>                                   
                         <div class="dropdown-menu" aria-labelledby="dropdownMenuLink">
-                            <router-link class="dropdown-item" :to="'/document/status/'+document?.id">Ver Detalles</router-link>
+                            <router-link class="dropdown-item" :to="'/mis-documentos/detalles/'+document?.id">Ver Detalles</router-link>
                             <!-- <a class="dropdown-item" href="#">Ver original</a> -->
                             <a class="dropdown-item" :href="document?.url">Descargar documento original</a>
                             <a v-if="document.signed == 0" class="dropdown-item" @click="deleteDocument(document.id)">Eliminar documento</a>

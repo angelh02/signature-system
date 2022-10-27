@@ -8,7 +8,7 @@
                 <p>
                     Todas las partes han firmado el documento. En breve recibirás en tu correo tu copia del documento firmado. El proceso de firma del documento es seguro y garantiza que los datos de tu e.firma nunca salen de tu computadora.
                 </p>
-                <a class="btn btn-primary" href="/documents">REGRESAR A MIS DOCUMENTOS</a>
+                <a class="btn btn-primary" href="/mis-documentos">REGRESAR A MIS DOCUMENTOS</a>
                 <!-- <br><br>
                 <a class="mt-3" href="/documents"><b>CONSULTAR ESTADO DEL DOCUMENTO</b></a> -->
             </div>

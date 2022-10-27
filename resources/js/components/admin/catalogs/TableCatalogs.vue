@@ -4,6 +4,11 @@
         class="table table-striped cell-border"
         style="width: 100%"
     ></table>
+    <ConfirmationModal
+        :title="'Confirmacion de Eliminación'"
+        :message="'Estas seguro que deseas eliminar ' + tags"
+        @response="confirmationResponse"
+    ></ConfirmationModal>
 </template>
 
 <script setup>
@@ -26,9 +31,12 @@ import useFileCatalogsSelectionAPI from "@/api/admin/catalogs/container/selectio
 // tipos de documentos
 import useFileCatalogsDocumentAPI from "@/api/admin/catalogs/document-type.js";
 import {useToast} from "vue-toastification";
+import { Modal } from "bootstrap";
+//Components
+import ConfirmationModal from "../../elements/ConfirmationModal.vue"
 
 const toast = useToast();
-
+const confirmationModal= ref({});
 const props = defineProps({
     filesClasification: Object,
     updated: Boolean,
@@ -42,8 +50,10 @@ const { updated } = toRefs(props);
 const emit = defineEmits(["data"]);
 
 const catalogs = ref("");
+const catalogsId = ref(0);
 const name = ref("");
 const fila = ref("");
+const tags = ref("");
 const visible = ref(false);
 const refresh = ref(false);
 const formData = reactive({
@@ -62,6 +72,24 @@ const apisGet = {
     'valores-documentales':useFileCatalogsValueAPI,
     'tipos-informacion':useFileCatalogsInfoAPI,
     'tecnicas-seleccion':useFileCatalogsSelectionAPI
+}
+
+const Tag = {
+    'tipos-documentos':"el tipo de documento",
+    fondos: "el fondo",
+    secciones: "la sección",
+    'areas-productoras': "el área",
+    'tiempos-conservacion':"el tiempo de conservación",
+    'tipos-conservacion':"el tipo de conservación",
+    'valores-documentales':"el valor documental",
+    'tipos-informacion':"tipo de información",
+    'tecnicas-seleccion':"la tecnica de selección"
+}
+
+function confirmationResponse(response){
+    confirmationModal.value.hide();
+    if(response)
+        deleteRequests(catalogsId.value);
 }
 
 const globalTable = ref("");
@@ -105,7 +133,6 @@ const createTable = async () => {
         formData.id = catalog[index].id;
         formData.name = catalog[index].name;
         formData.code = catalog[index].code;
-        console.log(catalogsId)
         emit("data", formData);
       
     });
@@ -113,14 +140,18 @@ const createTable = async () => {
     globalTable.value.on("click", "#btn_borrar", function(){
         fila.value = $(this).closest("tr");           
         const id = parseInt(globalTable.value.rows(fila.value).data()[0].id); 
-        deleteRequests(id);      
+        catalogsId.value = id;
+        confirmationModal.value.show();
+        // deleteRequests(id);      
     }); 
 };
 
 const getRequests = async (refresh = false) => {
+    tags.value = Tag[route.params.name]
     const get = apisGet[route.params.name]
     const info = await get.getAll([]);
     catalogs.value = info;
+    confirmationModal.value = new Modal($("#confirmation-modal"))
     if(!refresh)
         createTable();
     else

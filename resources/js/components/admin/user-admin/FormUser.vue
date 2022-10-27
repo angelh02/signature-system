@@ -112,10 +112,10 @@
         </div>
         <div class="row justify-items-center">
             <button v-if="!edit" class="btn btn-primary mb-2" type="submit" @click.prevent="addUser" :disabled="v$.$errors.length > 0 || v$.$silentErrors.length > 0">
-                AGREGAR CLASIFICACIÓN
+                AGREGAR USUARIO
             </button>
             <button v-if="edit" class="btn btn-primary mb-2" type="submit" @click.prevent="editUser" :disabled="v$.$errors.length > 0 || v$.$silentErrors.length > 0">
-                ACTUALIZAR CLASIFICACIÓN
+                ACTUALIZAR USUARIO
             </button>
             <button class="btn btn-light mb-2" type="submit" @click="resetData()">CANCELAR</button>
         </div>
@@ -200,7 +200,6 @@ const onSubmit = async (values) => {
 
 onMounted(async () => {
     await getRequests();
-    console.log(v$._value);
 });
 
 const addUser = async () => {
@@ -209,12 +208,12 @@ const addUser = async () => {
     data.active = data.active ? 1 : 0;
     useFileUserAPI.store(data)
     .then((res) => {
-        toast.success("Se ha agragado corectamente", {
+        toast.success("Se ha agregado corectamente", {
           timeout: 2000,
         });
     })
     .catch(error => 
-        toast.warning("No se ha podido Agregar", {
+        toast.warning("No se ha podido agregar", {
           timeout: 2000,
         })
     );
@@ -225,7 +224,6 @@ const addUser = async () => {
 
 const editUser = async => {
     onSubmit()
-    //console.log(formData.value)
     let data = formData.value;
     data.active = data.active ? 1 : 0;
     useFileUserAPI.update(data)
@@ -235,7 +233,7 @@ const editUser = async => {
         })
     })
     .catch((error) =>{
-        toast.error("El registro no se ha actualizado", {
+        toast.error("El registro no se ha podido actualizado", {
           timeout: 2000,
         });
     });

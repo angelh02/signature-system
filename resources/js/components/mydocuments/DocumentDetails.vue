@@ -3,9 +3,9 @@
         <div v-if="!documentCreated">
             <div class="row">
                 <div class="col-8">
-                    <div class="row mx-2">
+                    <div class="row mx-0">
                         <div class="col-7">
-                            <h1>Preparacion de documento</h1>
+                            <h1 class="text-black">Administrar documento</h1>
                         </div>
                         <div class="col-5 py-2">
                             <ul
@@ -15,7 +15,7 @@
                                     <a
                                         href="#home1"
                                         data-bs-toggle="tab"
-                                        aria-expanded="false"
+                                        aria-expanded="true"
                                         class="nav-link rounded-0 active"
                                     >
                                         <i
@@ -30,7 +30,7 @@
                                     <a
                                         href="#profile1"
                                         data-bs-toggle="tab"
-                                        aria-expanded="true"
+                                        aria-expanded="false"
                                         class="nav-link rounded-0"
                                     >
                                         <i
@@ -56,97 +56,81 @@
                                         <VuePdfEmbed v-if="source != ''" :source="source" :width="900"  class="scrollspy-example"></VuePdfEmbed>
                                     </div>
                                 </div>
-                                <!-- end card-body-->
                             </div>
                         </div>
                         <!-- Firmantes -->
                         <div class="tab-pane active my-xxl-n4" id="home1">
-                            <h3>Añadir participantes</h3>
-                            <div class="pt-2">
-                                <ul class="nav nav-tabs">
-                                    <li class="nav-item">
-                                        <a
-                                            href="#firmantes"
-                                            data-bs-toggle="tab"
-                                            aria-expanded="false"
-                                            class="nav-link rounded-bottom rounded-3 active"
-                                            style="background-color: #a1a5ad"
-                                        >
-                                            <i
-                                                class="mdi mdi-home-variant d-md-none d-block"
-                                            ></i>
-                                            <span class="d-none d-md-block text-white"
-                                                >Firmantes</span
-                                            >
-                                        </a>
-                                    </li>
-                                </ul>
-                            </div>
-                            <div class="card" style="background-color: #e9e9e9;">
+                            <div class="pt-2 mt-4">
+                                <div class="col-7">
+                                    <h2 class="text-black">Participantes</h2>
+                                    <p class="h5 text-black-50">En esta sección, puedes revisar el estatus actual de cada participante. También puedes
+                                       verificar los RFCs de las personas que ya firmaron</p>
+                                </div>
+                                <div class="card border border-2">
                                 <div class="card-body">
                                     <form class="needs-validation"  novalidate>
                                         <div class="card mb-2" >
-                                        <div class="row g-2 card-body" style="background-color: #f7f7f7;">
-                                            <div class="mb-3 col-6">
-                                                <label class="form-label"
-                                                    >CORREO ELECTRÓNICO</label
-                                                >
-                                                <input
-                                                    type="text"
-                                                    class="form-control"
-                                                    id="email"
-                                                    placeholder="correo@dominio.com"
-                                                    v-model="formData.email"
-                                                    required
-                                                />
-                                                <div class="invalid-feedback">
-                                                    Please provide a valid zip.
-                                                </div>
+                                        <div class="row" v-for="signer in signers">
+                                            <div class="py-2 col-2">
+                                                <span :class="'badge border border-light rounded rounded-4 p-2 bg-'+(signer.signed == 0  ? 'warning' : 'success') ">
+                                                    <i :class="(signer.signed == 0 ? 'dripicons-clock' : 'dripicons-checkmark')"></i>
+                                                    <span class="mx-1">{{signer.signed == 0 ? 'Pendiente' : 'Firmado'}}</span>
+                                                </span>
                                             </div>
-                                            <div class="mb-3 col-6">
-                                                <label class="form-label"
-                                                    >NOMBRE COMPLETO</label
+                                            <div class="col-7 py-2 mx-xxl-n4">
+                                                <h5 class="text-black">{{signer.email}} - {{signer.name}}</h5>                                      
+                                            </div>
+                                            <div class="col text-end py-2 mx-3">
+                                                <a
+                                                    class="btn btn-info mx-1 mb-2"
+                                                    type="button"
+                                                    :disabled="signer.signed === 1"
+                                                    @click="deleteDocument"
                                                 >
-                                                <input
-                                                    type="text"
-                                                    class="form-control"
-                                                    id="name"
-                                                    placeholder="Nombre del Firmante"
-                                                    v-model="formData.name"
-                                                    required
-                                                />
-                                                <div class="invalid-feedback">
-                                                    Please provide a valid zip.
-                                                </div>
+                                                    <span class="uil uil-bell font-16"></span>
+                                                    
+                                                </a>
+                                                <!-- <a
+                                                    class="btn btn-warning mx-1 mb-2"
+                                                    type="button"
+                                                    v-if="documentData?.id != null"
+                                                    @click="deleteDocument"
+                                                >
+                                                    <span class="uil uil-edit font-16"></span>
+                                                    
+                                                </a> -->
+                                                <a
+                                                    class="btn btn-danger mx-1 mb-2"
+                                                    type="button"
+                                                    @click="deleteSigner(signer.id)"
+                                                >
+                                                    <span class="uil uil-trash-alt font-16"></span>
+                                                    
+                                                </a>
                                             </div>
                                         </div>
                                         
                                     </div>
-                                    <button
-                                            class="btn btn-sm btn-link p-1"
-                                            type="button"
-                                            @click="addRequest"
-                                        >
-                                        <h4 class="uil-plus-circle">Añadir firmante</h4>
-                                            
-                                        </button>
+                                    
                                     </form>
                                 </div>
                             </div>
-                            <div class="card" v-if="signers?.length > 0">
-                                <div class="card-body pb-0">
-                                    <h4 class="header-title mb-3">FIRMANTES</h4>
-
-                                    <div class="inbox-widget mb-3">
-                                        <div class="inbox-item" v-for="signer in signers">
-                                            <p class="inbox-item-author">{{signer.name}}</p>
-                                            <p class="inbox-item-text">{{signer.email}}</p>
-                                            <p class="inbox-item-date">
-                                                <button type="button" @click="deleteSigner(signer.id)" class="btn btn-sm btn-outline-danger px-1 py-0"> <i class="uil uil-trash-alt font-16"></i> </button>
-                                            </p>
-                                        </div>
-                                    </div>
+                            <div>
+                                <button
+                                    class="btn btn-outline-danger col-3 py-xxl-0"
+                                    type="button"
+                                    :disabled="documentData.signed === 1"
+                                    @click="openModal"
+                                >
+                                    <h4 class="uil-plus-circle">Añadir firmante</h4>
+                                        
+                                </button>
+                                <div v-if="documentData.signed === 1"  class="my-2 alert alert-warning alert-dismissible fade show" role="alert">
+                                    <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                                    <strong>Aviso - </strong> Este documento ya ha sido firmado, no se puede agregar mas firmantes
                                 </div>
+                            </div>
+                               
                             </div>
                         </div>
                     </div>
@@ -178,55 +162,52 @@
                                     </div>
                                 </div>
                                 <div class="row justify-items-center ps-2 pe-2">
-                                    <button
-                                        class="btn btn-primary mb-2"
-                                        type="button"
-                                        @click="createDocument"
-                                    >
-                                        SOLICITAR FIRMAS
-                                    </button>
                                     <a
-                                        class="btn btn-light mb-2"
+                                        class="btn btn-outline-danger mb-2"
                                         type="button"
                                         v-if="documentData?.id != null"
                                         @click="deleteDocument"
                                     >
-                                        CANCELAR
+                                        <h5>ELIMINAR DOCUMENTO</h5>
+                                        
                                     </a>
                                 </div>
                             </div>
-                            <!-- end card-body-->
                         </div>
-                        <!-- end card-->
                     </div>
                 </div>
             </div>
         </div>
         <DocumentCreated v-else></DocumentCreated>
+        <ModalSigner :formData="formData" @cancel="closeModal" @add="addSigners"></ModalSigner>
     </div>
 </template>
 
 <script setup>
 import { ref, onMounted, watch, toRef, reactive } from "vue";
-import $ from 'jquery'
+import $ from 'jquery';
+import { Modal, Popover } from "bootstrap";
 import { useRouter, useRoute } from "vue-router";
 import VuePdfEmbed from 'vue-pdf-embed'
 import useDocumentRequestsAPI from "@/api/document/index.js";
 import DocumentCreated from "./DocumentCreated.vue";
+import ModalSigner from "./ModalSigner.vue";
+import {useToast} from "vue-toastification";
 
+const toast = useToast();
 const router = useRouter();
 const route = useRoute();
 const formData = ref({
     name: "",
     email: "",
-    document_id: 0,
+    document_id: parseInt(route.params.id),
 });
 const signers = ref([]);
 const documentId = ref(0);
 const documentData = ref({});
 const documentCreated = ref(false);
 const documentDownload = ref("");
-
+const documentModal = ref({});
 
 const source = ref("");
 
@@ -240,13 +221,30 @@ const resFiles = toRef(props, "resFiles");
 
 const data = ref("");
 
-const addRequest = async => {
-    console.log(formData.value)
+function closeModal(){
+    documentModal.value.hide();
+}
+
+function openModal(){
+    documentModal.value.show();
+}
+
+const addSigners = async(add) => {
+    // formData.value = add
     useDocumentRequestsAPI.addSigner(formData.value)
     .then((res) => {
         signers.value = res;
         resetData();
-    });
+            toast.success("Se ha agragado corectamente", {
+            timeout: 2000,
+            });
+            closeModal();
+        })  
+        .catch(error => 
+            toast.warning("No se ha podido Agregar", {
+            timeout: 2000,
+            })
+        );
     // resetData();
 }
 
@@ -258,29 +256,31 @@ const deleteSigner = async (id) => {
     useDocumentRequestsAPI.deleteSigner(id)
     .then((res) => {
         signers.value = res;
+        toast.success("Se ha eliminado corectamente", {
+          timeout: 2000,
+        });
     });
 }
 
 function resetData(){
     formData.value.email = null;
     formData.value.name = "";
-    formData.value.document_id = "";  
+    formData.value.document_id = parseInt(route.params.id);  
 }
 
 
 
 onMounted(async () => {   
-    console.log(route.params.id)
     documentId.value = parseInt(route.params.id);
     formData.value.document_id = documentId.value;
+    documentModal.value = new Modal($("#request-info-modal"));
     getDocumentData();
-    // console.log(data)fddd
 });
 
 function deleteDocument(){
     useDocumentRequestsAPI.deleteDocument(documentId.value)
     .then((res) => {
-        router.push({path:'/documents'});
+        router.push({path:'/mis-documentos'});
     });
 }
 
@@ -289,34 +289,11 @@ function getDocumentData(){
     .then((res) => {
         documentData.value = res;
         signers.value = res?.document_signers;
-        console.log(documentsFiles.value[0]);
-        let index = documentsFiles.value.findIndex(x => x.name == res.name);
-        console.log(index);
-        source.value = "/pdf/"+(index == -1? documentsFiles.value[0].name : documentsFiles.value[index].name);
-        documentDownload.value = index == -1? documentsFiles.value[0].url : documentsFiles.value[index].url;
+        source.value = res.url
+        console.log(documentData.value)
+        
     });
 }
 
-const documentsFiles = ref([
-    {
-        name:"minuta_reunion.pdf",
-        url:"https://drive.google.com/uc?id=1e4Pg3SkXZh6NEldfTNTUmzTGxE3VQlvd&export=download",
-    },
-    {
-        name:"lista_asistencia.pdf",
-        url:"https://drive.google.com/uc?id=1sJ1hGDWhFW-3etoSo5gnUAatUxiImXrj&export=download",
-    },
-    {
-        name:"constancia_servicio_social.pdf",
-        url:"https://drive.google.com/uc?id=1QvAC2oJqRnUHddwkJiUOkxIQJ5jyb5ln&export=download",
-    },
-    {
-        name:"carta_no_adeudo.pdf",
-        url:"https://drive.google.com/uc?id=1IO2e-rsr0WKXRSF9VrwTBz92VSqthpyK&export=download",
-    },
-    {
-        name:"acta_calificaciones.pdf",
-        url:"https://drive.google.com/uc?id=1tEg_1Kt6N97-waTcHtmIVsR2Tm_ztOl7&export=download",
-    },
-]);
+
 </script>
