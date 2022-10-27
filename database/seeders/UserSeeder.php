@@ -21,9 +21,10 @@ class UserSeeder extends Seeder
         //Admin user
         $admin = User::factory([
             "name" => "Administrador",
-            "surnames" => "Root",
+            "surnames" => "Apellido Administrador",
             "user_name" => "admin",
-            "email" => "admin@admin.com"
+            "email" => "admin@admin.com",
+            'RFC' => 'LAN7008173R5'
         ])->create();
         $admin->assignRole($adminRole);
 
@@ -33,9 +34,10 @@ class UserSeeder extends Seeder
         //Signer user
         $signer = User::factory([
             'name' => 'Firmante',
-            'surnames' => 'Usuario',
+            'surnames' => 'Apellido Firmante',
             'user_name' => 'signer',
-            'email' => 'signer@signer.com'
+            'email' => 'signer@signer.com',
+            'RFC' => 'SUL010720JN8'
         ])->create();
         $signer->assignRole($signerRole);
     }

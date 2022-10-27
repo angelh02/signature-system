@@ -306,8 +306,7 @@
     watch(
         () => dataFiles,
         (dataFiles, oldDataFiles) => {
-            if(/* dataFiles[0] !== undefined && dataFiles[0].path !== undefined */dataFiles !== undefined && dataFiles.value.length > 0){
-                /* source.value = ""; */
+            if(dataFiles !== undefined && dataFiles.value.length > 0){
                 pdfLoaded.value = false;
                 formData.value.name = dataFiles.value[0].path;
                 let index = documentsFiles.value.findIndex(x => x.name == formData.value.name);
@@ -356,11 +355,21 @@
         v$._value.$reset();
         emit("cancel");
     }
+
     function filter () { 
         if(formData.document_type_id == 1){
             formData.url = "https://drive.google.com/uc?id=1IO2e-rsr0WKXRSF9VrwTBz92VSqthpyK&export=download"
         }
     } 
+
+    function getBase64String(file, onLoadCallback) {
+        return new Promise(function(resolve, reject) {
+            var reader = new FileReader();
+            reader.onload = function() { resolve(reader.result); };
+            reader.onerror = reject;
+            reader.readAsDataURL(file);
+        });
+    }
 
     function getBase64(file) {
         let fileSource = "";
@@ -368,7 +377,6 @@
         reader.readAsDataURL(file);
         reader.onload = function () {
             refreshPdf(reader.result);
-            //console.log("🚀 ~ file: CreateDocumentModal.vue ~ line 271 ~ getBase64 ~ reader.result", reader.result)
         };
         reader.onerror = function (error) {
             console.log('Error: ', error);
@@ -396,21 +404,24 @@
         addRequest();
     }
 
-    const addRequest = (async) => {
+    const addRequest = async() => {
         let newFiles = [];
-        console.log("🚀 ~ file: CreateDocumentModal.vue ~ line 402 ~ addRequest ~ dataFiles.value", dataFiles.value)
         //Method to create a file information array with all files
         for(let i = 0; i < dataFiles.value.length; i++){
+            let promise = getBase64String(dataFiles.value[i]);
+            let fileString = await promise;
             newFiles.push({
                 name: dataFiles.value[i].path,
-                document_type_id: formData.value.document_type_id,
-                classification_id: formData.value.classification_id,
-                container_id: formData.value.container_id,
-                file: dataFiles.value[i]
+                data : fileString
             })
         }
-        console.log("🚀 ~ file: CreateDocumentModal.vue ~ line 367 ~ addRequest ~ newFiles", newFiles)
-        emit('preparation', newFiles);
+        let filesInfo = {
+            document_type: documentTypes.value.filter(x => x.id == formData.value.document_type_id)[0],
+            classification: classifications.value.filter(x => x.id == formData.value.classification_id)[0],
+            container: containers.value.filter(x => x.id == formData.value.container_id)[0],
+            files : newFiles
+        }
+        emit('preparation', JSON.stringify(filesInfo));
         //Router push with params
 
         /* useDocumentRequestsAPI.addDocument(formData.value)

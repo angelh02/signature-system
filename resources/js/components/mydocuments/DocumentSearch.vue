@@ -25,10 +25,6 @@
                 @keyup="returnFilterData"
                 required
             />
-            <div v-if="submit " class="mensajeError">
-                Debe ingresar un nombre
-            </div>
-            <div class="invalid-feedback">Please provide a valid zip.</div>
         </div>
         <!-- <div class="mb-3">
             <label class="form-label" for="validationCustom06">FIRMANTES</label>

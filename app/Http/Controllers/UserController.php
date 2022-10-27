@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\User;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Hash;
@@ -71,10 +72,11 @@ class UserController extends Controller
 
     public function store(Request $request){
         $validator = Validator::make($request->all(), [
-            'name' => 'required|min:10|max:255',
+            'name' => 'required|min:5|max:255',
             'surnames' => 'required|min:10|max:255',
             'user_name' => 'required|min:5|max:255',
             'email' => 'required|email:rfc,dns|max:255|unique:users,email',
+            'RFC' => 'required|min:13|max:13|unique:users,rfc',
             'active' => 'required|boolean',
             'role_id' => 'required|exists:roles,id'
         ]);
@@ -88,9 +90,12 @@ class UserController extends Controller
                 return response()->json(['message' => 'ROLE_DOES_NOT_EXIST'], 200);
             //Create new user 
             $user = new User();
+            //Id of user created in AWS BD
+            $user->aws_user_id = 1;
             $user->name = $request->input('name');
             $user->surnames = $request->input('surnames');
             $user->user_name = $request->input('user_name');
+            $user->RFC = $request->input('RFC');
             $user->email = $request->input('email');
             $user->active = $request->input('active');
             $user->password = Hash::make('contraseña');
@@ -113,6 +118,7 @@ class UserController extends Controller
             'surnames' => 'required|min:10|max:255',
             'user_name' => 'required|min:5|max:255',
             'email' => 'required|email:rfc,dns|max:255|unique:users,email,' . $request->input('id'),
+            'RFC' => 'required|min:13|max:13|unique:users,rfc,' . $request->input('id'),
             'active' => 'required|boolean',
             'role_id' => 'required|exists:roles,id'
         ]);
@@ -131,6 +137,7 @@ class UserController extends Controller
             $user->name = $request->input('name');
             $user->surnames = $request->input('surnames');
             $user->user_name = $request->input('user_name');
+            $user->RFC = $request->input('RFC');
             $user->email = $request->input('email');
             $user->active = $request->input('active');
             $user->save();

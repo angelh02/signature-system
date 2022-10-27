@@ -48,4 +48,7 @@ Route::middleware(['auth'])->group(function() {
     // Route::view('/reset-password', 'auth.passwords.reset')->name('reset-password');
 
     
+    Route::any('{url}', function(){
+        return redirect('/');
+    })->where('url', '.*');
 });

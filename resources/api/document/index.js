@@ -52,10 +52,7 @@ async function getDocument(id){
 // STORE CONTAINER
 async function addDocument(formData) {
     return await axios
-      .post(`/api/document/store`, formData, {
-        headers: { 'content-type': 'multipart/form-data' },
-      }
-      )
+      .post(`/api/document/store`, formData)
       .then((res) => {
         if (res.status != 200) throw new Error("Response Failed");
         return res.data;
@@ -64,10 +61,7 @@ async function addDocument(formData) {
 // UPDATE CONTAINER
 async function editDocument(editData) {
   return await axios
-    .post(`/api/document/update`, editData, {
-      headers: { 'content-type': 'multipart/form-data' },
-    }
-    )
+    .post(`/api/document/update`, editData)
     .then((res) => {
       if (res.status != 200) throw new Error("Response Failed");
       return res.data;
@@ -87,10 +81,7 @@ return await axios
 // AGReGAR FIRMANTE
 async function addSigner(formData) {
   return await axios
-    .post(`/api/document/signer/assign`, formData, {
-      headers: { 'content-type': 'multipart/form-data' },
-    }
-    )
+    .post(`/api/document/signer/assign`, formData)
     .then((res) => {
       if (res.status != 200) throw new Error("Response Failed");
       return res.data;
