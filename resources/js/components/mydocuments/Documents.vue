@@ -136,11 +136,15 @@ import CreateDocumentModal from "./CreateDocumentModal.vue";
 //Libraries
 import $ from "jquery";
 import { Modal } from "bootstrap";
-import { onMounted, ref, reactive } from "vue";
+import { onMounted, ref, reactive, toRef } from "vue";
 import { useDropzone } from "vue3-dropzone";
 import { useRouter } from "vue-router";
 //Apis
 import { useDocumentsRequests } from "@/js/composables/document-apis/useDocumentsRequest.js";
+
+const props = defineProps({
+    user: Object
+});
 
 //Consts to use api functions
 const { getDocumentsType, getClasification,getContainers } =
@@ -208,7 +212,6 @@ const saveFiles = (files) => {
     for (var x = 0; x < files.length; x++) {
         formData.append("images[]", files[x]);
     }
-    console.log("🚀 ~ file: Documents.vue ~ line 195 ~ saveFiles ~ formData", formData)
 };
 
 function onDrop(acceptFiles, rejectReasons) {
@@ -229,7 +232,6 @@ function resFile(resFile) {
 
 function onDropAccepted(acceptFiles) {
     saveFiles(acceptFiles);
-    console.log("🚀 ~ file: Documents.vue ~ line 228 ~ onDropAccepted ~ acceptFiles", acceptFiles)
     var encoded = btoa(JSON.stringify(acceptFiles))
     var actual = JSON.parse(atob(encoded))
     dataFiles.value = acceptFiles;

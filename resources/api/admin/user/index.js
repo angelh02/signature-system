@@ -19,6 +19,16 @@ async function getRoles() {
     return res.data;
   })  
 }
+// GET ALL USERS
+async function getAllExcept() {
+  return await axios
+  .get(`/api/user/get-all-except`, 
+  )
+  .then((res) => {
+    if (res.status != 200) throw new Error("Response Failed");
+    return res.data;
+  })  
+}
 
 // GET ALL USERS
 async function getAll() {
@@ -88,4 +98,4 @@ async function resetPassword(formData) {
   })  
 }
 
-export default {getRoles, getAll, getUser, store, update, drop, resetPassword}
+export default {getRoles, getAll, getAllExcept, getUser, store, update, drop, resetPassword}

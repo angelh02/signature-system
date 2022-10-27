@@ -75,6 +75,7 @@
 <script setup>
 //Components
 import CreateDeletionRequestModal from "./CreateDeletionRequestModal.vue";
+import ConfirmationModal from "../elements/ConfirmationModal.vue";
 //Libraries
 import { ref, onMounted, toRef, watch, toRefs, reactive, nextTick} from "vue";
 import $ from "jquery";
@@ -85,7 +86,7 @@ import { useDocumentsRequests } from "@/js/composables/document-apis/useDocument
 import useFileClasificationRequestsAPI from "@/api/index.js";
 
 const props = defineProps({
-    dataFilter: Object,
+    dataFilter: Object
 });
 
 const dataFilter = toRef(props, "dataFilter");
@@ -177,7 +178,6 @@ function filterDocuments(){
 
 const getRequests = async (refresh = false) => {
     const results = await getDocuments([]);
-    console.log(results)
     documents.value = results;
     filteredDocuments.value = documents.value;
     createTable();

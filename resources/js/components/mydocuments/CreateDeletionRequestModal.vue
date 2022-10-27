@@ -10,9 +10,7 @@
                         <!-- Asunto del mensaje -->
                         <div class="mb-2">
                             <label for="subject" class="form-label">
-                                <font style="vertical-align: inherit;"
-                                    >Asunto</font
-                                >
+                                Asunto
                             </label>
                             <div :class="{ valid: !v$.$error && v$.$dirty, error: v$.$error }">
                                 <input
@@ -22,7 +20,6 @@
                                     v-model="v$.subject.$model"
                                     placeholder="Asunto..."
                                     maxlength="255"
-                                    :disabled="allDisable"
                                 />
                                 <div v-for="(error, index) in v$.subject.$errors" :key="index" class="invalid-feedback d-block">
                                     {{ error.$message }}
@@ -32,9 +29,7 @@
                         <!-- Contenido del mensaje -->
                         <div class="write-mdg-box mb-3">
                             <label for="description" class="form-label">
-                                <font style="vertical-align: inherit;"
-                                    >Mensaje</font
-                                >
+                                Mensaje
                             </label>
                             <div :class="{ valid: !v$.$error && v$.$dirty, error: v$.$error }">
                                 <textarea
@@ -106,7 +101,6 @@ function cancel(){
 }
 
 function storeRequest(){
-    console.log(requestData.value);
     if(v$.$errors.length > 0 || v$.$silentErrors.length > 0){
         let data = {
             document_id : documentId.value,
