@@ -45,4 +45,7 @@ Route::middleware(['auth'])->group(function() {
         Route::view('/catalogo/{any}','admin.index')->where('any', '.*');
     });
     
+    Route::any('{url}', function(){
+        return redirect('/');
+    })->where('url', '.*');
 });

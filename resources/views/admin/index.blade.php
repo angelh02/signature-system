@@ -16,7 +16,7 @@
         <div class="py-4">
             <div class="container-fluid">
                 <div class="row justify-content-center py-5">
-                    <router-view/>
+                    <router-view :user="{{Auth::user()}}"/>
                 </div>
             </div>
         </div>  
