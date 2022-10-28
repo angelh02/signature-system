@@ -50,7 +50,8 @@
         user_name: "",
         email: "",
         active: 0,
-        role_id:""
+        role_id:"",
+        RFC:""
     });
 
     function receivedData(data) {
@@ -68,7 +69,8 @@
             user_name: "",
             email: "",
             active: 0,
-            role_id:""
+            role_id:"",
+            RFC:""
         };
         edit.value = false;
     }

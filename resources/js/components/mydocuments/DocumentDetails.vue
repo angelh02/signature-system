@@ -78,27 +78,18 @@
                                                 </span>
                                             </div>
                                             <div class="col-7 py-2 mx-xxl-n4">
-                                                <h5 class="text-black">{{signer.email}} - {{signer.name}}</h5>                                      
+                                                <h5 class="text-black">{{signer.user.email}} - {{signer.user.name}}</h5>                                      
                                             </div>
                                             <div class="col text-end py-2 mx-3">
                                                 <a
                                                     class="btn btn-info mx-1 mb-2"
                                                     type="button"
                                                     :disabled="signer.signed === 1"
-                                                    @click="deleteDocument"
+                                                    @click=""
                                                 >
                                                     <span class="uil uil-bell font-16"></span>
                                                     
                                                 </a>
-                                                <!-- <a
-                                                    class="btn btn-warning mx-1 mb-2"
-                                                    type="button"
-                                                    v-if="documentData?.id != null"
-                                                    @click="deleteDocument"
-                                                >
-                                                    <span class="uil uil-edit font-16"></span>
-                                                    
-                                                </a> -->
                                                 <a
                                                     class="btn btn-danger mx-1 mb-2"
                                                     type="button"
@@ -162,15 +153,16 @@
                                     </div>
                                 </div>
                                 <div class="row justify-items-center ps-2 pe-2">
-                                    <a
+                                    <button
                                         class="btn btn-outline-danger mb-2"
                                         type="button"
+                                        :disabled="documentData.signed === 1"
                                         v-if="documentData?.id != null"
                                         @click="deleteDocument"
                                     >
                                         <h5>ELIMINAR DOCUMENTO</h5>
                                         
-                                    </a>
+                                    </button>
                                 </div>
                             </div>
                         </div>
@@ -179,12 +171,12 @@
             </div>
         </div>
         <DocumentCreated v-else></DocumentCreated>
-        <ModalSigner :formData="formData" @cancel="closeModal" @add="addSigners"></ModalSigner>
+        <ModalSigner :signers="signers" :userLogged="userLogged" :formData="formData" @cancel="closeModal" @add="addSigners"></ModalSigner>
     </div>
 </template>
 
 <script setup>
-import { ref, onMounted, watch, toRef, reactive } from "vue";
+import { ref, onMounted, watch, toRef, reactive, useAttrs } from "vue";
 import $ from 'jquery';
 import { Modal, Popover } from "bootstrap";
 import { useRouter, useRoute } from "vue-router";
@@ -194,13 +186,15 @@ import DocumentCreated from "./DocumentCreated.vue";
 import ModalSigner from "./ModalSigner.vue";
 import {useToast} from "vue-toastification";
 
+const attrs = useAttrs();
+const userLogged = ref(attrs.user);
+
 const toast = useToast();
 const router = useRouter();
 const route = useRoute();
 const formData = ref({
-    name: "",
+    id: "",
     email: "",
-    document_id: parseInt(route.params.id),
 });
 const signers = ref([]);
 const documentId = ref(0);
@@ -208,7 +202,10 @@ const documentData = ref({});
 const documentCreated = ref(false);
 const documentDownload = ref("");
 const documentModal = ref({});
-
+const signer = ref({
+    user_id:"",
+    document_id:""
+})
 const source = ref("");
 
 const props = defineProps({
@@ -222,6 +219,7 @@ const resFiles = toRef(props, "resFiles");
 const data = ref("");
 
 function closeModal(){
+    resetData();
     documentModal.value.hide();
 }
 
@@ -231,11 +229,14 @@ function openModal(){
 
 const addSigners = async(add) => {
     // formData.value = add
-    useDocumentRequestsAPI.addSigner(formData.value)
+    signer.value.user_id = formData.value.id
+    signer.value.document_id = formData.value.document_id
+    console.log(signer.value)
+    useDocumentRequestsAPI.addSigner(signer.value)
     .then((res) => {
-        signers.value = res;
         resetData();
-            toast.success("Se ha agragado corectamente", {
+        signers.value = res;
+            toast.success("Se ha agregado corectamente", {
             timeout: 2000,
             });
             closeModal();
@@ -264,8 +265,8 @@ const deleteSigner = async (id) => {
 
 function resetData(){
     formData.value.email = null;
-    formData.value.name = "";
-    formData.value.document_id = parseInt(route.params.id);  
+    formData.value.id = "";
+    // formData.value.document_id = parseInt(route.params.id);  
 }
 
 
@@ -291,7 +292,6 @@ function getDocumentData(){
         signers.value = res?.document_signers;
         source.value = res.url
         console.log(documentData.value)
-        
     });
 }
 

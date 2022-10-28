@@ -15,7 +15,7 @@ class DocumentController extends Controller
 {
     public function assignSigner(Request $request){
         $validator = Validator::make($request->all(), [
-            'user_id' => 'required|min:10|max:255',
+            'user_id' => 'required|numeric|exists:users,id',
             'document_id' => 'required|numeric|exists:documents,id',
         ]);
 
@@ -34,7 +34,7 @@ class DocumentController extends Controller
             DB::commit();
 
             //Cargamos las relaciones para retornar la info del documento creado
-            $documentSigners = DocumentSigner::where("document_id","=",$documentSigner->document_id)->get();
+            $documentSigners = DocumentSigner::where("document_id","=",$documentSigner->document_id)->with('user')->get();
             return response()->json($documentSigners, 200);
 
         } catch (\Exception $e) {
@@ -70,7 +70,7 @@ class DocumentController extends Controller
             DB::commit();
 
             //Cargamos las relaciones para retornar la info del documento creado
-            $documentSigners = DocumentSigner::where("document_id","=",$documentSigner->document_id)->get();
+            $documentSigners = DocumentSigner::where("document_id","=",$documentSigner->document_id)->with('user')->get();
             return response()->json($documentSigners, 200);
 
         } catch (\Exception $e) {
@@ -91,7 +91,7 @@ class DocumentController extends Controller
             DB::commit();
 
             //Cargamos las relaciones para retornar la info del documento creado
-            $documentSigners = DocumentSigner::where("document_id","=",$documentSigner->document_id)->get();
+            $documentSigners = DocumentSigner::where("document_id","=",$documentSigner->document_id)->with('user')->get();
             return response()->json($documentSigners, 200);
 
         } catch (\Exception $e) {
@@ -124,7 +124,7 @@ class DocumentController extends Controller
             "container",
             "documentType",
             "documentSigned",
-            "documentSigners",
+            "documentSigners.user",
             "deletionRequests" => function($query){
                 $query->where("status", "Pendiente");
             }
@@ -142,7 +142,7 @@ class DocumentController extends Controller
             "container",
             "documentType",
             "documentSigned",
-            "documentSigners",
+            "documentSigners.user",
             "deletionRequests" => function($query){
                 $query->where("status", "Pendiente");
             }
@@ -199,7 +199,7 @@ class DocumentController extends Controller
                 "classification",
                 "documentType",
                 "documentSigned",
-                "documentSigners"
+                "documentSigners.user"
             ]);
             return response()->json($document, 200);
 
@@ -274,7 +274,7 @@ class DocumentController extends Controller
                 "classification",
                 "documentType",
                 "documentSigned",
-                "documentSigners"
+                "documentSigners.user"
             ])->orderBy('id', 'desc')->limit(count($request->input('documents')))->get();
             return response()->json($documents, 200);
 
@@ -319,7 +319,7 @@ class DocumentController extends Controller
                 "classification",
                 "documentType",
                 "documentSigned",
-                "documentSigners"
+                "documentSigners.user"
             ]);
             return response()->json($document, 200);
 

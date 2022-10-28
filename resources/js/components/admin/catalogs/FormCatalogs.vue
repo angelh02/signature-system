@@ -137,7 +137,7 @@ const buttonTag = {
     secciones: "SECCIÓN",
     'areas-productoras': "NUEVA ARÉA",
     'tiempos-conservacion':"NUEVO TIEMPO",
-    'tipos-conservacion':"NUEVA CONSEVACIÓN",
+    'tipos-conservacion':"NUEVA CONSERVACIÓN",
     'valores-documentales':"VALOR",
     'tipos-informacion':"NUEVA INFORMACIÓN",
     'tecnicas-seleccion':"TECNICA"
@@ -162,7 +162,7 @@ const addClassification = async () => {
     const get = apisGet[route.params.name]
     get.store(formData.value)
     .then((res) => {
-        toast.success("Se ha agregado corectamente", {
+        toast.success("Se ha agregado correctamente", {
           timeout: 2000,
         });
     })
@@ -181,7 +181,7 @@ const editRequest = async => {
     const get = apisGet[route.params.name]
     get.update(formData.value)
     .then((res) => {
-        toast.success("El registro se ha actualizado corectamente", {
+        toast.success("El registro se ha actualizado correctamente", {
           timeout: 2000,
         })
     })

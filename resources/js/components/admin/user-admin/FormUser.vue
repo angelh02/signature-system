@@ -65,6 +65,26 @@
         </div>
         <div class="mb-3">
             <label class="form-label"
+                >RFC</label
+            >
+            <div :class="{ valid: !v$.$error && v$.$dirty, error: v$.$error }">
+                <input
+                    type="text"
+                    class="form-control"
+                    id="RFC"
+                    placeholder="Ingrese"
+                    minlength="13"
+                    maxlength="13"
+                    v-model="v$.RFC.$model"
+                    required
+                />
+                <div v-for="(error, index) in v$.RFC.$errors" :key="index" class="invalid-feedback d-block">
+                    {{ error.$message }}
+                </div>
+            </div>
+        </div>
+        <div class="mb-3">
+            <label class="form-label"
                 >Email</label
             >
             <div :class="{ valid: !v$.$error && v$.$dirty, error: v$.$error }">
@@ -183,7 +203,12 @@ const showAll = ref(false);
     //   },
         role_id:{
         required: helpers.withMessage('Este campo no debe estar vacio', required)
-      }
+      },
+      RFC:  {
+        required: helpers.withMessage('Este campo no debe estar vacio', required),
+        minLength: helpers.withMessage('Minimo debe ser 13 caracteres', minLength(13)),
+        maxLength: helpers.withMessage('Maximo debe ser 13 caracteres', maxLength(13)),
+      },
     };
     const state = reactive(dataForm);
 
