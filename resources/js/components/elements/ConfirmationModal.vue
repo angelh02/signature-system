@@ -1,6 +1,6 @@
 <template>
     <div>
-        <div id="confirmation-modal" class="modal fade"  data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true">
+        <div :id="modalId != null && modalId != ''? modalId : 'confirmation-modal'" class="modal fade"  data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true">
             <div class="modal-dialog">
                 <div class="modal-content">
                     <div class="modal-header modal-colored-header bg-primary">
@@ -26,11 +26,13 @@
 
     const props = defineProps({
         title: String,
-        message: String
+        message: String,
+        modalId: String
     });
 
     const title = toRef(props, 'title');
     const message = toRef(props, 'message');
+    const modalId = toRef(props, 'modalId');
 
     function response(value){
         emit('response', value);

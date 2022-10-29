@@ -1,6 +1,6 @@
 <template>
 <div >
-    <table class="table table-sm table-striped" id="my-documents-table" cellspacing="0" style="width:100%">
+    <table class="table table-sm table-striped" id="documents-sign-table" cellspacing="0" style="width:100%">
         <thead>
             <tr>
                 <th data-priority="1">Nombre</th>
@@ -42,7 +42,7 @@
                         </div>
                     </div> 
                     <button 
-                        v-if="document.document_signers.length > 0 && document.document_signers[0].signed == 0"
+                        v-if="document.document_signers.length > 0 && document.document_signers[0].signed == 0 && document.document_signers[0].user_id == userLogged.id"
                         @click="singDocument(document.id)" class="btn btn-sm btn-primary">
                         FIRMAR
                     </button>
@@ -52,7 +52,7 @@
                         <a  class="btn btn-sm btn-outline-secondary dropdown-toggle" href="#" role="button" id="dropdownMenuLink" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
                         </a>                                   
                         <div class="dropdown-menu" aria-labelledby="dropdownMenuLink">
-                            <router-link class="dropdown-item" :to="'/mis-documentos/detalles/'+document?.id">Ver Detalles</router-link>
+                            <router-link class="dropdown-item" :to="document.user_id == userLogged.id && document.signed == 0 ? '/mis-documentos/detalles/'+document?.id : '/mis-documentos/estado/'+document?.id">Ver Detalles</router-link>
                             <!-- <a class="dropdown-item" href="#">Ver original</a> -->
                             <a class="dropdown-item" :href="document?.url">Descargar documento original</a>
                             <a v-if="document.user_id == userLogged.id && document.signed == 0" class="dropdown-item" @click="deleteDocument(document.id)">Eliminar documento</a>
@@ -65,6 +65,7 @@
     </table>
     <CreateDeletionRequestModal
         :document-id="documentIdSelected"
+        :modalId="'deletion-request-sign-modal'"
         @cancel="cancelDeletionRequest"
         @stored="storedDeletionRequest"
     >
@@ -72,6 +73,7 @@
     <ConfirmationModal
         :title="'Confirmacion de Eliminación'"
         :message="'Estas seguro de eliminar el siguiente documento'"
+        :modalId="'document-sign-confirmation'"
         @response="confirmationResponse"
     ></ConfirmationModal>
 </div>
@@ -94,7 +96,7 @@ import useFileClasificationRequestsAPI from "@/api/index.js";
 
 const toast = useToast();
 
-const emit = defineEmits(['refresh'])
+const emit = defineEmits(['refresh']);
 
 const props = defineProps({
     dataFilter: Object,
@@ -111,13 +113,13 @@ const refresh = toRef(props, "refresh");
 const reload = toRef(props, "reload");
 
 //Data table
-const documentsSignTable = ref("");
+const documentsTable = ref("");
 
 const deletionRequestModal = ref({});
 const confirmationModal= ref({});
 const documentIdSelected = ref(0);
 
-const {getDocuments, getUserDocuments} = useDocumentsRequests();
+const {getDocuments, getUserSignDocuments} = useDocumentsRequests();
 const documents = ref("")
 const filteredDocuments = ref("");
 
@@ -141,7 +143,7 @@ watch(
 watch(
     () => refresh,
     (refresh, oldRefresh) => {
-        documentsSignTable.value.destroy();
+        documentsTable.value.destroy();
         getRequests(true);
     },
     { deep: true },   
@@ -156,7 +158,7 @@ watch(
 watch(
     () => reload,
     (reload, oldReload) => {
-        documentsSignTable.value.destroy();
+        documentsTable.value.destroy();
         createTable();
     },
     { deep: true },   
@@ -175,7 +177,7 @@ function confirmationResponse(response){
 
 const createTable = async () => {
     await nextTick(function() {
-        documentsSignTable.value = $("#my-documents-table").DataTable({
+        documentsTable.value = $("#documents-sign-table").DataTable({
             language: {
                 url: "//cdn.datatables.net/plug-ins/1.10.11/i18n/Spanish.json",
             },
@@ -237,20 +239,20 @@ function filterDocuments(){
         filteredDocuments.value = documents.value;
     if(needSign.value)
         filteredDocuments.value = filteredDocuments.value.filter(x => x.document_signers[0].signed == 0 && x.document_signers[0].signed_at == null)
-    documentsSignTable.value.destroy();
+    documentsTable.value.destroy();
     createTable();
 }
 
 const getRequests = async (refresh = false) => {
-    const results = await getUserDocuments(userLogged.value.id);
+    const results = await getUserSignDocuments(userLogged.value.id);
     documents.value = results;
     filteredDocuments.value = documents.value;
     if(refresh && (Object.keys(dataFilter.value).length > 0 || needSign.value))
         filterDocuments();
     else
         createTable();
-    deletionRequestModal.value = new Modal($("#deletion-request-modal"))
-    confirmationModal.value = new Modal($("#confirmation-modal"))
+    deletionRequestModal.value = new Modal($("#deletion-request-sign-modal"));
+    confirmationModal.value = new Modal($("#document-sign-confirmation"));
 };
 
 function singDocument(documentId){

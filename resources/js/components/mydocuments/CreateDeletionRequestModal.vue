@@ -1,6 +1,6 @@
 <template>
     <div>
-        <div class="modal fade" id="deletion-request-modal" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true">
+        <div class="modal fade" :id="modalId != null && modalId != ''? modalId : 'deletion-request-modal'" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true">
             <div class="modal-dialog">
                 <div class="modal-content">
                     <div class="modal-header">
@@ -69,9 +69,11 @@ const toast = useToast();
 
 const props = defineProps({
     documentId: Number,
+    modalId: String
 });
 
 const documentId = toRef(props, 'documentId');
+const modalId = toRef(props, 'modalId');
 
 const requestData = ref({
     subject : "",
@@ -109,13 +111,13 @@ function storeRequest(){
         }
         useFileDeletionRequestAPI.store(formData.value)
         .then((res) => {
-            toast.success("Se ha agragado corectamente", {
+            toast.success("Se ha creado la solicitud correctamente", {
             timeout: 2000,
             });
             emit('stored');
         })
         .catch(error => 
-            toast.warning("No se ha podido Agregar", {
+            toast.warning("No se ha podido crear la solicitud", {
             timeout: 2000,
             })
         );
