@@ -5,6 +5,10 @@ import useContainerRequestsAPI from "@/api/container/index.js";
 
 
 export function useDocumentsRequests(from = null, to = null) {
+    const getDocumentsByIds= async (ids) => {
+        return await useDocumentsRequestsAPI.getDocumentsByIds(ids);
+    };
+
     const getDocument= async (id) => {
         return await useDocumentsRequestsAPI.getDocument(id);
     };
@@ -21,11 +25,17 @@ export function useDocumentsRequests(from = null, to = null) {
         return await useContainerRequestsAPI.getContainers();
     };
 
+    const deleteDocument = async (documentId) => {
+        return await useDocumentsRequestsAPI.deleteDocument(documentId);
+    };
+
 
     return {
+        getDocumentsByIds,
         getDocument,
         getDocumentsType,
         getClasification,
-        getContainers
+        getContainers,
+        deleteDocument
     };
 }

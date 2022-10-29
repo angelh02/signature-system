@@ -1,4 +1,4 @@
-import {createRouter, createWebHistory} from "vue-router"
+import {createRouter, createWebHistory, createWebHashHistory} from "vue-router"
 import { adminRoutes } from "./admin"
 const Home = () => import("../components/mydocuments/Documents.vue")
 const Documents = () => import("../components/mydocuments/Documents.vue")
@@ -55,7 +55,7 @@ const routes = [
         component: Containers
     },
     {
-        path: '/documento/firmar/:id',
+        path: '/mis-documentos/firmar',
         name: 'DocumentSign',
         component: DocumentSign
     },
@@ -78,6 +78,7 @@ const routes = [
 ]
 
 const router = createRouter({
+    mode: 'history',
     history: createWebHistory(),
     routes
 })
