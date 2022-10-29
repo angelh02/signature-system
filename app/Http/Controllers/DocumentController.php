@@ -34,7 +34,7 @@ class DocumentController extends Controller
             DB::commit();
 
             //Cargamos las relaciones para retornar la info del documento creado
-            $documentSigners = DocumentSigner::where("document_id","=",$documentSigner->document_id)->get();
+            $documentSigners = DocumentSigner::where("document_id","=",$documentSigner->document_id)->with('user')->get();
             return response()->json($documentSigners, 200);
 
         } catch (\Exception $e) {
@@ -70,7 +70,7 @@ class DocumentController extends Controller
             DB::commit();
 
             //Cargamos las relaciones para retornar la info del documento creado
-            $documentSigners = DocumentSigner::where("document_id","=",$documentSigner->document_id)->get();
+            $documentSigners = DocumentSigner::where("document_id","=",$documentSigner->document_id)->with('user')->get();
             return response()->json($documentSigners, 200);
 
         } catch (\Exception $e) {
@@ -91,7 +91,7 @@ class DocumentController extends Controller
             DB::commit();
 
             //Cargamos las relaciones para retornar la info del documento creado
-            $documentSigners = DocumentSigner::where("document_id","=",$documentSigner->document_id)->get();
+            $documentSigners = DocumentSigner::where("document_id","=",$documentSigner->document_id)->with('user')->get();
             return response()->json($documentSigners, 200);
 
         } catch (\Exception $e) {
@@ -116,6 +116,64 @@ class DocumentController extends Controller
             return response()->json(["line" => $e->getLine(),"message" => $e->getMessage()], 500);
         }
     }
+    
+    public function getDocumentsByIds(Request $request){
+        $validator = Validator::make($request->all(), [
+            'documents' => 'required|array|min:1',
+            'documents.*' => 'required|numeric|exists:documents,id'
+        ]);
+
+        if ($validator->fails())
+            return response()->json($validator->errors(), 422);
+
+        $documents = Document::with([
+            "classification",
+            "container",
+            "documentType",
+            "documentSigned",
+            "documentSigners.user",
+        ])->where([["canceled", false], ["canceled_at", null]])->whereIn('id', $request->input('documents'))->get();
+        
+        return response()->json($documents, 200);
+    }
+
+    public function getUserSignDocuments(int $userId){
+        $documents = Document::with([
+            "classification",
+            "container",
+            "documentType",
+            "documentSigned",
+            "documentSigners" => function($query) use($userId){
+                $query->where('user_id',$userId);
+            },
+            "documentSigners.user",
+            "deletionRequests" => function($query){
+                $query->where("status", "Pendiente");
+            }
+        ])->where([["canceled", false], ["canceled_at", null]])->whereHas('documentSigners', function($query) use($userId) {
+            $query->where('user_id', $userId);
+        })->get();
+        
+        return response()->json($documents, 200);
+    }
+
+    public function getUserDocuments(int $userId){
+        $documents = Document::with([
+            "classification",
+            "container",
+            "documentType",
+            "documentSigned",
+            "documentSigners" => function($query) use($userId){
+                $query->where('user_id',$userId);
+            },
+            "documentSigners.user",
+            "deletionRequests" => function($query){
+                $query->where("status", "Pendiente");
+            }
+        ])->where([["canceled", false], ["canceled_at", null], ["user_id", $userId]])->get();
+        
+        return response()->json($documents, 200);
+    }
 
     public function getAll()
     {
@@ -124,7 +182,7 @@ class DocumentController extends Controller
             "container",
             "documentType",
             "documentSigned",
-            "documentSigners",
+            "documentSigners.user",
             "deletionRequests" => function($query){
                 $query->where("status", "Pendiente");
             }
@@ -142,7 +200,7 @@ class DocumentController extends Controller
             "container",
             "documentType",
             "documentSigned",
-            "documentSigners",
+            "documentSigners.user",
             "deletionRequests" => function($query){
                 $query->where("status", "Pendiente");
             }
@@ -199,7 +257,7 @@ class DocumentController extends Controller
                 "classification",
                 "documentType",
                 "documentSigned",
-                "documentSigners"
+                "documentSigners.user"
             ]);
             return response()->json($document, 200);
 
@@ -274,7 +332,7 @@ class DocumentController extends Controller
                 "classification",
                 "documentType",
                 "documentSigned",
-                "documentSigners"
+                "documentSigners.user"
             ])->orderBy('id', 'desc')->limit(count($request->input('documents')))->get();
             return response()->json($documents, 200);
 
@@ -319,7 +377,7 @@ class DocumentController extends Controller
                 "classification",
                 "documentType",
                 "documentSigned",
-                "documentSigners"
+                "documentSigners.user"
             ]);
             return response()->json($document, 200);
 

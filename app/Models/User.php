@@ -36,11 +36,17 @@ class User extends Authenticatable
      */
     protected $hidden = [
         'password',
+        'aws_user_id',
         'remember_token',
     ];
 
     public function documents()
     {
         return $this->hasMany(Document::class);
+    }
+
+    public function documentsToSign()
+    {
+        return $this->hasMany(DocumentSigner::class);
     }
 }

@@ -37,6 +37,8 @@ Route::middleware(['auth'])->group(function() {
     Route::get('/', [HomeController::class, 'index']);
     Route::group(['middleware' => ['role:Firmante']], function () {
         Route::view('/mis-documentos','home');
+        Route::view('/mis-documentos/estado/{id}','home')->where('id', '[0-9]+');
+        Route::view('/mis-documentos/detalles/{id}','home')->where('id', '[0-9]+');
         Route::view('/clasificaciones-archivisticas','home');
         Route::view('/contenedores','home');
     });
