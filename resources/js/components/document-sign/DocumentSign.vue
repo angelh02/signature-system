@@ -74,7 +74,7 @@
                             documento y el estado actual de cada una, haz
                             clic en el siguiente enlace.
                         </p>
-                        <router-link :to="`/document/status/${documentData?.id}`" style="font-size: 0.8125rem">Estado actual del documento</router-link>
+                        <router-link :to="`/mis-documentos/estado/${documentData?.id}`" target="_blank" style="font-size: 0.8125rem">Estado actual del documento</router-link>
                     </div>
                 </div>
             </div>
@@ -82,39 +82,40 @@
                 <div class="tab-content">
                     <div class="tab-pane" id="pdf-viewer">
                         <div class="tab-pane" id="profile1">
-                            <div class="d-flex align-items-center" v-if="isLoading">
-                                <strong>Loading...</strong>
-                                <div class="spinner-border ms-auto" role="status" aria-hidden="true"></div>
+                            <div
+                                class="card bg-secondary text-white rounded m-0"
+                                style="background-color: #a1a5ad"
+                            >
+                                <div class="d-flex justify-content-between pe-2 ps-2 pt-1 pb-1" v-if="documents?.length > 1">
+                                    <span class="align-middle">
+                                        <button class="btn btn-light btn-sm p-0 me-1" :disabled="pdfIndex <= 1" @click="pdfIndex--">
+                                            <i class="uil uil-angle-left fs-5"></i>
+                                        </button>
+                                        {{pdfIndex}} / {{documents?.length}}
+                                        <button class="btn btn-light btn-sm p-0 ms-1" :disabled="pdfIndex >= documents?.length" @click="pdfIndex++">
+                                            <i class="uil uil-angle-right fs-5"></i>
+                                        </button>
+                                    </span>
+                                    <label class="align-middle">
+                                        {{documentData?.name}}
+                                    </label>
+                                </div>
+                            </div>
+                            <div class="d-flex justify-content-center" style="height: 50vh;" v-if="!pdfLoaded">
+                                <div class="spinner-border mt-auto" style="width: 3rem; height: 3rem;" role="status" aria-hidden="true"></div>
                             </div>
                             <div
                                 class="card bg-secondary text-white rounded"
+                                :class="pdfLoaded ? 'd-block':'d-none'"
                                 style="background-color: #a1a5ad"
-                                v-else
                             >
-                                <!-- <div class="card-header">
-                                    <span>
-                                    <button :disabled="page <= 1" @click="page--">❮</button>
-                            
-                                    {{ page }} / {{ pageCount }}
-                            
-                                    <button :disabled="page >= pageCount" @click="page++">❯</button>
-                                    </span>
-                                </div> -->
-                                <div
-                                    class="card-body"
-                                    style="background-color: #a1a5ad"
-                                >
-                                    <VuePdfEmbed
-                                        v-if="source != ''"
-                                        class="scrollspy-example"
-                                        ref="pdfRef" 
-                                        :source="source"
-                                        :page="1"
-                                        @password-requested="handlePasswordRequest"
-                                        @rendered="handleDocumentRender"
-                                    ></VuePdfEmbed>
-                                </div>
-                                <!-- end card-body-->
+                                <VuePdfEmbed
+                                    ref="pdfViewer"
+                                    :source="source"
+                                    :key="source"
+                                    @rendered = "handleDocumentRender"
+                                    class="scrollspy-example"
+                                ></VuePdfEmbed>
                             </div>
                         </div>
                     </div>
@@ -137,22 +138,7 @@
                                     data-bs-parent="#up-cer">
                                     <div class="card-body">
                                         <div>
-                                            <div class="dropzone" v-bind="getRootProps()">
-                                                <div class="dz-message needsclick row align-items-center">
-                                                    <input v-bind="getInputProps()" />
-                                                        <h4 class="text-muted mdi mdi-file-upload-outline">
-                                                            Arrastra tu archivo .cer aqui o
-                                                            <label
-                                                                ><a type="button" class="text-primary"
-                                                                    >click aquí para seleccionar uno</a
-                                                                ></label
-                                                            >
-                                                            <input
-                                                                class="dropzoneFile btn-check"
-                                                            />
-                                                        </h4>
-                                                    </div>
-                                                </div>
+                                            <DropZone :title="'Arrastra tu documetos cer en la página o'" :acceptedFiles="'.cer'" @onDrop="onDropCerFile"></DropZone>
                                         </div>
                                     </div>
                                 </div>
@@ -173,22 +159,7 @@
                                     data-bs-parent="#custom-accordion-one">
                                     <div class="card-body">
                                         <div>
-                                            <div class="dropzone" v-bind="getRootProps()">
-                                                <div class="dz-message needsclick row align-items-center">
-                                                    <input v-bind="getInputProps()" />
-                                                        <h4 class="text-muted mdi mdi-file-upload-outline">
-                                                            Arrastra tu archivo .key aqui o
-                                                            <label
-                                                                ><a type="button" class="text-primary"
-                                                                    >click aquí para seleccionar uno</a
-                                                                ></label
-                                                            >
-                                                            <input
-                                                                class="dropzoneFile btn-check"
-                                                            />
-                                                        </h4>
-                                                    </div>
-                                                </div>
+                                            <DropZone :title="'Arrastra tu documetos key en la página o'" :acceptedFiles="'.key'" @onDrop="onDropKeyFile"></DropZone>
                                         </div>
                                     </div>
                                 </div>
@@ -210,7 +181,7 @@
                                         <div class="form-group">
                                             <label class="form-label">Ingresa tu contraseña:</label>
                                             <div class="input-group input-group-merge">
-                                                <input type="password" id="password" class="form-control " name="password" required="" autocomplete="current-password" placeholder="Introduce tu contraseña">
+                                                <input type="password" id="password" class="form-control " name="password" required="" autocomplete="current-password" placeholder="Introduce tu contraseña" v-model="signData.password">
                                                 <button id="password-type" class="input-group-text" @click="changeInputText">
                                                     <span class="password-eye"></span>
                                                 </button>
@@ -221,7 +192,7 @@
                             </div>
                         </div>
                         <div class="mt-3 d-flex justify-content-end">
-                            <button type="submit" class="btn btn-primary" @click="signDocument" :disabled="submit || step != 2" >
+                            <button type="submit" class="btn btn-primary" @click="signDocument" :disabled="submit || signData.password == '' || signData.cer_file == '' || signData.key_file == ''" >
                                 <span class="spinner-border spinner-border-sm" role="status" aria-hidden="true" v-if="submit"></span>
                                 FIRMAR DOCUMENTO
                             </button>
@@ -234,133 +205,172 @@
     </div>
 </template>
 <script setup>
-import DocumentUpload from "../elements/DropZone.vue";
-import $ from 'jquery'
-import { ref, onMounted, toRefs, toRef, reactive } from "vue";
-import { useDropzone } from "vue3-dropzone";
-import VuePdfEmbed from 'vue-pdf-embed'
-import DocumentSigned from "./DocumentSigned.vue"
-import {useRoute} from 'vue-router';
-import { useDocumentsRequests } from "@/js/composables/document-apis/useDocumentsRequest.js";
-import useDocumentsRequestsAPI from "@/api/document/index.js";
+    import DocumentUpload from "../elements/DropZone.vue";
+    import $ from 'jquery';
+    import { ref, onMounted, watch, toRefs, toRef, reactive, useAttrs } from "vue";
+    import VuePdfEmbed from 'vue-pdf-embed';
+    import DocumentSigned from "./DocumentSigned.vue";
+    import DropZone from "../elements/DropZone.vue";
+    import { useRouter, useRoute } from "vue-router";
+    import { useDocumentsRequests } from "@/js/composables/document-apis/useDocumentsRequest.js";
+    import useDocumentsRequestsAPI from "@/api/document/index.js";
 
-const route = useRoute();
-//Extract functions about requests
-const { getDocument } =
-    useDocumentsRequests();
-//Cargar pdf
-const source = ref("");
-const page = ref(null);
-const pageCount = ref(1);
-const isLoading = ref(false);
-const step = ref(0);
+    const attrs = useAttrs();
+    const userLogged = ref(attrs.user);
 
-const documentsFiles = ref([
-    {
-        name:"minuta_reunion.pdf",
-        url:"https://drive.google.com/uc?id=1e4Pg3SkXZh6NEldfTNTUmzTGxE3VQlvd&export=download",
-        pdf_url:"https://drive.google.com/uc?id=15zd4xb1dOUigrrcNc9ap6LPakfQrj6rf&export=download",
-        xml_url:"https://drive.google.com/uc?id=15zd4xb1dOUigrrcNc9ap6LPakfQrj6rf&export=download"
-    },
-    {
-        name:"lista_asistencia.pdf",
-        url:"https://drive.google.com/uc?id=1sJ1hGDWhFW-3etoSo5gnUAatUxiImXrj&export=download",
-        pdf_url:"https://drive.google.com/uc?id=1Uw0xeRpr9G8ZPLYBvd9edUV6wS01FA8a&export=download",
-        xml_url:"https://drive.google.com/uc?id=1Uw0xeRpr9G8ZPLYBvd9edUV6wS01FA8a&export=download"
-    },
-    {
-        name:"constancia_servicio_social.pdf",
-        url:"https://drive.google.com/uc?id=1QvAC2oJqRnUHddwkJiUOkxIQJ5jyb5ln&export=download",
-        pdf_url:"https://drive.google.com/uc?id=1any8k0DPl9_7nbeeNbJdTo3XhMzXDiFG&export=download",
-        xml_url:"https://drive.google.com/uc?id=1any8k0DPl9_7nbeeNbJdTo3XhMzXDiFG&export=download"
-    },
-    {
-        name:"carta_no_adeudo.pdf",
-        url:"https://drive.google.com/uc?id=1IO2e-rsr0WKXRSF9VrwTBz92VSqthpyK&export=download",
-        pdf_url:"https://drive.google.com/uc?id=1Ofd4anX48iI1VsCO39NjKMutSpoqtHr0&export=download",
-        xml_url:"https://drive.google.com/uc?id=1Ofd4anX48iI1VsCO39NjKMutSpoqtHr0&export=download"
-    },
-    {
-        name:"acta_calificaciones.pdf",
-        url:"https://drive.google.com/uc?id=1tEg_1Kt6N97-waTcHtmIVsR2Tm_ztOl7&export=download",
-        pdf_url:"https://drive.google.com/uc?id=1ehzwQHmBGlpHA8DSMAG9lWV9z3ZdI8Gs&export=download",
-        xml_url:"https://drive.google.com/uc?id=1ehzwQHmBGlpHA8DSMAG9lWV9z3ZdI8Gs&export=download"
-    },
-])
+    const router = useRouter();
+    const route = useRoute();
 
-//Dropzone
-const dataFile = ref("");
-const { getRootProps, getInputProps, ...restCer } = useDropzone({ onDrop, onDropAccepted });
+    //Get ids from params
+    const documentsIds = ref(JSON.parse(route.params.ids).documents);
+    const source = ref("");
+    const pdfViewer = ref(null);
+    const pdfLoaded = ref(false);
+    //Const to count pdf files
+    const pdfIndex = ref(1);
 
-//Subir info
-const submit = ref(false);
-const submited = ref(false);
-const documentId = ref(0);
-const documentData = ref({});
-const documentDownload = ref("");
-const signData = ref({
-    id : 0,
-    pdf_url : "",
-    xml_url : ""
-});
+    //Extract functions about requests
+    const { getDocumentsByIds } =
+        useDocumentsRequests();
 
-onMounted(async () => {
-    documentId.value = parseInt(route.params.id);
-    searchDocument();
-   $("#tab-pdf").addClass("active");
-   $("#pdf-viewer").addClass("show active");
-   $("#card-pdf").addClass("show active");
-});
+    //Const to steps form
+    const step = ref(0);
 
-function changeInputText(){
-    if($('#password').attr('type') == 'password')
-        $('#password-type').addClass("show-password");
-    else
-        $('#password-type').removeClass("show-password");
-    $('#password').attr('type', $('#password').attr('type') == 'text' ? 'password' : 'text');
-    
-}
+    const documentsFiles = ref([
+        {
+            name:"minuta_reunion.pdf",
+            url:"https://drive.google.com/uc?id=1e4Pg3SkXZh6NEldfTNTUmzTGxE3VQlvd&export=download",
+            pdf_url:"https://drive.google.com/uc?id=15zd4xb1dOUigrrcNc9ap6LPakfQrj6rf&export=download",
+            xml_url:"https://drive.google.com/uc?id=15zd4xb1dOUigrrcNc9ap6LPakfQrj6rf&export=download"
+        },
+        {
+            name:"lista_asistencia.pdf",
+            url:"https://drive.google.com/uc?id=1sJ1hGDWhFW-3etoSo5gnUAatUxiImXrj&export=download",
+            pdf_url:"https://drive.google.com/uc?id=1Uw0xeRpr9G8ZPLYBvd9edUV6wS01FA8a&export=download",
+            xml_url:"https://drive.google.com/uc?id=1Uw0xeRpr9G8ZPLYBvd9edUV6wS01FA8a&export=download"
+        },
+        {
+            name:"constancia_servicio_social.pdf",
+            url:"https://drive.google.com/uc?id=1QvAC2oJqRnUHddwkJiUOkxIQJ5jyb5ln&export=download",
+            pdf_url:"https://drive.google.com/uc?id=1any8k0DPl9_7nbeeNbJdTo3XhMzXDiFG&export=download",
+            xml_url:"https://drive.google.com/uc?id=1any8k0DPl9_7nbeeNbJdTo3XhMzXDiFG&export=download"
+        },
+        {
+            name:"carta_no_adeudo.pdf",
+            url:"https://drive.google.com/uc?id=1IO2e-rsr0WKXRSF9VrwTBz92VSqthpyK&export=download",
+            pdf_url:"https://drive.google.com/uc?id=1Ofd4anX48iI1VsCO39NjKMutSpoqtHr0&export=download",
+            xml_url:"https://drive.google.com/uc?id=1Ofd4anX48iI1VsCO39NjKMutSpoqtHr0&export=download"
+        },
+        {
+            name:"acta_calificaciones.pdf",
+            url:"https://drive.google.com/uc?id=1tEg_1Kt6N97-waTcHtmIVsR2Tm_ztOl7&export=download",
+            pdf_url:"https://drive.google.com/uc?id=1ehzwQHmBGlpHA8DSMAG9lWV9z3ZdI8Gs&export=download",
+            xml_url:"https://drive.google.com/uc?id=1ehzwQHmBGlpHA8DSMAG9lWV9z3ZdI8Gs&export=download"
+        },
+    ])
 
-function changeTab(tab){
-    if(tab == 1){
-        $("#tab-sign").removeClass("active");
-        $("#sign-form").removeClass("show active");
-        $("#card-sign").removeClass("show active");
+    //Dropzone
+    const dataFile = ref("");
+
+    //Subir info
+    const submit = ref(false);
+    const submited = ref(false);
+    const documents = ref([]);
+    const documentData = ref({});
+    const documentDownload = ref("");
+    const signData = ref({
+        user_id : 0,
+        documents : [],
+        cer_file : "",
+        key_file : "",
+        password : ""
+    });
+
+    onMounted(async () => {
+        searchDocuments();
         $("#tab-pdf").addClass("active");
         $("#pdf-viewer").addClass("show active");
         $("#card-pdf").addClass("show active");
+    });
+
+    //Watchers
+    watch(
+        () => pdfLoaded,
+        (pdfLoaded, oldPdfLoaded) => {
+            if(pdfLoaded){
+                refreshPdfViewer();
+            }
+        },
+        {deep:true}
+    );
+    watch(
+        () => pdfIndex,
+        (pdfIndex, oldPdfIndex) => {
+            pdfLoaded.value = false;
+            source.value = "";
+            documentData.value = documents.value[pdfIndex.value-1];
+            setTimeout(function () {
+                refreshPdf(documentData.value.url);
+            }, 1000);
+        },
+        {deep:true} 
+    );
+
+    function changeInputText(){
+        if($('#password').attr('type') == 'password')
+            $('#password-type').addClass("show-password");
+        else
+            $('#password-type').removeClass("show-password");
+        $('#password').attr('type', $('#password').attr('type') == 'text' ? 'password' : 'text');
+        
     }
-    else{
-        $("#tab-pdf").removeClass("active");
-        $("#pdf-viewer").removeClass("show active");
-        $("#card-pdf").removeClass("show active");
-        $("#tab-sign").addClass("active");
-        $("#sign-form").addClass("show active");
-        $("#card-sign").addClass("show active");
+
+    function changeTab(tab){
+        if(tab == 1){
+            $("#tab-sign").removeClass("active");
+            $("#sign-form").removeClass("show active");
+            $("#card-sign").removeClass("show active");
+            $("#tab-pdf").addClass("active");
+            $("#pdf-viewer").addClass("show active");
+            $("#card-pdf").addClass("show active");
+        }
+        else{
+            $("#tab-pdf").removeClass("active");
+            $("#pdf-viewer").removeClass("show active");
+            $("#card-pdf").removeClass("show active");
+            $("#tab-sign").addClass("active");
+            $("#sign-form").addClass("show active");
+            $("#card-sign").addClass("show active");
+        }
     }
-}
 
-//Events to pdf viewer
-function handleDocumentRender() {
-    isLoading.value = false
-};
-function handlePasswordRequest(callback, retry) {
-    callback(prompt(retry
-    ? 'Enter password again'
-    : 'Enter password'
-    ))
-};
+    function getBase64String(file, onLoadCallback) {
+        return new Promise(function(resolve, reject) {
+            var reader = new FileReader();
+            reader.onload = function() { resolve(reader.result); };
+            reader.onerror = reject;
+            console.log("🚀 ~ file: DocumentSign.vue ~ line 348 ~ getBase64String ~ file", file)
+            reader.readAsDataURL(file);
+        });
+    }
 
-//Functions to dropzone
-function onDrop(acceptFiles, rejectReasons) {
-    saveFilesCer(acceptFiles);       
-}
+    //Events to pdf viewer
+    function handleDocumentRender() {
+        pdfLoaded.value = true;
+    };
 
-function onDropAccepted(acceptFiles) {
-    saveFilesCer(acceptFiles); 
-    dataFile.value = acceptFiles
-    step.value ++;
-    if(step.value == 1){
+    function handlePasswordRequest(callback, retry) {
+        callback(prompt(retry
+        ? 'Enter password again'
+        : 'Enter password'
+        ))
+    };
+
+    //Functions to dropzone
+    async function onDropCerFile(acceptFiles) { 
+        let promise = getBase64String(acceptFiles[0]);
+        signData.value.cer_file = await promise;
+        step.value = 1;  
         $("#up-cer-btn").attr('aria-expanded', "false");
         $("#up-cer-btn").addClass("collapsed");
         $("#up-cer").removeClass("show");
@@ -371,7 +381,11 @@ function onDropAccepted(acceptFiles) {
         $("#password-btn").addClass("collapsed");
         $("#password-tab").removeClass("show");
     }
-    else if(step.value == 2){
+
+    async function onDropKeyFile(acceptFiles) {
+        let promise = getBase64String(acceptFiles[0]);
+        signData.value.key_file = await promise;
+        step.value = 2;
         $("#up-key-btn").attr('aria-expanded', "false");
         $("#up-key-btn").addClass("collapsed");
         $("#up-key").removeClass("show");
@@ -382,43 +396,51 @@ function onDropAccepted(acceptFiles) {
         $("#up-cer-btn").addClass("collapsed");
         $("#up-cer").removeClass("show");
     }
-    // router.push({ name: "DocumentsPreparation"
-    //             , params: {datafile: JSON.stringify(dataFile)}})
-    
-}
 
-const saveFilesCer = (files) => {
-    const formData = new FormData();
-    for (var x = 0; x < files.length; x++) {
-        formData.append("images[]", files[x]);
+    function refreshPdf(result){
+        source.value = result;
+        pdfViewer.value.$.props.source = source.value;
+        refreshPdfViewer();
     }
-};
 
-const saveFilesKey = (files) => {
-    const formData = new FormData();
-    for (var x = 0; x < files.length; x++) {
-        formData.append("images[]", files[x]);
-    }
-};
-const searchDocument = async () => {
-    documentData.value = await getDocument(documentId.value);
-    let index = documentsFiles.value.findIndex(x => x.name == documentData.value.name);
-    index = index == -1 ? 0 : index;
-    source.value = "/pdf/"+(documentsFiles.value[index].name);
-    documentDownload.value = documentsFiles.value[index].url;
-    signData.value.id = documentData.value.id;
-    signData.value.pdf_url = documentsFiles.value[index].pdf_url;
-    signData.value.xml_url = documentsFiles.value[index].xml_url;
-};
-const signDocument = async () => {
-    submit.value = true;
-    useDocumentsRequestsAPI.signDocument(signData.value)
-    .then((res) => {
-        setTimeout(function() {
-            submit.value = false;
-            submited.value = true;
-            step.value = 0;
+    const refreshPdfViewer = async () => {
+        await Promise.resolve(pdfViewer.value.render());
+    };
+
+    const searchDocuments = async () => {
+        documents.value = await getDocumentsByIds({documents : documentsIds.value});
+        documentData.value = documents.value[0];
+        let index = documentsFiles.value.findIndex(x => x.name == documentData.value.name);
+        index = index == -1 ? 0 : index;
+        pdfLoaded.value = false;
+        source.value = "";
+        documentDownload.value = documentData.value.url;
+        signData.value.documents = [...documents.value.map(x => x.id)];
+        signData.value.user_id = userLogged.value.id;
+        setTimeout(function () {
+            refreshPdf( documentData.value.url);
         }, 3000);
-    });
-};
+    };
+
+    const signDocument = async () => {
+        if(signData.value.cer_file != "" && signData.value.key_file != "" && signData.value.password != "")
+        {
+            submit.value = true;
+            console.log("🚀 ~ file: DocumentSign.vue ~ line 428 ~ signDocument ~ signData.value", signData.value)
+            useDocumentsRequestsAPI.signDocument({
+                user_id : userLogged.value.id,
+                documents : documentsIds.value,
+                cer_file : signData.value.cer_file,
+                key_file : signData.value.key_file,
+                password : signData.value.password
+            })
+            .then((res) => {
+                setTimeout(function() {
+                    submit.value = false;
+                    submited.value = true;
+                    step.value = 0;
+                }, 3000);
+            });
+        }
+    };
 </script>

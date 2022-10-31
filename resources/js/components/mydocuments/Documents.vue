@@ -241,11 +241,11 @@ function refreshTables(){
 function signAllDocuments(){
     let documentsToSign = selectedTable.value == "my-documents" ? tableDocuments.value.filteredDocuments : tableDocumentsSign.value.filteredDocuments;
     //Router push
-    let ids = JSON.stringify(documentsToSign.map(x => x.id));
+    let ids = JSON.stringify({documents : documentsToSign.map(x => x.id)});
     console.log("🚀 ~ file: DocumentsPreparation.vue ~ line 398 ~ .then ~ ids", ids)
-    /* router.push({
+    router.push({
         name : 'DocumentSign',
         params: {ids: ids}
-    }); */
+    });
 }
 </script>

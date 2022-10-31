@@ -212,9 +212,12 @@ class DocumentController extends Controller
     //Marca como firmado un documento
     public function signDocument(Request $request){
         $validator = Validator::make($request->all(), [
-            'id' => 'required|numeric|exists:documents,id',
-            'pdf_url' => 'required',
-            'xml_url' => 'required'
+            'user_id' => 'required|numeric|exists:users,id',
+            'documents' => 'required|array|min:1',
+            'documents.*' => 'required|numeric|exists:documents,id',
+            'cer_file' => 'required',
+            'key_file' => 'required',
+            'password' => 'required'
         ]);
         if ($validator->fails())
             return response()->json($validator->errors(), 422);
@@ -222,32 +225,36 @@ class DocumentController extends Controller
         try {
             DB::beginTransaction();
             //Consultamos el documento por su id
-            $document = Document::where("id", $request->input("id"))->first();
-            if($document == null)
-                return response()->json(["message" => "DOCUMENT_DOES_NOT_EXISTS"], 402);
+            $documentSigners = DocumentSigner::whereIn("document_id", $request->input("documents"))->where('user_id', $request->input('user_id'))->get();
+            if($documentSigners == null || count($documentSigners) == 0)
+                return response()->json(["message" => "DOCUMENTS_DOES_NOT_EXISTS"], 402);
             //Integracion con aws al momento de firmar retornar los urls de los archivos
 
-            //Capturamos los datos a editar del documento
-            $document->signed = true;
-            $currentDate = date("Y-m-d");
-            $document->signed_at = $currentDate;
-            $document->updated_at = $currentDate;
-            //Guardamos los cambios
-            $document->save();
-
-            //Cambiamos a true los firmantes
-            foreach ($document->documentSigners() as $key => $signer) {
-                $signer->signed = true;
-                $signer->signed_at = $currentDate;
-                $signer->save();
+            foreach($documentSigners as $key => $documentSigner){
+                $documentSigner->signed = true;
+                $documentSigner->signed_at = date('Y-m-d');
+                $documentSigner->save();
             }
 
-            //Creamos la data del documento ya firmado
-            $documentSigned = new DocumentSigned();
-            $documentSigned->document_id = $document->id;
-            $documentSigned->pdf_url = $request->input("pdf_url");
-            $documentSigned->xml_url = $request->input("xml_url");
-            $documentSigned->save();
+            $documents = Document::whereIn("id", $request->input("documents"))->whereDoesntHave('documentSigners', function($query){
+                $query->where('signed', false)->where('signed_at', null);
+            })->get();
+            foreach($documents as $key => $document){
+                //Capturamos los datos a editar del documento
+                $document->signed = true;
+                $currentDate = date("Y-m-d");
+                $document->signed_at = $currentDate;
+                $document->updated_at = $currentDate;
+                //Guardamos los cambios
+                $document->save();
+
+                //Creamos la data del documento ya firmado
+                $documentSigned = new DocumentSigned();
+                $documentSigned->document_id = $document->id;
+                $documentSigned->pdf_url = "https://drive.google.com/uc?id=1e4Pg3SkXZh6NEldfTNTUmzTGxE3VQlvd&export=download";
+                $documentSigned->xml_url = "https://drive.google.com/uc?id=1e4Pg3SkXZh6NEldfTNTUmzTGxE3VQlvd&export=download";
+                $documentSigned->save();
+            }
 
             DB::commit();
 

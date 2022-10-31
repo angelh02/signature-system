@@ -103,13 +103,13 @@ function cancel(){
 }
 
 function storeRequest(){
-    if(v$.$errors.length > 0 || v$.$silentErrors.length > 0){
+    if(!(v$._value.$errors.length > 0 || v$._value.$silentErrors.length > 0)){
         let data = {
             document_id : documentId.value,
-            subject : requestData.subject.value,
-            description : requestData.description.value
+            subject : requestData.value.subject,
+            description : requestData.value.description
         }
-        useFileDeletionRequestAPI.store(formData.value)
+        useFileDeletionRequestAPI.store(data)
         .then((res) => {
             toast.success("Se ha creado la solicitud correctamente", {
             timeout: 2000,

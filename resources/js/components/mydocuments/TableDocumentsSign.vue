@@ -89,12 +89,15 @@ import $ from "jquery";
 import { Modal } from "bootstrap";
 import { dataTable, row, destroy, draw } from "datatables";
 import {useToast} from "vue-toastification";
+import { useRouter } from "vue-router";
 //Api
 import { useDocumentsRequests } from "@/js/composables/document-apis/useDocumentTableRequest.js";
 import useDocumentCrudRequests from "@/api/document/index.js";
 import useFileClasificationRequestsAPI from "@/api/index.js";
 
 const toast = useToast();
+
+const router = useRouter();
 
 const emit = defineEmits(['refresh']);
 
@@ -256,14 +259,15 @@ const getRequests = async (refresh = false) => {
 };
 
 function singDocument(documentId){
-    let ids = [documentId];
-    /* router.push({
+    let ids = JSON.stringify({documents : [documentId]});
+    router.push({
         name : 'DocumentSign',
         params: {ids: ids}
-    }); */
+    });
 }
 
 function storedDeletionRequest(){
+    deletionRequestModal.value.hide();
     emit('refresh');
 }
 
