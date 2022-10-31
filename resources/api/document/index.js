@@ -143,9 +143,7 @@ async function deleteSigner(id) {
 // FIRMAR DOCUMENTO
 async function signDocument(signData) {
   return await axios
-    .post(`/api/document/sign`, signData, {
-      headers: { 'content-type': 'multipart/form-data' },
-    }
+    .post(`/api/document/sign`, signData
     )
     .then((res) => {
       if (res.status != 200) throw new Error("Response Failed");
