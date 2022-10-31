@@ -55,8 +55,18 @@ export function useDocumentsRequests(from = null, to = null) {
         return await useDocumentsRequestsAPI.getDocuments();
     };
 
+    const getUserDocuments = async (userId) => {
+        return await useDocumentsRequestsAPI.getUserDocuments(userId);
+    };
+
+    const getUserSignDocuments = async (userId) => {
+        return await useDocumentsRequestsAPI.getUserSignDocuments(userId);
+    };
+
     return {
         containerColumns,
         getDocuments,
+        getUserDocuments,
+        getUserSignDocuments
     };
 }

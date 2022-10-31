@@ -36,6 +36,7 @@ class User extends Authenticatable
      */
     protected $hidden = [
         'password',
+        'aws_user_id',
         'remember_token',
     ];
 

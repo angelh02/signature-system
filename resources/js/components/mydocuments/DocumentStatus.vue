@@ -56,8 +56,8 @@
                         <tbody>
                             <tr v-for="signer in documentData?.document_signers">
                                 <td colspan="1"><p class="m-0"><span :class="'badge bg-'+(signer.signed == 0 ? 'warning' : 'success')">{{signer.signed == 0 ? 'Pendiente' : 'Firmado'}}</span></p></td>
-                                <td colspan="2">{{signer.email}}</td>
-                                <td colspan="2">{{signer.name+" "+signer.surnames}}</td>
+                                <td colspan="2">{{signer.user.email}}</td>
+                                <td colspan="2">{{signer.user.name+" "+signer.user.surnames}}</td>
                                 <td colspan="2" v-if="signer.signed == 1">Firmado: {{signer.signed_at}}</td>
                             </tr>
                         </tbody>

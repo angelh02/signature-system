@@ -410,12 +410,12 @@
                 console.log("🚀 ~ file: DocumentsPreparation.vue ~ line 412 ~ .then ~ res", res)
                 loadDocuments.value = false;
                 if(userSign.value){
-                    let ids = JSON.stringify(res.map(x => x.id));
+                    let ids = JSON.stringify({documents : res.map(x => x.id)});
                     console.log("🚀 ~ file: DocumentsPreparation.vue ~ line 398 ~ .then ~ ids", ids)
-                    /* router.push({
+                    router.push({
                         name : 'DocumentSign',
                         params: {ids: ids}
-                    }); */
+                    });
                 }
                 else
                     documentCreated.value = true;

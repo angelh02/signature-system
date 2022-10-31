@@ -98,8 +98,11 @@ Route::post('/document-type/store', 'DocumentTypeController@store');
 Route::post('/document-type/update', 'DocumentTypeController@update');
 Route::delete('/document-type/delete/{id}', 'DocumentTypeController@delete');
 
-//Container routes
+//Documents routes
 Route::get('/document/get-all', 'DocumentController@getAll');
+Route::get('/document/get-user-documents/{userId}', 'DocumentController@getUserDocuments');
+Route::get('/document/get-user-sign-documents/{userId}', 'DocumentController@getUserSignDocuments');
+Route::post('/document/get-by-ids', 'DocumentController@getDocumentsByIds');
 Route::get('/document/get/{id}', 'DocumentController@getDocument');
 Route::post('/document/store', 'DocumentController@store');
 Route::post('/document/update', 'DocumentController@update');
