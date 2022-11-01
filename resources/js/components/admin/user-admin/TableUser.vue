@@ -51,7 +51,8 @@ const formData = reactive({
     user_name: "",
     email: "",
     active: 0,
-    role_id:""
+    role_id:"",
+    RFC:""
 });
 
 
@@ -109,6 +110,7 @@ const createTable = async () => {
         formData.email = user[index].email;
         formData.active = user[index].active == 1 ? true : false;
         formData.role_id = user[index].roles[0].id;
+        formData.RFC = user[index].RFC;
         emit("data", formData);
       
     });

@@ -1,6 +1,7 @@
 <template>
     <div class="card-title">
-        <h4>Agregar nueva clasificación</h4>
+        <h4 v-if="!edit">Agregar nueva clasificación</h4>
+        <h4 v-if="edit">Editar clasificación</h4>
     </div>
     <form class="needs-validation" @submit.prevent="onSubmit" novalidate>
         <div class="mb-3">
@@ -185,11 +186,13 @@ import { required, numeric ,minValue, helpers, minLength, maxLength} from '@vuel
 import { ref, onMounted, toRefs, toRef, reactive } from "vue";
 import $ from "jquery";
 import { datepicker } from "bootstrap-datepicker";
+import { useToast } from "vue-toastification";
 //Api functions
 import { useClasificationsRequests } from "@/js/composables/useClasificationsRequest.js";
 import { useFormClasificationRequest } from "@/js/composables/useFormClasificationRequest.js";
 import useFileClasificationRequestsAPI from "@/api/index.js";
 
+const toast = useToast();
 const props = defineProps({
     dataForm: Object,
     edit: Boolean
@@ -280,7 +283,15 @@ const addRequest = async => {
     {
         useFileClasificationRequestsAPI.addClassification(formData.value)
         .then((res) => {
-        });
+            toast.success("Se ha agregado correctamente el archivo de clasificación", {
+            timeout: 2000,
+            });
+        })
+        .catch(error => 
+            toast.warning("No se ha podido agregar, verifique los datos (ej. nombre repetido, etc..)", {
+            timeout: 2000,
+            })
+        );
         emit('update');
         resetData();
     }
@@ -292,7 +303,15 @@ const editRequest = async => {
         useFileClasificationRequestsAPI.editClassification(formData.value)
         .then((res) => {
             //toast
-        });
+            toast.success("Se ha editado correctamente la clasificación", {
+            timeout: 2000,
+            });
+        })
+        .catch(error => 
+            toast.warning("No se ha podido editar, verifique los datos.", {
+            timeout: 2000,
+            })
+        );
         emit('update');
         resetData();
     }

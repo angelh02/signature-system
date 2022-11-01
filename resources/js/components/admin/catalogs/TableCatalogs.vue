@@ -162,7 +162,7 @@ const deleteRequests = async (id) => {
     const get = apisGet[route.params.name]
     get.drop(id)
     .then((res) => {
-        toast.error("Se ha eliminado el folio "+ id + " correctamente", {
+        toast.success("Se ha eliminado el folio "+ id + " correctamente", {
           timeout: 2000,
         });
         getRequests(true);

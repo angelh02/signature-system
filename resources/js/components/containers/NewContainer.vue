@@ -1,6 +1,7 @@
 <template>
     <div class="card-title">
-        <h4>Agregar nueva clasificación</h4>
+        <h4 v-if="!edit">Agregar nuevo contenedor</h4>
+        <h4 v-if="edit">Editar contenedor</h4>
     </div>
     <form class="needs-validation" @submit.prevent="onSubmit" novalidate>
         <!-- Controles para informacion del contenedor -->
@@ -165,6 +166,7 @@ import { required, numeric ,minValue, helpers, minLength, maxLength} from '@vuel
 import { ref, onMounted, toRefs, toRef, reactive } from "vue";
 import $ from "jquery";
 import { datepicker } from "bootstrap-datepicker";
+import { useToast } from "vue-toastification";
 //Api functions
 import { useContainersRequests } from "@/js/composables/container-apis/useContainersRequest.js";
 import { useFormContainerRequest } from "@/js/composables/container-apis/useFormContainerRequest.js";
@@ -179,7 +181,7 @@ const props = defineProps({
 const dataForm = toRef(props, 'dataForm');
 const edit = toRef(props, 'edit');
 
-
+const toast = useToast();
 const emit = defineEmits(['update','cancel'])
 
 const submit = ref(false)
@@ -251,7 +253,15 @@ const addRequest = async => {
         useContainerRequestsAPI.addContainer(formData.value)
         .then((res) => {
             //toast
-        });
+            toast.success("Se ha agregado correctamente el contenedor", {
+            timeout: 2000,
+            });
+        })
+        .catch(error => 
+            toast.warning("No se ha podido agregar, verifique los datos(ej. nombre repetido, etc..)", {
+            timeout: 2000,
+            })
+        );
         emit('update');
         resetData();
     }
@@ -263,7 +273,15 @@ const editRequest = async => {
         useContainerRequestsAPI.editContainer(formData.value)
         .then((res) => {
             //toast
-        });
+            toast.success("Se ha editado correctamente el contenedor", {
+            timeout: 2000,
+            });
+        })
+        .catch(error => 
+            toast.warning("No se ha podido editar, verifique los datos(ej. nombre repetido, etc..)", {
+            timeout: 2000,
+            })
+        );
         emit('update');
         resetData();
     }

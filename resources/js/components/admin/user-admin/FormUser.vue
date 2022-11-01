@@ -1,6 +1,7 @@
 <template>
     <div class="card-title">
-        <h4>Agregar nuevo usuario</h4>
+        <h4 v-if="!edit">Agregar nuevo usuario</h4>
+        <h4 v-if="edit">Editar usuario</h4>
     </div>
     <form class="needs-validation" @submit.prevent="onSubmit" novalidate>
         <div class="mb-3">
@@ -13,8 +14,8 @@
                     class="form-control"
                     id="name"
                     placeholder="Ingrese"
-                    minlength="1"
-                    maxlength="10"
+                    minlength="4"
+                    maxlength="20"
                     v-model="v$.name.$model"
                     required
                 />
@@ -33,8 +34,8 @@
                     class="form-control"
                     id="surname"
                     placeholder="Ingrese"
-                    minlength="1"
-                    maxlength="10"
+                    minlength="4"
+                    maxlength="20"
                     v-model="v$.surnames.$model"
                     required
                 />
@@ -176,12 +177,12 @@ const showAll = ref(false);
        
       name: {
         required: helpers.withMessage('Este campo no debe estar vacio', required),
-        minLength: helpers.withMessage('Minimo debe ser 10 caracteres', minLength(10)),
+        minLength: helpers.withMessage('Minimo debe ser 4 caracteres', minLength(4)),
         maxLength: helpers.withMessage('Maximo debe ser 255 caracteres', maxLength(255)),
       }, 
       surnames: {
         required: helpers.withMessage('Este campo no debe estar vacio', required),
-        minLength: helpers.withMessage('Minimo debe ser 10 caracteres', minLength(10)),
+        minLength: helpers.withMessage('Minimo debe ser 4 caracteres', minLength(4)),
         maxLength: helpers.withMessage('Maximo debe ser 255 caracteres', maxLength(255)),
       },
       user_name:  {
@@ -238,7 +239,7 @@ const addUser = async () => {
         });
     })
     .catch(error => 
-        toast.warning("No se ha podido agregar", {
+        toast.warning("No se ha podido agregar, verifique que los datos sean correctos", {
           timeout: 2000,
         })
     );
@@ -258,7 +259,7 @@ const editUser = async => {
         })
     })
     .catch((error) =>{
-        toast.error("El registro no se ha podido actualizado", {
+        toast.error("El registro no se ha podido actualizar", {
           timeout: 2000,
         });
     });

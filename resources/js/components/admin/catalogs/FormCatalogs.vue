@@ -1,9 +1,16 @@
 <template>
     <div v-if="route.params.name === 'tipos-documentos'">
-        <h4>Agregar nuevo tipo de documento</h4>
+        <h4 v-if="!edit">Agregar nuevo tipo de documento</h4>
+        <h4 v-if="edit">Editar tipo de documento</h4>
     </div>
     <div v-else class="card-title">
-        <h4>Agregar nueva clasificación</h4>
+        <div v-if="!edit" class="d-flex">
+            <h4 v-if="!edit">Agregar nuev@ (</h4><h4 class="text-lowercase">{{btn}})</h4>
+        </div>
+        <div v-if="edit" class="d-flex">
+            <h4 v-if="edit">Editar (</h4><h4 class="text-lowercase"> {{ btn}})</h4>
+        </div>
+        
     </div>
     <form class="needs-validation" @submit.prevent="onSubmit" novalidate>
         <div class="mb-3">
@@ -51,7 +58,7 @@
                 AGREGAR {{btn}}
             </button>
             <button v-if="edit" class="btn btn-primary mb-2" type="submit" @click.prevent="editRequest" :disabled="v$.$errors.length > 0 || v$.$silentErrors.length > 0">
-                ACTUALIZAR 
+                ACTUALIZAR {{btn}}
             </button>
             <button class="btn btn-light mb-2" type="submit" @click="resetData()">CANCELAR</button>
         </div>

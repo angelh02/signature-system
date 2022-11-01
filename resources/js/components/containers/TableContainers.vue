@@ -17,13 +17,14 @@ import { ref, onMounted, watch, toRefs, reactive } from "vue";
 import $ from "jquery";
 import { Modal } from "bootstrap";
 import { dataTable, table, row, draw, destroy } from "datatables";
+import { useToast } from "vue-toastification";
 //Components
 import ConfirmationModal from '../elements/ConfirmationModal.vue';
 //Api functions
 import { useContainersRequests } from "@/js/composables/container-apis/useContainerRequest.js";
 import useContainersRequestsAPI from "@/api/container/index.js";
 
-
+const toast = useToast();
 const props = defineProps({
     containersData: Object,
     updated: Boolean,
@@ -127,8 +128,16 @@ const getRequests = async (refresh = false) => {
 const deleteRequests = async (id) => {
     useContainersRequestsAPI.deleteContainer(id)
     .then((res) => {
+        toast.success("Se ha eliminado correctamente el contenedor", {
+            timeout: 2000,
+            });
         getRequests(true);
-    });
+    })
+    .catch(error => 
+        toast.error("No se ha podido eliminar", {
+        timeout: 2000,
+        })
+    );
 };
 
 
