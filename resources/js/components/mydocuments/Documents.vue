@@ -63,11 +63,11 @@
                                 class="btn btn-sm btn-primary me-2 mb-1"
                                 type="button"
                                 @click="signAllDocuments"
-                                :disabled="!needSign"
+                                :disabled="!needSign || (selectedTable == 'my-documents' && tableDocuments.filteredDocuments.length == 0) || (selectedTable == 'sign-documents' && tableDocumentsSign.filteredDocuments.length == 0)"
                             >
                                 FIRMAR TODOS
                             </button>
-                            <p class="mb-1 me-2"><b>Documentos que requiren mi firma</b></p>
+                            <p class="mb-1 me-2"><b>Documentos que requieren mi firma</b></p>
                             <div>
                                 <input type="checkbox" id="signed_switch" data-switch="primary" v-model="needSign"/>
                                 <label for="signed_switch" data-on-label="SI" data-off-label="NO"></label>
@@ -153,7 +153,7 @@ const  dataFilter =  ref({});
 const  needSign = ref(false);
 const refreshTable = ref(false);
 const reloadTable = ref(false);
-const selectedTable = ref('mi-documents');
+const selectedTable = ref('my-documents');
 
 //tables
 const tableDocuments = ref(null);
