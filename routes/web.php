@@ -1,6 +1,8 @@
 <?php
 
+use App\Http\Controllers\HomeController;
 use Illuminate\Support\Facades\Route;
+use App\Http\Controllers\Auth\ResetPasswordController;
 
 /*
 |--------------------------------------------------------------------------
@@ -13,9 +15,9 @@ use Illuminate\Support\Facades\Route;
 |
 */
 
-Route::get('/', function () {
-    return view('auth.login');
-});
+// Route::get('/', function () {
+//     return view('auth.login');
+// });
 
 Auth::routes();
 
@@ -27,12 +29,28 @@ Auth::routes();
     
 Route::middleware(['auth'])->group(function() {
     // Route::view('/', 'layout.content');
-    // Route::view('/reset-password', 'auth.passwords.reset')->name('reset-password');
-    // Route::post('/reset-password', [ResetPasswordController::class, 'resetUserPassword'])->name('reset-password');
+    Route::view('/reset-password', 'auth.passwords.reset')->name('reset-password');
+    Route::post('/reset-password', [ResetPasswordController::class, 'resetUserPassword'])->name('reset-password');
     // Route::get('/{any}', function () {
     //     return view('home');
     // });
-    Route::view('/{any}','home')
-    ->middleware(['auth'])
-    ->where('any','.*');
+    Route::get('/', [HomeController::class, 'index']);
+    Route::group(['middleware' => ['role:Firmante']], function () {
+        Route::view('/mis-documentos','home');
+        Route::view('/mis-documentos/estado/{id}','home')->where('id', '[0-9]+');
+        Route::view('/mis-documentos/detalles/{id}','home')->where('id', '[0-9]+');
+        Route::view('/clasificaciones-archivisticas','home');
+        Route::view('/contenedores','home');
+    });
+    Route::group(['middleware' => ['role:Administrador']], function () {
+        Route::view('/solicitudes','admin.index');
+        Route::view('/usuarios','admin.index');
+        Route::view('/catalogo/{any}','admin.index')->where('any', '.*');
+    });
+    // Route::view('/reset-password', 'auth.passwords.reset')->name('reset-password');
+
+    
+    Route::any('{url}', function(){
+        return redirect('/');
+    })->where('url', '.*');
 });

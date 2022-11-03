@@ -56,8 +56,8 @@
                         <tbody>
                             <tr v-for="signer in documentData?.document_signers">
                                 <td colspan="1"><p class="m-0"><span :class="'badge bg-'+(signer.signed == 0 ? 'warning' : 'success')">{{signer.signed == 0 ? 'Pendiente' : 'Firmado'}}</span></p></td>
-                                <td colspan="2">{{signer.email}}</td>
-                                <td colspan="2">{{signer.name+" "+signer.surnames}}</td>
+                                <td colspan="2">{{signer.user.email}}</td>
+                                <td colspan="2">{{signer.user.name+" "+signer.user.surnames}}</td>
                                 <td colspan="2" v-if="signer.signed == 1">Firmado: {{signer.signed_at}}</td>
                             </tr>
                         </tbody>
@@ -68,11 +68,14 @@
     </div>
 </template>
 <script setup>
-import { ref, onMounted, toRefs, toRef, reactive } from "vue";
+import { ref, onMounted, toRefs, toRef, reactive, useAttrs } from "vue";
 import $ from "jquery";
 import { integer } from "@vuelidate/validators";
 import {useRoute} from 'vue-router';
 import { useDocumentsRequests } from "@/js/composables/document-apis/useDocumentsRequest.js";
+
+const attrs = useAttrs();
+const userLogged = ref(attrs.user);
 
 const route = useRoute()
 const documentId = ref(0);
@@ -91,6 +94,7 @@ onMounted(async () => {
 
 const searchDocument = async () => {
     documentData.value = await getDocument(documentId.value);
-    console.log(documentData.value.classification);
+    if(userLogged.value.id == documentData.value.user_id)
+            router.push({path:'/mis-documentos/detalles/'+documentData.value.id});
 };
 </script>

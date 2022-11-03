@@ -15,8 +15,7 @@ class CreateDocumentSignerTable extends Migration
     {
         Schema::create('document_signer', function (Blueprint $table) {
             $table->id();
-            $table->string("name");
-            $table->string("email");
+            $table->unsignedBigInteger("user_id");
             $table->unsignedBigInteger("document_id");
             $table->boolean("signed")->default(false);
             $table->date("signed_at")->nullable();

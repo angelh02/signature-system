@@ -14,11 +14,10 @@
             <div class="dropdown-menu dropdown-menu-end dropdown-menu-animated topbar-dropdown-menu profile-dropdown">
 
                 <!-- item-->
-                {{-- <a href="{{ route('reset-password') }}" class="dropdown-item notify-item">
+                <a href="{{ route('reset-password') }}" class="dropdown-item notify-item">
                     <i class="mdi mdi-account-key me-1"></i>
                     <span>Cambiar de Contraseña</span>
-                </a> --}}
-
+                </a>
                 <!-- item-->
                 <a class="dropdown-item notify-item" href="{{ route('logout') }}"
                     onclick="event.preventDefault(); document.getElementById('logout-form').submit();"

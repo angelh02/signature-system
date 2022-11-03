@@ -11,7 +11,7 @@
                 <p>
                     Puedes ver quien ya ha firmado desde el listado de documentos en la sección “Mis documentos”.
                 </p>
-                <a class="btn btn-primary" href="/documents">MIS DOCUMENTOS</a>
+                <a class="btn btn-primary" href="/mis-documentos">MIS DOCUMENTOS</a>
             </div>
         </div>
     </div>

@@ -38,7 +38,16 @@ import {ref,onMounted,watch,reactive} from 'vue';
 
 const updated = ref(false);
 const edit = ref(false);
-const dataForm = ref({});
+const dataForm = ref({
+    background_id : "",
+    section_id : "",
+    series : "",
+    subseries : "",
+    production_area_id : "",
+    start_period : "",
+    end_period : "",
+    consecutive_number : ""
+});
 // const id = ref("");
 
 

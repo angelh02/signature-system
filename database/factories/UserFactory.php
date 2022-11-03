@@ -15,6 +15,7 @@ class UserFactory extends Factory
     public function definition()
     {
         return [
+            'aws_user_id' => 1,
             'name' => $this->faker->name(),
             'surnames' => $this->faker->lastName(),
             'user_name' => $this->faker->userName(),

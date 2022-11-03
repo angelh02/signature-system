@@ -15,8 +15,7 @@ class DocumentController extends Controller
 {
     public function assignSigner(Request $request){
         $validator = Validator::make($request->all(), [
-            'name' => 'required|min:10|max:255',
-            'email' => 'required|email:rfc,dns|max:255',
+            'user_id' => 'required|numeric|exists:users,id',
             'document_id' => 'required|numeric|exists:documents,id',
         ]);
 
@@ -28,15 +27,14 @@ class DocumentController extends Controller
             //Iniciamos nuestro nuevo documento
             $documentSigner = new DocumentSigner();
             //Capturamos los datos del nuevo documento
-            $documentSigner->name = $request->input("name");
-            $documentSigner->email = $request->input("email");
+            $documentSigner->user_id = $request->input("user_id");
             $documentSigner->document_id = $request->input("document_id");
             //Guardamos los cambios
             $documentSigner->save();
             DB::commit();
 
             //Cargamos las relaciones para retornar la info del documento creado
-            $documentSigners = DocumentSigner::where("document_id","=",$documentSigner->document_id)->get();
+            $documentSigners = DocumentSigner::where("document_id","=",$documentSigner->document_id)->with('user')->get();
             return response()->json($documentSigners, 200);
 
         } catch (\Exception $e) {
@@ -45,6 +43,7 @@ class DocumentController extends Controller
         }
     }
 
+    //This function does not use
     public function editSigner(Request $request){
         $validator = Validator::make($request->all(), [
             'id' => 'required|numeric|exists:document_signer,id',
@@ -71,7 +70,7 @@ class DocumentController extends Controller
             DB::commit();
 
             //Cargamos las relaciones para retornar la info del documento creado
-            $documentSigners = DocumentSigner::where("document_id","=",$documentSigner->document_id)->get();
+            $documentSigners = DocumentSigner::where("document_id","=",$documentSigner->document_id)->with('user')->get();
             return response()->json($documentSigners, 200);
 
         } catch (\Exception $e) {
@@ -92,7 +91,7 @@ class DocumentController extends Controller
             DB::commit();
 
             //Cargamos las relaciones para retornar la info del documento creado
-            $documentSigners = DocumentSigner::where("document_id","=",$documentSigner->document_id)->get();
+            $documentSigners = DocumentSigner::where("document_id","=",$documentSigner->document_id)->with('user')->get();
             return response()->json($documentSigners, 200);
 
         } catch (\Exception $e) {
@@ -117,6 +116,64 @@ class DocumentController extends Controller
             return response()->json(["line" => $e->getLine(),"message" => $e->getMessage()], 500);
         }
     }
+    
+    public function getDocumentsByIds(Request $request){
+        $validator = Validator::make($request->all(), [
+            'documents' => 'required|array|min:1',
+            'documents.*' => 'required|numeric|exists:documents,id'
+        ]);
+
+        if ($validator->fails())
+            return response()->json($validator->errors(), 422);
+
+        $documents = Document::with([
+            "classification",
+            "container",
+            "documentType",
+            "documentSigned",
+            "documentSigners.user",
+        ])->where([["canceled", false], ["canceled_at", null]])->whereIn('id', $request->input('documents'))->get();
+        
+        return response()->json($documents, 200);
+    }
+
+    public function getUserSignDocuments(int $userId){
+        $documents = Document::with([
+            "classification",
+            "container",
+            "documentType",
+            "documentSigned",
+            "documentSigners" => function($query) use($userId){
+                $query->where('user_id',$userId);
+            },
+            "documentSigners.user",
+            "deletionRequests" => function($query){
+                $query->where("status", "Pendiente");
+            }
+        ])->where([["canceled", false], ["canceled_at", null]])->whereHas('documentSigners', function($query) use($userId) {
+            $query->where('user_id', $userId);
+        })->get();
+        
+        return response()->json($documents, 200);
+    }
+
+    public function getUserDocuments(int $userId){
+        $documents = Document::with([
+            "classification",
+            "container",
+            "documentType",
+            "documentSigned",
+            "documentSigners" => function($query) use($userId){
+                $query->where('user_id',$userId);
+            },
+            "documentSigners.user",
+            "deletionRequests" => function($query){
+                $query->where("status", "Pendiente");
+            }
+        ])->where([["canceled", false], ["canceled_at", null], ["user_id", $userId]])->get();
+        
+        return response()->json($documents, 200);
+    }
 
     public function getAll()
     {
@@ -125,30 +182,64 @@ class DocumentController extends Controller
             "container",
             "documentType",
             "documentSigned",
-            "documentSigners"
-        ])->get();
-
+            "documentSigners.user",
+            "deletionRequests" => function($query){
+                $query->where("status", "Pendiente");
+            }
+        ])->where([["canceled", false], ["canceled_at", null]])->get();
+        
         return response()->json($documents, 200);
     }
 
     public function getDocument($id)
     {
-        $document = Document::where("id", $id)->with([
+        $document = Document::where("id", $id)
+        ->where([["canceled", false], ["canceled_at", null]])
+        ->with([
             "classification",
             "container",
             "documentType",
             "documentSigned",
-            "documentSigners"
+            "documentSigners.user",
+            "deletionRequests" => function($query){
+                $query->where("status", "Pendiente");
+            }
         ])->first();
 
         return response()->json($document, 200);
     }
 
+    //Manda un recordatorio a un usuario seleccionado
+    public function remindSigner(Request $request){
+        $validator = Validator::make($request->all(),[
+            'user_id' => 'required|numeric|exists:users,id',
+            'document_id' => 'required|numeric|exists:documents,id'
+        ]);
+        if($validator->fails())
+            return response()->json($validator->errors(), 422);
+
+        try {
+            $user = User::where('id', $request->input('user_id'))->with([
+                'documentsToSign.document', 
+                'documentsToSign' => function($query) use($request){
+                    $query->where('document_id', $request->input('document_id'));
+                }])->first();
+            //sendMailToRemindSigner($user->toJson(),0);
+            return response()->json(["message" => "OK"], 200);
+        } catch (\Exception $e) {
+            return response()->json(["line" => $e->getLine(),"message" => $e->getMessage()], 500);
+        }
+    }
+
+    //Marca como firmado un documento
     public function signDocument(Request $request){
         $validator = Validator::make($request->all(), [
-            'id' => 'required|numeric|exists:documents,id',
-            'pdf_url' => 'required',
-            'xml_url' => 'required'
+            'user_id' => 'required|numeric|exists:users,id',
+            'documents' => 'required|array|min:1',
+            'documents.*' => 'required|numeric|exists:documents,id',
+            'cer_file' => 'required',
+            'key_file' => 'required',
+            'password' => 'required'
         ]);
         if ($validator->fails())
             return response()->json($validator->errors(), 422);
@@ -156,30 +247,45 @@ class DocumentController extends Controller
         try {
             DB::beginTransaction();
             //Consultamos el documento por su id
-            $document = Document::where("id", $request->input("id"))->first();
-            if($document == null)
-                return response()->json(["message" => "DOCUMENT_DOES_NOT_EXISTS"], 402);
-            //Capturamos los datos a editar del documento
-            $document->signed = true;
-            $currentDate = date("Y-m-d");
-            $document->signed_at = $currentDate;
-            $document->updated_at = $currentDate;
-            //Guardamos los cambios
-            $document->save();
+            $documentSigners = DocumentSigner::whereIn("document_id", $request->input("documents"))->where('user_id', $request->input('user_id'))->get();
+            if($documentSigners == null || count($documentSigners) == 0)
+                return response()->json(["message" => "DOCUMENTS_DOES_NOT_EXISTS"], 402);
+            //Integracion con aws al momento de firmar retornar los urls de los archivos
 
-            //Cambiamos a true los firmantes
-            foreach ($document->documentSigners() as $key => $signer) {
-                $signer->signed = true;
-                $signer->signed_at = $currentDate;
-                $signer->save();
+            foreach($documentSigners as $key => $documentSigner){
+                $documentSigner->signed = true;
+                $documentSigner->signed_at = date('Y-m-d');
+                $documentSigner->save();
             }
 
-            //Creamos la data del documento ya firmado
-            $documentSigned = new DocumentSigned();
-            $documentSigned->document_id = $document->id;
-            $documentSigned->pdf_url = $request->input("pdf_url");
-            $documentSigned->xml_url = $request->input("xml_url");
-            $documentSigned->save();
+            $documents = Document::whereIn("id", $request->input("documents"))->whereDoesntHave('documentSigners', function($query){
+                $query->where('signed', false)->where('signed_at', null);
+            })->get();
+            foreach($documents as $key => $document){
+                //Capturamos los datos a editar del documento
+                $document->signed = true;
+                $currentDate = date("Y-m-d");
+                $document->signed_at = $currentDate;
+                $document->updated_at = $currentDate;
+                //Guardamos los cambios
+                $document->save();
+
+                //Creamos la data del documento ya firmado
+                $documentSigned = new DocumentSigned();
+                $documentSigned->document_id = $document->id;
+                $documentSigned->pdf_url = "https://drive.google.com/uc?id=1e4Pg3SkXZh6NEldfTNTUmzTGxE3VQlvd&export=download";
+                $documentSigned->xml_url = "https://drive.google.com/uc?id=1e4Pg3SkXZh6NEldfTNTUmzTGxE3VQlvd&export=download";
+                $documentSigned->save();
+
+                //sendMailToSignDocument($document->load('user'),0);
+            }
+
+            $user = User::where('id', $request->input('user_id'))->with([
+                'documentsToSign.document', 
+                'documentsToSign' => function($query) use($request){
+                    $query->whereIn('document_id', $request->input('documents'));
+                }])->first();
+            //sendMailToSignConfirmation($user->toJson(), 0);
 
             DB::commit();
 
@@ -189,7 +295,7 @@ class DocumentController extends Controller
                 "classification",
                 "documentType",
                 "documentSigned",
-                "documentSigners"
+                "documentSigners.user"
             ]);
             return response()->json($document, 200);
 
@@ -202,46 +308,72 @@ class DocumentController extends Controller
     public function store(Request $request)
     {
         $validator = Validator::make($request->all(), [
-            'name' => 'required|min:10|max:30',
+            'user_id' => 'required|numeric|exists:users,id',
+            'documents' => 'required|array|min:1',
+            'documents.*.name' => 'required|min:10|max:30',
+            'documents.*.data' => 'required|',
+            'signers' => 'required|array|min:1',
+            'signers.*.user_id' => 'required|numeric|exists:users,id',
+            'signers.*.email' => 'required|email:rfc,dns|max:255|exists:users,email',
+            'signers.*.name' => 'required|min:5|max:255',
+            'signers.*.surnames' => 'required|min:10|max:255',
             'container_id' => 'required|numeric|exists:containers,id',
             'classification_id' => 'required|numeric|exists:classifications,id',
             'document_type_id' => 'required|numeric|exists:document_types,id',
-            'url' => 'required',
         ]);
         if ($validator->fails())
             return response()->json($validator->errors(), 422);
         
         try {
             DB::beginTransaction();
-            //extraemos el usuario que crea el documento
-            $user = Auth::user();
-            //Iniciamos nuestro nuevo documento
-            $document = new Document();
-            //Capturamos los datos del nuevo documento
-            $document->name = $request->input("name");
-            $document->user_id = /* $user->id */1;
-            $document->container_id = $request->input("container_id");
-            $document->classification_id = $request->input("classification_id");
-            $document->document_type_id = $request->input("document_type_id");
-            $document->url = $request->input("url");
-            $currentDate = date("Y-m-d");
-            $effectiveDate = date("Y-m-d", strtotime($currentDate. ' + 15 days'));
-            $document->effective_date = $effectiveDate;
-            $document->created_at = $currentDate;
-            $document->updated_at = $currentDate;
-            //Guardamos los cambios
-            $document->save();
+            //Creacion de documentos de 1 o mas documentos, con firmantes
+            foreach ($request->input('documents') as $key => $documentInput) {
+                //Iniciamos nuestro nuevo documento
+                $document = new Document();
+                //Codigo para conectar con el api y crear del documento
+                //retorna el folio del documento y el url para descarga
+                //Capturamos los datos del nuevo documento
+                //ID del documento creado en aws
+                $document->aws_document_id = 1;
+                $document->name = $documentInput['name'];
+                $document->user_id = $request->input("user_id");
+                $document->container_id = $request->input("container_id");
+                $document->classification_id = $request->input("classification_id");
+                $document->document_type_id = $request->input("document_type_id");
+                /* $document->url = $documentInput['data']; */
+                $document->url = "https://drive.google.com/uc?id=1e4Pg3SkXZh6NEldfTNTUmzTGxE3VQlvd&export=download";
+                $currentDate = date("Y-m-d");
+                $effectiveDate = date("Y-m-d", strtotime($currentDate. ' + 15 days'));
+                $document->effective_date = $currentDate;
+                $document->created_at = $currentDate;
+                $document->updated_at = $currentDate;
+                //Guardamos los cambios
+                $document->save();
+
+                //Add signers
+                foreach ($request->input('signers') as $key => $signer) {
+                    $documentSigner = new DocumentSigner();
+                    $documentSigner->user_id = $signer['user_id'];
+                    $documentSigner->document_id = $document->id;
+                    $documentSigner->save();
+
+                    //asign signers in aws too
+
+                }
+                //sendMailToSigners($document-load('container', 'classification', 'documentType', 'documentSigners.user')->toJson(), 0);
+            }
+            //Se confirman los cambios en la base de datos
             DB::commit();
 
             //Cargamos las relaciones para retornar la info del documento creado
-            $document->load([
+            $documents = Document::with([
                 "container",
                 "classification",
                 "documentType",
                 "documentSigned",
-                "documentSigners"
-            ]);
-            return response()->json($document, 200);
+                "documentSigners.user"
+            ])->orderBy('id', 'desc')->limit(count($request->input('documents')))->get();
+            return response()->json($documents, 200);
 
         } catch (\Exception $e) {
             DB::rollBack();
@@ -253,7 +385,6 @@ class DocumentController extends Controller
     {
         $validator = Validator::make($request->all(), [
             'id' => 'required|numeric|exists:documents,id',
-            'name' => 'required|min:10|max:30',
             'container_id' => 'required|numeric|exists:containers,id',
             'classification_id' => 'required|numeric|exists:classifications,id',
             'document_type_id' => 'required|numeric|exists:document_types,id',
@@ -269,7 +400,6 @@ class DocumentController extends Controller
             if($document == null)
                 return response()->json(["message" => "DOCUMENT_DOES_NOT_EXISTS"], 402);
             //Capturamos los datos a editar del documento
-            $document->name = $request->input("name");
             $document->container_id = $request->input("container_id");
             $document->classification_id = $request->input("classification_id");
             $document->document_type_id = $request->input("document_type_id");
@@ -286,7 +416,7 @@ class DocumentController extends Controller
                 "classification",
                 "documentType",
                 "documentSigned",
-                "documentSigners"
+                "documentSigners.user"
             ]);
             return response()->json($document, 200);
 
