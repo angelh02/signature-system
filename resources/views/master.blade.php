@@ -5,7 +5,7 @@
     <meta charset="utf-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Sistema de firma</title>
+    <title>ITSL - eGestión</title>
     <link href="{{asset('css/app.css')}}" rel="stylesheet" type="text/css" id="light-style">
     <link href="{{asset('css/icons.css')}}" rel="stylesheet" type="text/css" id="light-style"> 
     <script src="{{ asset('js/app.js') }}" defer></script>   

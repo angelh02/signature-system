@@ -1,11 +1,11 @@
 <template>
-    <div class="row">
+    <div class="row mt-3">
         <div class="col-12">
             <div v-if="route.params.name === 'tipos-documentos'" class="page-title-box">
                 <h1 class="page-title">Tipos de documentos</h1>
             </div>
             <div v-else class="page-title-box">
-                <h1 class="page-title">Catálogo de {{route.params.name}}</h1>
+                <h1 class="page-title">Catálogo de {{title[route.params.name]}}</h1>
             </div>
         </div>
     </div>
@@ -45,6 +45,18 @@
     const edit = ref(false);
     const updated = ref(false);
     const param = ref("");
+
+    const title = {
+        'tipos-documentos':"Tipos de Documento",
+        fondos: "Fondos",
+        secciones: "Secciones",
+        'areas-productoras': "Aréas Productoras",
+        'tiempos-conservacion':"Tiempos de Conservación",
+        'tipos-conservacion':"Tipos de Conservación",
+        'valores-documentales':"Valores Documentales",
+        'tipos-informacion':"Tipos de Información",
+        'tecnicas-seleccion':"Técnicas de Selección"
+    }
 
     const dataForm = ref({
         id:"",
