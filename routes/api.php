@@ -112,6 +112,7 @@ Route::delete('/document/delete/{id}', 'DocumentController@delete');
 Route::post('/document/signer/assign', 'DocumentController@assignSigner');
 Route::post('/document/signer/edit', 'DocumentController@editSigner');
 Route::delete('/document/signer/delete/{id}', 'DocumentController@deleteSigner');
+Route::post('/api/document/remind-signer', 'DocumentController@remindSigner');
 
 //Sign Document
 Route::post('/document/sign', 'DocumentController@signDocument');

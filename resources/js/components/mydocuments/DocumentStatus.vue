@@ -68,11 +68,14 @@
     </div>
 </template>
 <script setup>
-import { ref, onMounted, toRefs, toRef, reactive } from "vue";
+import { ref, onMounted, toRefs, toRef, reactive, useAttrs } from "vue";
 import $ from "jquery";
 import { integer } from "@vuelidate/validators";
 import {useRoute} from 'vue-router';
 import { useDocumentsRequests } from "@/js/composables/document-apis/useDocumentsRequest.js";
+
+const attrs = useAttrs();
+const userLogged = ref(attrs.user);
 
 const route = useRoute()
 const documentId = ref(0);
@@ -91,5 +94,7 @@ onMounted(async () => {
 
 const searchDocument = async () => {
     documentData.value = await getDocument(documentId.value);
+    if(userLogged.value.id == documentData.value.user_id)
+            router.push({path:'/mis-documentos/detalles/'+documentData.value.id});
 };
 </script>

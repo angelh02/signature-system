@@ -151,6 +151,17 @@ async function signDocument(signData) {
     })
 }
 
+// RECORDAR AL FIRMANTE
+async function remindSigner(data) {
+  return await axios
+    .post(`/api/document/remind-signer`, data
+    )
+    .then((res) => {
+      if (res.status != 200) throw new Error("Response Failed");
+      return res.data;
+    })
+}
+
 // const deleteClassification = async (id) => {
 //   try {
 //     const res = await axios.delete(`/api/classification/delete/`+id);
@@ -160,4 +171,4 @@ async function signDocument(signData) {
 //   }
 // }
 
-export default {getDocumentsByIds,getUserDocuments,getUserSignDocuments,getDocument,getDocuments,addDocument,editDocument,deleteDocument,getDocumentsType,addSigner,deleteSigner,signDocument}
+export default {getDocumentsByIds,getUserDocuments,getUserSignDocuments,getDocument,getDocuments,addDocument,editDocument,deleteDocument,getDocumentsType,addSigner,deleteSigner,signDocument,remindSigner}
