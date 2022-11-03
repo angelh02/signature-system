@@ -15,9 +15,11 @@ class CreateUsersTable extends Migration
     {
         Schema::create('users', function (Blueprint $table) {
             $table->id();
+            $table->unsignedBigInteger('aws_user_id');
             $table->string('name');
             $table->string('surnames');
             $table->string('user_name');
+            $table->string('RFC')->unique();
             $table->string('email')->unique();
             $table->string('password');
             $table->boolean('active')->default(true);

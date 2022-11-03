@@ -1,53 +1,38 @@
 <template>
-    <div
-        @dragenter.prevent="toggleActive"
-        @dragleave.prevent="toggleActive"
-        @dragover.prevent
-        @drop.prevent="toggleActive"
-        :class="{ 'active-dropzone': active }"
-        class="dropzone"
-    >
-        <!-- <input type="file" id="dropzoneFile" class="dropzoneFile btn-check" /> -->
-
+    <div class="dropzone" v-bind="getRootProps()">
         <div class="dz-message needsclick row align-items-center">
-            <div class="row">
-                    <h4 class="h3 text-muted mdi mdi-file-upload-outline" for="dropzoneFile">
-                        Arrastra tu documeto a la página o
-                        <!-- <a type="file" id="dropzoneFile" class="dropzoneFile">da click aquí para seleccionar uno</a> -->
-                        <label for="dropzoneFile"
-                            ><a class="text-info"
-                                >click aquí para seleccionar uno</a
-                            ></label
-                        >
-                        <input
-                            type="file"
-                            id="dropzoneFile"
-                            class="dropzoneFile btn-check"
-                        />
-                    </h4>
-            </div>
+            <input id="key-file" v-bind="getInputProps()" :accept="acceptedFiles"/>
+            <h4 class="text-muted mdi mdi-file-upload-outline">
+                {{title}}
+                <label
+                    ><a type="button" class="text-primary"
+                        >click aquí para seleccionar uno</a
+                    ></label
+                >
+                <input
+                    class="dropzoneFile btn-check"
+                />
+            </h4>
         </div>
     </div>
 </template>
+<script setup>
+    import { ref, onMounted, watch, toRefs, toRef, reactive, useAttrs } from "vue";
+    import { useDropzone } from "vue3-dropzone";
 
-<script>
-import { ref } from "vue";
-export default {
-    name: "DropZone",
-    setup() {
-        const active = ref(false);
-        const toggleActive = () => {
-            active.value = !active.value;
-        };
-        return { active, toggleActive };
-    },
-};
+    const emit = defineEmits(['onDrop']);
+
+    const props = defineProps({
+        title : String,
+        acceptedFiles : String
+    });
+    const title = toRef(props, 'title');
+    const acceptedFiles = toRef(props, 'acceptedFiles');
+
+    const { getRootProps, getInputProps, ...restCer } = useDropzone({ onDropAccepted });
+
+    //Functions to dropzone
+    function onDropAccepted(acceptFiles) {
+        emit('onDrop', acceptFiles)
+    }
 </script>
-
-<style scoped lang="scss">
-.active-dropzone {
-    color: #fff;
-    border-color: #fff;
-    background-color: #0c8ce9;
-}
-</style>

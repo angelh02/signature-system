@@ -29,8 +29,47 @@ async function getDocumentsType() {
 }
 // GET DOCUMENTS
 async function getDocuments() {
+  return await axios
+  .get(`/api/document/get-all`, 
+  // {
+  // headers: { 'content-type': 'application/json' },
+  // }
+  )
+  .then((res) => {
+  if (res.status != 200) throw new Error("Response Failed");
+  return res.data;
+  })  
+}
+// GET DOCUMENTS BY IDS
+async function getDocumentsByIds(formData) {
+  return await axios
+  .post(`/api/document/get-by-ids`, formData, 
+  // {
+  // headers: { 'content-type': 'application/json' },
+  // }
+  )
+  .then((res) => {
+  if (res.status != 200) throw new Error("Response Failed");
+  return res.data;
+  })  
+}
+// GET USER SIGN DOCUMENTS
+async function getUserSignDocuments(userId) {
+  return await axios
+  .get(`/api/document/get-user-sign-documents/${userId}`, 
+  // {
+  // headers: { 'content-type': 'application/json' },
+  // }
+  )
+  .then((res) => {
+  if (res.status != 200) throw new Error("Response Failed");
+  return res.data;
+  })  
+}
+// GET USER SIGN DOCUMENTS
+async function getUserDocuments(userId) {
     return await axios
-    .get(`/api/document/get-all`, 
+    .get(`/api/document/get-user-documents/${userId}`, 
     // {
     // headers: { 'content-type': 'application/json' },
     // }
@@ -52,10 +91,7 @@ async function getDocument(id){
 // STORE CONTAINER
 async function addDocument(formData) {
     return await axios
-      .post(`/api/document/store`, formData, {
-        headers: { 'content-type': 'multipart/form-data' },
-      }
-      )
+      .post(`/api/document/store`, formData)
       .then((res) => {
         if (res.status != 200) throw new Error("Response Failed");
         return res.data;
@@ -64,10 +100,7 @@ async function addDocument(formData) {
 // UPDATE CONTAINER
 async function editDocument(editData) {
   return await axios
-    .post(`/api/document/update`, editData, {
-      headers: { 'content-type': 'multipart/form-data' },
-    }
-    )
+    .post(`/api/document/update`, editData)
     .then((res) => {
       if (res.status != 200) throw new Error("Response Failed");
       return res.data;
@@ -87,10 +120,7 @@ return await axios
 // AGReGAR FIRMANTE
 async function addSigner(formData) {
   return await axios
-    .post(`/api/document/signer/assign`, formData, {
-      headers: { 'content-type': 'multipart/form-data' },
-    }
-    )
+    .post(`/api/document/signer/assign`, formData)
     .then((res) => {
       if (res.status != 200) throw new Error("Response Failed");
       return res.data;
@@ -113,9 +143,18 @@ async function deleteSigner(id) {
 // FIRMAR DOCUMENTO
 async function signDocument(signData) {
   return await axios
-    .post(`/api/document/sign`, signData, {
-      headers: { 'content-type': 'multipart/form-data' },
-    }
+    .post(`/api/document/sign`, signData
+    )
+    .then((res) => {
+      if (res.status != 200) throw new Error("Response Failed");
+      return res.data;
+    })
+}
+
+// RECORDAR AL FIRMANTE
+async function remindSigner(data) {
+  return await axios
+    .post(`/api/document/remind-signer`, data
     )
     .then((res) => {
       if (res.status != 200) throw new Error("Response Failed");
@@ -132,4 +171,4 @@ async function signDocument(signData) {
 //   }
 // }
 
-export default {getDocument,getDocuments,addDocument,editDocument,deleteDocument,getDocumentsType,addSigner,deleteSigner,signDocument}
+export default {getDocumentsByIds,getUserDocuments,getUserSignDocuments,getDocument,getDocuments,addDocument,editDocument,deleteDocument,getDocumentsType,addSigner,deleteSigner,signDocument,remindSigner}

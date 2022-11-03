@@ -1,20 +1,30 @@
 <template>
     <table
-        id="containers_table"
+        id="containers-table"
         class="table table-striped cell-border"
         style="width: 100%"
     ></table>
+    <ConfirmationModal
+        :title="'Confirmacion de Eliminación'"
+        :message="'Estas seguro de eliminar el siguiente registro, esto hara que se eliminen los documentos referenciados a este contenedor'"
+        @response="confirmationResponse"
+    ></ConfirmationModal>
 </template>
 
 <script setup>
+//Libraries
 import { ref, onMounted, watch, toRefs, reactive } from "vue";
 import $ from "jquery";
-import ModalEdit from "../elements/ModalEdit.vue";
+import { Modal } from "bootstrap";
 import { dataTable, table, row, draw, destroy } from "datatables";
+import { useToast } from "vue-toastification";
+//Components
+import ConfirmationModal from '../elements/ConfirmationModal.vue';
+//Api functions
 import { useContainersRequests } from "@/js/composables/container-apis/useContainerRequest.js";
 import useContainersRequestsAPI from "@/api/container/index.js";
 
-
+const toast = useToast();
 const props = defineProps({
     containersData: Object,
     updated: Boolean,
@@ -23,6 +33,10 @@ const props = defineProps({
 // const { containersData } = toRefs(props)
 const { updated } = toRefs(props);
 const emit = defineEmits(["data"]);
+
+//Modal const
+const confirmationModal = ref({});
+const containerId = ref(0);
 
 const containersData = ref("");
 const name = ref("");
@@ -46,8 +60,14 @@ onMounted(async () => {
     getRequests();
 });
 
+function confirmationResponse(response){
+    confirmationModal.value.hide();
+    if(response)
+        deleteRequests(containerId.value);
+}
+
 const refreshTable = async() => {
-    containerTable.value = $("#containers_table").DataTable({
+    containerTable.value = $("#containers-table").DataTable({
         language: {
             url: "//cdn.datatables.net/plug-ins/1.10.11/i18n/Spanish.json",
         },
@@ -60,7 +80,7 @@ const refreshTable = async() => {
 }
 
 const createTable = async () => {
-    containerTable.value = $("#containers_table").DataTable({
+    containerTable.value = $("#containers-table").DataTable({
         language: {
             url: "//cdn.datatables.net/plug-ins/1.10.11/i18n/Spanish.json",
         },
@@ -87,16 +107,18 @@ const createTable = async () => {
         emit("data", formData);
     });
 
-    containerTable.value.on("click", "#btn_borrar", function(){
+    /* containerTable.value.on("click", "#btn_borrar", function(){
         fila.value = $(this).closest("tr");      
         const id = parseInt(containerTable.value.rows(fila.value).data()[0].id);   
-        deleteRequests(id);      
-    });
+        containerId.value = id;
+        confirmationModal.value.show();      
+    }); */
 };
 
 const getRequests = async (refresh = false) => {
     const results = await getContainers([]);
     containersData.value = results;
+    confirmationModal.value = new Modal("#confirmation-modal")
     if(!refresh)
         createTable();
     else
@@ -106,9 +128,16 @@ const getRequests = async (refresh = false) => {
 const deleteRequests = async (id) => {
     useContainersRequestsAPI.deleteContainer(id)
     .then((res) => {
+        toast.success("Se ha eliminado correctamente el contenedor", {
+            timeout: 2000,
+            });
         getRequests(true);
-    });
-   
+    })
+    .catch(error => 
+        toast.error("No se ha podido eliminar", {
+        timeout: 2000,
+        })
+    );
 };
 
 
@@ -119,14 +148,4 @@ watch(
     },
     { deep: true },   
 );
-
-const openModal = () => {
-    // $("#signup-modal").modal("show")
-
-    visible.value = true;
-};
-
-const close = async () => {
-    visible.value = false;
-};
 </script>

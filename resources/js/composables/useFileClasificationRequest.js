@@ -9,6 +9,10 @@ export function useFileClasificationRequests(from = null, to = null) {
             visible: false
         },
         {
+            title: "Clasificación",
+            data: "name",
+        },
+        {
             title: "Fondo",
             data: "background.code",
         },
@@ -19,10 +23,12 @@ export function useFileClasificationRequests(from = null, to = null) {
         {
             title: "Series",
             data: "series",
+            visible: false
         },
         {
             title: "Subserie",
             data: "subseries",
+            visible: false
         },
         {
             title: "Area de producción",
@@ -31,21 +37,23 @@ export function useFileClasificationRequests(from = null, to = null) {
         {
             title: "Periodo de inicio",
             data: "start_period",
+            visible: false
         },
         {
             title: "Fin de periodo",
             data: "end_period",
+            visible: false
         },
         {
             title: "Consecutivo",
             data: "consecutive_number",
+            visible: false
         },
         {
             targets: -1,
             data: null,
             className: "col-2 text-center",
-            defaultContent: `<button id="btn_editar" class="btn btn-warning uil-edit-alt"></button>
-                        <button id="btn_borrar" class="btn btn-danger mdi mdi-delete-forever"></button>`,
+            defaultContent: `<button id="btn_editar" class="btn btn-warning uil-edit-alt"></button>`,
         },
     ];
 

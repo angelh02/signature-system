@@ -15,6 +15,7 @@ class CreateDocumentsTable extends Migration
     {
         Schema::create('documents', function (Blueprint $table) {
             $table->id();
+            $table->unsignedBigInteger('aws_document_id');
             $table->string("name");
             $table->unsignedBigInteger("user_id");
             $table->unsignedBigInteger("container_id");
