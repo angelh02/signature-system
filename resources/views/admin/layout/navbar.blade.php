@@ -8,14 +8,14 @@
         </span>
         <div class="col nav">
             <ul class="nav nav-tabs nav-bordered navbar-collapse collapse" id="navbarSupportedContent">
+                <li class="nav-item" >
+                    <router-link class="nav-link py-2 text-body" active-class="active" to="/usuarios">
+                        <h5>USUARIOS</h5>
+                    </router-link>
+                </li>
                 <li class="nav-item " >
                     <router-link class="nav-link py-2 text-body" active-class="active" to="/solicitudes">
                         <h5>SOLICITUDES</h5>
-                    </router-link>
-                </li>
-                <li class="nav-item" >
-                    <router-link class="nav-link py-2 text-body" active-class="active" to="/usuarios">
-                        <h5>ADMINISTRACION DE USUARIOS</h5>
                     </router-link>
                 </li>
                 <li class="nav-item" >
@@ -26,7 +26,7 @@
                 <li class="nav-item" >
                     <div class="dropdown">
                         <a class="nav-link py-2 text-body h5 m-0 dropdown-toggle" active-class="active" to="#" id="clasification" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                            CATOLOGOS DE CLASIFICACIÓN
+                            CATÁLOGOS DE CLASIFICACIÓN
                         </a>
                         <div class="dropdown-menu" aria-labelledby="clasification">
                             <router-link class="text-body btn-online-ligth dropdown-item" active-class="active" to="/catalogo/fondos">
@@ -36,7 +36,7 @@
                                 <h5>Secciones</h5>
                             </router-link>
                             <router-link class="text-body btn-online-ligth dropdown-item" active-class="active" to="/catalogo/areas-productoras">
-                                <h5>Areas productoras</h5>
+                                <h5>Aréas productoras</h5>
                             </router-link>
                         </div>
                     </div>
@@ -44,7 +44,7 @@
                 <li class="nav-item" >
                     <div class="dropdown">
                         <a class="nav-link py-2 text-body h5 m-0 dropdown-toggle" active-class="active" to="#" id="containers" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                            CATOLOGOS DE CONTENEDORES
+                            CATÁLOGOS DE CONTENEDORES
                         </a>
                         <div class="dropdown-menu" aria-labelledby="containers">
                             <router-link class="text-body btn-online-ligth dropdown-item" active-class="active" to="/catalogo/tiempos-conservacion">
@@ -60,7 +60,7 @@
                                 <h5>Tipos de información</h5>
                             </router-link>
                             <router-link class="text-body btn-online-ligth dropdown-item" active-class="active" to="/catalogo/tecnicas-seleccion">
-                                <h5>Tecnicas de selección</h5>
+                                <h5>Técnicas de selección</h5>
                             </router-link>
                         </div>
                     </div>

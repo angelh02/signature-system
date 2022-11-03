@@ -1,12 +1,12 @@
 <template>
     <table
         id="example"
-        class="table table-striped cell-border"
+        class="table table-sm table-striped"
         style="width: 100%"
     ></table>
     <ConfirmationModal
-        :title="func === '1' ? 'Confirmacion de Eliminación' : 'Confirmacion de restablecer de contraseña'"
-        :message="func === '1' ? 'Estas seguro que deseas eliminar a este usuario' : 'Estas seguro que deseas restablecer contraseña'"
+        :title="'Confirmación'"
+        :message="func === '1' ? 'Éstas seguro que deseas eliminar a este usuario' : 'Éstas seguro que deseas restablecer contraseña del usuario'"
         @response="confirmationResponse"
     ></ConfirmationModal>
 </template>

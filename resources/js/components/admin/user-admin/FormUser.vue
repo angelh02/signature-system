@@ -133,10 +133,10 @@
         </div>
         <div class="row justify-items-center">
             <button v-if="!edit" class="btn btn-primary mb-2" type="submit" @click.prevent="addUser" :disabled="v$.$errors.length > 0 || v$.$silentErrors.length > 0">
-                AGREGAR USUARIO
+                AGREGAR
             </button>
             <button v-if="edit" class="btn btn-primary mb-2" type="submit" @click.prevent="editUser" :disabled="v$.$errors.length > 0 || v$.$silentErrors.length > 0">
-                ACTUALIZAR USUARIO
+                ACTUALIZAR
             </button>
             <button class="btn btn-light mb-2" type="submit" @click="resetData()">CANCELAR</button>
         </div>

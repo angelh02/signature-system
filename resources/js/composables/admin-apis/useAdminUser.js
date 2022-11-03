@@ -14,7 +14,7 @@ export function useAdminUser(from = null, to = null) {
             data: "surnames",
         },
         {
-            title: "Nombre de Usuario",
+            title: "Usuario",
             data: "user_name",
         },
         {
@@ -23,7 +23,7 @@ export function useAdminUser(from = null, to = null) {
         },
         {
             title: "Estado",
-            data: "active",
+            data: "status",
         },
         {
             title: "Rol",
@@ -33,8 +33,8 @@ export function useAdminUser(from = null, to = null) {
             targets: -1,
             data: null,
             className: "col-2 text-center",
-            defaultContent: `<button id="btn_editar" class="btn btn-warning uil-edit-alt"></button>
-                        <button id="btn_reset" class="btn btn-success mdi mdi-restart"></button>`,
+            defaultContent: `<button id="btn_editar" class="btn btn-warning uil-edit-alt" data-bs-toggle="tooltip" data-bs-placement="top" title="Editar usuario"></button>
+                        <button id="btn_reset" class="btn btn-success mdi mdi-restart" data-bs-toggle="tooltip" data-bs-placement="top" title="Restablecer contraseña"></button>`,
         },
     ];
     return {
