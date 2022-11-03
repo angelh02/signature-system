@@ -137,13 +137,13 @@ const createTable = async () => {
       
     });
 
-    globalTable.value.on("click", "#btn_borrar", function(){
+    /* globalTable.value.on("click", "#btn_borrar", function(){
         fila.value = $(this).closest("tr");           
         const id = parseInt(globalTable.value.rows(fila.value).data()[0].id); 
         catalogsId.value = id;
         confirmationModal.value.show();
         // deleteRequests(id);      
-    }); 
+    }); */ 
 };
 
 const getRequests = async (refresh = false) => {

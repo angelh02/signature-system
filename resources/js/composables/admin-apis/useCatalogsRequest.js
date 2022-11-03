@@ -18,8 +18,7 @@ export function useCatalogsRequests(from = null, to = null) {
             targets: -1,
             data: null,
             className: "col-2 text-center",
-            defaultContent: `<button id="btn_editar" class="btn btn-warning uil-edit-alt"></button>
-                        <button id="btn_borrar" class="btn btn-danger mdi mdi-delete-forever"></button>`,
+            defaultContent: `<button id="btn_editar" class="btn btn-warning uil-edit-alt"></button>`,
         },
     ];
     return {

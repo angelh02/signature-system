@@ -115,14 +115,14 @@ const createTable = async () => {
       
     });
 
-    userTable.value.on("click", "#btn_borrar", function(){
+    /* userTable.value.on("click", "#btn_borrar", function(){
         fila.value = $(this).closest("tr");           
         const id = parseInt(userTable.value.rows(fila.value).data()[0].id); 
         userId.value = id;
         func.value = "1"
         confirmationModal.value.show();
         // deleteUser(id);      
-    }); 
+    });  */
 
     userTable.value.on("click", "#btn_reset", function(){
         fila.value = $(this).closest("tr");           

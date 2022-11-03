@@ -60,7 +60,7 @@
         <div class="mx-2">
             <div class="table-responsive">
             <table class="table table-hover table-bordered" id="requests-table">
-                <thead class="dripicons-checklist">
+                <thead>
                     <tr>
                         <th>Folio</th>
                         <th>Asunto</th>

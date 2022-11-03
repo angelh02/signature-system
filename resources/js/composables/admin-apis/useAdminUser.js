@@ -34,7 +34,6 @@ export function useAdminUser(from = null, to = null) {
             data: null,
             className: "col-2 text-center",
             defaultContent: `<button id="btn_editar" class="btn btn-warning uil-edit-alt"></button>
-                        <button id="btn_borrar" class="btn btn-danger mdi mdi-delete-forever"></button>
                         <button id="btn_reset" class="btn btn-success mdi mdi-restart"></button>`,
         },
     ];

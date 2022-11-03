@@ -108,12 +108,12 @@ const createTable = async () => {
         emit("data", formData);
     });
 
-    classificationTable.value.on("click", "#btn_borrar", function(){
+    /* classificationTable.value.on("click", "#btn_borrar", function(){
         fila.value = $(this).closest("tr");      
         const id = parseInt(classificationTable.value.rows(fila.value).data()[0].id);   
         classificationId.value = id;
         confirmationModal.value.show();      
-    }); 
+    });  */
 };
 
 const getRequests = async (refresh = false) => {

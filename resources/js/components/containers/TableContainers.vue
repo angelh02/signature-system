@@ -107,12 +107,12 @@ const createTable = async () => {
         emit("data", formData);
     });
 
-    containerTable.value.on("click", "#btn_borrar", function(){
+    /* containerTable.value.on("click", "#btn_borrar", function(){
         fila.value = $(this).closest("tr");      
         const id = parseInt(containerTable.value.rows(fila.value).data()[0].id);   
         containerId.value = id;
         confirmationModal.value.show();      
-    });
+    }); */
 };
 
 const getRequests = async (refresh = false) => {
