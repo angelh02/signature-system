@@ -209,6 +209,28 @@ class DocumentController extends Controller
         return response()->json($document, 200);
     }
 
+    //Manda un recordatorio a un usuario seleccionado
+    public function remindSigner(Request $request){
+        $validator = Validator::make($request->all(),[
+            'user_id' => 'required|numeric|exists:users,id',
+            'document_id' => 'required|numeric|exists:documents,id'
+        ]);
+        if($validator->fails())
+            return response()->json($validator->errors(), 422);
+
+        try {
+            $user = User::where('id', $request->input('user_id'))->with([
+                'documentsToSign.document', 
+                'documentsToSign' => function($query) use($request){
+                    $query->where('document_id', $request->input('document_id'));
+                }])->first();
+            //sendMailToRemindSigner($user->toJson(),0);
+            return response()->json(["message" => "OK"], 200);
+        } catch (\Exception $e) {
+            return response()->json(["line" => $e->getLine(),"message" => $e->getMessage()], 500);
+        }
+    }
+
     //Marca como firmado un documento
     public function signDocument(Request $request){
         $validator = Validator::make($request->all(), [
@@ -254,7 +276,16 @@ class DocumentController extends Controller
                 $documentSigned->pdf_url = "https://drive.google.com/uc?id=1e4Pg3SkXZh6NEldfTNTUmzTGxE3VQlvd&export=download";
                 $documentSigned->xml_url = "https://drive.google.com/uc?id=1e4Pg3SkXZh6NEldfTNTUmzTGxE3VQlvd&export=download";
                 $documentSigned->save();
+
+                //sendMailToSignDocument($document->load('user'),0);
             }
+
+            $user = User::where('id', $request->input('user_id'))->with([
+                'documentsToSign.document', 
+                'documentsToSign' => function($query) use($request){
+                    $query->whereIn('document_id', $request->input('documents'));
+                }])->first();
+            //sendMailToSignConfirmation($user->toJson(), 0);
 
             DB::commit();
 
@@ -329,6 +360,7 @@ class DocumentController extends Controller
                     //asign signers in aws too
 
                 }
+                //sendMailToSigners($document-load('container', 'classification', 'documentType', 'documentSigners.user')->toJson(), 0);
             }
             //Se confirman los cambios en la base de datos
             DB::commit();

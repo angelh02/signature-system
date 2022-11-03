@@ -72,7 +72,7 @@ class UserController extends Controller
 
     public function store(Request $request){
         $validator = Validator::make($request->all(), [
-            'name' => 'required|min:5|max:255',
+            'name' => 'required|min:4|max:255',
             'surnames' => 'required|min:10|max:255',
             'user_name' => 'required|min:5|max:255',
             'email' => 'required|email:rfc,dns|max:255|unique:users,email',

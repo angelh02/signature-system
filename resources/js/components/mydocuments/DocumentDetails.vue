@@ -78,17 +78,17 @@
                                                 </span>
                                             </div>
                                             <div class="col-7 py-2 mx-xxl-n4">
-                                                <h5 class="text-black">{{signer.user.email}} - {{signer.user.name}}</h5>                                      
+                                                <h5 class="text-black m-0">{{signer.user.email}} - {{signer.user.name}}</h5> 
+                                                <p class="inbox-item-text m-0">RFC: {{signer.user.RFC}}</p>                                     
                                             </div>
                                             <div class="col text-end py-2 mx-3">
                                                 <a
                                                     class="btn btn-info mx-1 mb-2"
                                                     type="button"
                                                     :disabled="signer.signed === 1"
-                                                    @click=""
+                                                    @click="remindSigner(signer.id)"
                                                 >
                                                     <span class="uil uil-bell font-16"></span>
-                                                    
                                                 </a>
                                                 <a
                                                     class="btn btn-danger mx-1 mb-2"
@@ -171,6 +171,11 @@
             </div>
         </div>
         <DocumentCreated v-else></DocumentCreated>
+        <ConfirmationModal
+            :title="'Confirmacion de Eliminación'"
+            :message="'Estas seguro de eliminar el siguiente documento'"
+            @response="confirmationResponse"
+        ></ConfirmationModal>
         <ModalSigner :signers="signers" :userLogged="userLogged" :formData="formData" @cancel="closeModal" @add="addSigners"></ModalSigner>
     </div>
 </template>
@@ -183,11 +188,14 @@ import { useRouter, useRoute } from "vue-router";
 import VuePdfEmbed from 'vue-pdf-embed'
 import useDocumentRequestsAPI from "@/api/document/index.js";
 import DocumentCreated from "./DocumentCreated.vue";
+import ConfirmationModal from "../elements/ConfirmationModal.vue";
 import ModalSigner from "./ModalSigner.vue";
 import {useToast} from "vue-toastification";
 
 const attrs = useAttrs();
 const userLogged = ref(attrs.user);
+
+const confirmationModal= ref({});
 
 const toast = useToast();
 const router = useRouter();
@@ -253,6 +261,12 @@ const createDocument = asyc => {
     documentCreated.value = true;
 }
 
+function confirmationResponse(response){
+    confirmationModal.value.hide();
+    if(response)
+        deleteDocumentRequest();
+}
+
 const deleteSigner = async (id) => {
     useDocumentRequestsAPI.deleteSigner(id)
     .then((res) => {
@@ -261,6 +275,10 @@ const deleteSigner = async (id) => {
           timeout: 2000,
         });
     });
+}
+
+function deleteDocument(){
+    confirmationModal.value.show();
 }
 
 function resetData(){
@@ -278,11 +296,13 @@ onMounted(async () => {
     getDocumentData();
 });
 
-function deleteDocument(){
-    useDocumentRequestsAPI.deleteDocument(documentId.value)
-    .then((res) => {
-        router.push({path:'/mis-documentos'});
-    });
+function deleteDocumentRequest(){
+    if(documentData.value.signed === 1){
+        useDocumentRequestsAPI.deleteDocument(documentId.value)
+        .then((res) => {
+            router.push({path:'/mis-documentos'});
+        });
+    }
 }
 
 function getDocumentData(){
@@ -291,9 +311,23 @@ function getDocumentData(){
         documentData.value = res;
         signers.value = res?.document_signers;
         source.value = res.url
+        if(userLogged.value.id != documentData.value.user_id)
+            router.push({path:'/mis-documentos/estado/'+documentData.value.id});
         console.log(documentData.value)
     });
+    confirmationModal.value = new Modal($("#confirmation-modal"));
 }
 
+function remindSigner(signerId){
+    useDocumentRequestsAPI.remindSigner({
+        document_id : documentData.value.id,
+        user_id : signerId
+    })
+    .then((res) => {
+        toast.success("Se ha notificado correctamente", {
+          timeout: 2000,
+        });
+    });
+}
 
 </script>

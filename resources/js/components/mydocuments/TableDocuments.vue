@@ -239,7 +239,7 @@ function filterDocuments(){
     else
         filteredDocuments.value = documents.value;
     if(needSign.value)
-        filteredDocuments.value = filteredDocuments.value.filter(x => x.document_signers[0].signed == 0 && x.document_signers[0].signed_at == null)
+        filteredDocuments.value = filteredDocuments.value.filter(x => x.document_signers.length > 0 && x.document_signers[0].signed == 0 && x.document_signers[0].signed_at == null)
     documentsSignTable.value.destroy();
     createTable();
 }
