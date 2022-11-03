@@ -39,6 +39,12 @@ class User extends Authenticatable
         'aws_user_id',
         'remember_token',
     ];
+    protected $appends = array('status');
+
+    public function getStatusAttribute()
+    {
+        return $this->active == 1?"Activo":"Inactivo";  
+    }
 
     public function documents()
     {

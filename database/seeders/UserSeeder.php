@@ -24,7 +24,7 @@ class UserSeeder extends Seeder
             "surnames" => "Apellido Administrador",
             "user_name" => "admin",
             "email" => "admin@admin.com",
-            'RFC' => 'LAN7008173R5'
+            'RFC' => 'LAAN7008173R5'
         ])->create();
         $admin->assignRole($adminRole);
 
@@ -37,7 +37,7 @@ class UserSeeder extends Seeder
             'surnames' => 'Apellido Firmante',
             'user_name' => 'signer',
             'email' => 'signer@signer.com',
-            'RFC' => 'SUL010720JN8'
+            'RFC' => 'SAUL010720JN8'
         ])->create();
         $signer->assignRole($signerRole);
     }

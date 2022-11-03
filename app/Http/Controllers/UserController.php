@@ -60,7 +60,7 @@ class UserController extends Controller
             $user = User::where('id',$request->input('id'))->first();
             if(!$user)
                 return response()->json(['message' => 'USER_DOES_NOT_EXIST'], 200);
-            $user->password = Hash::make('contraseña');
+            $user->password = Hash::make('ITSL@2022');
             $user->save();
             DB::commit();
             return response()->json($user, 200);
@@ -98,7 +98,7 @@ class UserController extends Controller
             $user->RFC = $request->input('RFC');
             $user->email = $request->input('email');
             $user->active = $request->input('active');
-            $user->password = Hash::make('contraseña');
+            $user->password = Hash::make('ITSL@2022');
             $user->save();
 
             //Asign role to new user
@@ -114,7 +114,7 @@ class UserController extends Controller
     public function update(Request $request){
         $validator = Validator::make($request->all(), [
             'id' => 'required|numeric|exists:users,id',
-            'name' => 'required|min:10|max:255',
+            'name' => 'required|min:4|max:255',
             'surnames' => 'required|min:10|max:255',
             'user_name' => 'required|min:5|max:255',
             'email' => 'required|email:rfc,dns|max:255|unique:users,email,' . $request->input('id'),

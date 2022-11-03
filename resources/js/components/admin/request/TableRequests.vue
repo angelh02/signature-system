@@ -59,7 +59,7 @@
         </div>
         <div class="mx-2">
             <div class="table-responsive">
-            <table class="table table-hover table-bordered" id="requests-table">
+            <table class="table table-sm table-striped" id="requests-table">
                 <thead>
                     <tr>
                         <th>Folio</th>
@@ -82,16 +82,16 @@
                                 <button id="btn_editar" @click="() =>{
                                   func = '2'
                                   openModalConfim(request)}" 
-                                  class="mx-1 btn btn-success mdi mdi-check-outline"></button> 
+                                  class="mx-1 btn btn-success mdi mdi-check-outline" data-bs-toggle="tooltip" data-bs-placement="top" title="Aceptar solicitud"></button> 
                             </div>
                             <div v-if="tab === 'Pendiente'">
                                 <button id="btn_borrar" @click="() =>{
                                   func = '1'
                                   openModalConfim(request)}" 
-                                  class="mx-1 btn btn-danger mdi mdi-cancel"></button>
+                                  class="mx-1 btn btn-danger mdi mdi-cancel" data-bs-toggle="tooltip" data-bs-placement="top" title="Rechazar solicitud"></button>
                             </div>
                             <div :class="tab != 'Pendiente' && 'mx-4'">
-                                <button id="btn_detalles" @click="modalRequests(request)" class="mx-1 btn btn-info mdi mdi-eye"></button>
+                                <button id="btn_detalles" @click="modalRequests(request)" class="mx-1 btn btn-info mdi mdi-eye" data-bs-toggle="tooltip" data-bs-placement="top" title="Detalles"></button>
                             </div>
                         </td>
                     </tr> 
@@ -101,8 +101,8 @@
         </div>
         <ModalRequest :tab="tab" :formData="formData" @cancel="closeModal"/>
         <ConfirmationModal
-            :title="func === '1' ? 'Confirmacion de rechazo' : 'Confirmacion de aceptación'"
-            :message="func === '1' ? 'Estas seguro que deseas rechazar esta solicitud' : 'Estas seguro que deseas aceptar esta solicitud'"
+            :title="'Confirmación'"
+            :message="func === '1' ? 'Éstas seguro que deseas rechazar esta solicitud' : 'Éstas seguro que deseas aceptar esta solicitud'"
             @response="confirmationResponse"
         ></ConfirmationModal>
     </div>

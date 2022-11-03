@@ -1,7 +1,7 @@
 <template>
     <table
         id="example"
-        class="table table-striped cell-border"
+        class="table table-sm table-striped"
         style="width: 100%"
     ></table>
     <ConfirmationModal

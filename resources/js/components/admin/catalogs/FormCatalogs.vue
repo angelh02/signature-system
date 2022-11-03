@@ -1,21 +1,21 @@
 <template>
     <div v-if="route.params.name === 'tipos-documentos'">
-        <h4 v-if="!edit">Agregar nuevo tipo de documento</h4>
-        <h4 v-if="edit">Editar tipo de documento</h4>
+        <h4 v-if="!edit">Agregar nuevo Tipo de Documento</h4>
+        <h4 v-if="edit">Editar Tipo de Documento</h4>
     </div>
     <div v-else class="card-title">
         <div v-if="!edit" class="d-flex">
-            <h4 v-if="!edit">Agregar nuev@ (</h4><h4 class="text-lowercase">{{btn}})</h4>
+            <h4 v-if="!edit">Agregar {{btn}}</h4>
         </div>
         <div v-if="edit" class="d-flex">
-            <h4 v-if="edit">Editar (</h4><h4 class="text-lowercase"> {{ btn}})</h4>
+            <h4 v-if="edit">Editar {{btn}}</h4>
         </div>
         
     </div>
     <form class="needs-validation" @submit.prevent="onSubmit" novalidate>
         <div class="mb-3">
             <label class="form-label"
-                >Codigo</label
+                >Código</label
             >
             <div :class="{ valid: !v$.$error && v$.$dirty, error: v$.$error }">
                 <input
@@ -55,10 +55,10 @@
         </div>
         <div class="row justify-items-center">
             <button v-if="!edit" class="btn btn-primary mb-2" type="submit" @click.prevent="addClassification" :disabled="v$.$errors.length > 0 || v$.$silentErrors.length > 0">
-                AGREGAR {{btn}}
+                AGREGAR
             </button>
             <button v-if="edit" class="btn btn-primary mb-2" type="submit" @click.prevent="editRequest" :disabled="v$.$errors.length > 0 || v$.$silentErrors.length > 0">
-                ACTUALIZAR {{btn}}
+                ACTUALIZAR
             </button>
             <button class="btn btn-light mb-2" type="submit" @click="resetData()">CANCELAR</button>
         </div>
@@ -139,15 +139,15 @@ const apisGet = {
 }
 
 const buttonTag = {
-    'tipos-documentos':"NUEVO DOCUMENTO",
-    fondos: "FONDO",
-    secciones: "SECCIÓN",
-    'areas-productoras': "NUEVA ARÉA",
-    'tiempos-conservacion':"NUEVO TIEMPO",
-    'tipos-conservacion':"NUEVA CONSERVACIÓN",
-    'valores-documentales':"VALOR",
-    'tipos-informacion':"NUEVA INFORMACIÓN",
-    'tecnicas-seleccion':"TECNICA"
+    'tipos-documentos':" nuevo Tipo de Documento",
+    fondos: " nuevo Fondo",
+    secciones: " nueva Sección",
+    'areas-productoras': " nueva Aréa Productora",
+    'tiempos-conservacion':" nuevo Tiempo de Conservación",
+    'tipos-conservacion':" nuevo Tipo de Conservación",
+    'valores-documentales':" nuevo Valor Documental",
+    'tipos-informacion':" nuevo Tipo de Información",
+    'tecnicas-seleccion':" nueva Técnica de Selección"
 }
 
 
