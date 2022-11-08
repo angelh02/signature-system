@@ -2,7 +2,7 @@
     <div class="row">
         <div class="col-12">
             <div class="page-title-box">
-                <h1 class="page-title">Catálogo de contenedores archivisticos</h1>
+                <h1 class="page-title">Catálogo de contenedores archivísticos</h1>
             </div>
         </div>
     </div>

@@ -23,7 +23,7 @@
                         <div class="tab-content">
                             <div class="tab-pane" id="card-pdf">
                                 <p>
-                                    Revisa el documento y cuando estes listo, da
+                                    Revisa el documento y cuando estés listo, da
                                     clic en el botón “Continuar a firmar”. Si hay una
                                     que te impida hacerlo, da clic en enlace “Hay un
                                     problema con el documento”
@@ -34,10 +34,10 @@
                             </div>
                             <div class="tab-pane" id="card-sign">
                                 <p>
-                                    Para firmar, necesitarás los archivos de tu e.firma (anteriormente FIEL).
+                                    Para firmar, necesitarás los archivos de tú e.firma (anteriormente FIEL).
                                 </p>
                                 <p>
-                                    Los datos sensibles de tu e.firma
+                                    Los datos sensibles de tú e.firma
                                     <b>nunca se comparten con esta plataforma.</b>
                                 </p>
                             </div>

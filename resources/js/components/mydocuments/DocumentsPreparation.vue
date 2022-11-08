@@ -5,7 +5,7 @@
                 <div class="col-8">
                     <div class="row mx-2">
                         <div class="col-7 p-0">
-                            <h3>Preparacion de documento</h3>
+                            <h3>Preparación de documento</h3>
                         </div>
                         <div class="col-5 py-2 pe-0">
                             <ul

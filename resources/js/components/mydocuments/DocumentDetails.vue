@@ -118,7 +118,7 @@
                                 </button>
                                 <div v-if="documentData.signed === 1"  class="my-2 alert alert-warning alert-dismissible fade show" role="alert">
                                     <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
-                                    <strong>Aviso - </strong> Este documento ya ha sido firmado, no se puede agregar mas firmantes
+                                    <strong>Aviso - </strong> Este documento ya ha sido firmado, no se puede agregar más firmantes
                                 </div>
                             </div>
                                
