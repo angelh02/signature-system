@@ -2,7 +2,7 @@
     <div class="row mt-3">
         <div class="col-12">
             <div class="page-title-box">
-                <h1 class="page-title">Administración de usuarios</h1>
+                <h1 class="page-title">Administración de Usuarios</h1>
             </div>
         </div>
     </div>
