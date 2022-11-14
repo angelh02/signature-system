@@ -231,6 +231,7 @@ function onDropAccepted(acceptFiles) {
     var encoded = btoa(JSON.stringify(acceptFiles))
     var actual = JSON.parse(atob(encoded))
     dataFiles.value = acceptFiles;
+    console.log("🚀 ~ file: Documents.vue ~ line 234 ~ onDropAccepted ~ dataFiles.value", dataFiles.value);
     documentModal.value.show();
 }
 

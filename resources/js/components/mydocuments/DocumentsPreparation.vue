@@ -188,7 +188,7 @@
 
                                     <div class="inbox-widget mb-3">
                                         <div class="inbox-item" v-for="signer in signers">
-                                            <p class="inbox-item-author">{{signer.name}} {{signer.surnames}}</p>
+                                            <p class="inbox-item-author">{{signer.name}} {{signer.surnames}} - {{signer.RFC}}</p>
                                             <p class="inbox-item-text">{{signer.email}}</p>
                                             <p class="inbox-item-date">
                                                 <button type="button" @click="deleteSigner(signer.id)" class="btn btn-sm btn-outline-danger px-1 py-0"> <i class="uil uil-trash-alt font-16"></i> </button>
@@ -262,8 +262,10 @@
     //Libraries
     import { ref, onMounted, watch, toRef, reactive, useAttrs } from "vue";
     import $ from 'jquery';
+    import axios from 'axios';
     import select2 from "select2";
     import moment from "moment";
+    import {useToast} from "vue-toastification";
     import { useRouter, useRoute } from "vue-router";
     import VuePdfEmbed from 'vue-pdf-embed';
     import { useVuelidate } from '@vuelidate/core';
@@ -272,6 +274,8 @@
     import useUserRequestsApi from "@/api/admin/user/index.js"
     import useDocumentRequestsAPI from "@/api/document/index.js";
     import DocumentCreated from "./DocumentCreated.vue";
+
+    const toast = useToast();
 
     const attrs = useAttrs();
     const userLogged = ref(attrs.user);
@@ -291,6 +295,7 @@
     const documentCreated = ref(false);
     const loadDocuments = ref(false);
     const documentDownload = ref("");
+    const documentList = ref([]);
 
     //Pdf viewer consts
     const dataDocuments = ref(JSON.parse(route.params.files));
@@ -337,11 +342,12 @@
             });
         });
         getRequest();
+        createFiles();
         pdfLoaded.value = false;
         source.value = "";
         setTimeout(function () {
             refreshPdf(dataDocuments.value.files[pdfIndex.value-1].data);
-        }, 3000);
+        }, 4000);
     });
 
     //Watchers
@@ -385,41 +391,94 @@
         // resetData();
     }
 
-    const createDocument = asyc => {
+    function createFiles(){
+        dataDocuments.value.files.forEach(element => {
+            documentList.value.push({
+                name : element.name,
+                data : dataUrlToFile(element.data, element.name)
+            })
+        });
+    }
+
+    const sleep = ms => {
+        return new Promise(resolve => setTimeout(resolve, ms))
+    }
+
+    const submitFile = async(file, signerList) =>{
+        let data = new FormData();
+        let headersL = {
+            'content-type': 'multipart/form-data',
+            'accept' : '*/*',
+            'Authorization' : 'Bearer '+userLogged.value.aws_auth_token,
+            'IdUsers' : [...signerList.map(x => x.aws_user_id)]
+        }
+        data.append('filePdfToSign', file);
+        return await axios
+                .post(`http://trsffirmadigitalserviciocertificadosv.eba-4hsuxaba.us-west-1.elasticbeanstalk.com/Firmado/SignDocumentWithMultipleRFC`, data,{headers : headersL})
+                .then(res => {
+                    if (res.status != 200) throw new Error("Response Failed");
+                    return res.data;
+                })
+                .catch(e => {
+                    toast.warning("No se ha podido Agregar los documentos", {
+                        timeout: 2000,
+                    })
+                });
+    }
+
+    const storeDocumentRequest = async(documentIndex, signerList) => {
+        let file = await documentList.value[documentIndex].data.then(data => {return data});
+        let fileInfo = await submitFile(file, signerList);
+        return sleep(1000).then(v => {
+            if(fileInfo != null){
+                let data = {
+                    aws_token : userLogged.value.aws_auth_token,
+                    user_id : userLogged.value.id,
+                    aws_document_id : fileInfo.document.id,
+                    url : fileInfo.document.urlOriginal,
+                    document_name : documentList.value[documentIndex].name,
+                    signers : [...signerList.map(x => ({
+                        user_id : x.id,
+                        email : x.email,
+                        name : x.name,
+                        surnames : x.surnames
+                    }))],
+                    container_id : dataDocuments.value.container.id,
+                    classification_id : dataDocuments.value.classification.id,
+                    document_type_id : dataDocuments.value.document_type.id
+                };
+                return useDocumentRequestsAPI.addDocument(data)
+                .then((res) => {
+                    console.log("🚀 ~ file: DocumentsPreparation.vue ~ line 412 ~ .then ~ res", res)
+                    return res;
+                });
+            }
+        });
+    }
+
+    const createDocument = async _ => {
         let signerList = [...signers.value];
         if(userSign.value)
-            signerList.push(userLogged.value);
+            signerList.push(userLogged.value)
         if(signerList.length > 0){
-            let data = {
-                user_id : userLogged.value.id,
-                documents : [...dataDocuments.value.files],
-                signers : [...signerList.map(x => ({
-                    user_id : x.id,
-                    email : x.email,
-                    name : x.name,
-                    surnames : x.surnames
-                }))],
-                container_id : dataDocuments.value.container.id,
-                classification_id : dataDocuments.value.classification.id,
-                document_type_id : dataDocuments.value.document_type.id
-            };
-            console.log("🚀 ~ file: DocumentsPreparation.vue ~ line 398 ~ createDocument ~ data", data)
             loadDocuments.value = true;
-            useDocumentRequestsAPI.addDocument(data)
-            .then((res) => {
-                console.log("🚀 ~ file: DocumentsPreparation.vue ~ line 412 ~ .then ~ res", res)
-                loadDocuments.value = false;
-                if(userSign.value){
-                    let ids = JSON.stringify({documents : res.map(x => x.id)});
-                    console.log("🚀 ~ file: DocumentsPreparation.vue ~ line 398 ~ .then ~ ids", ids)
-                    router.push({
-                        name : 'DocumentSign',
-                        params: {ids: ids}
-                    });
-                }
-                else
-                    documentCreated.value = true;
-            });
+            let idArray = [];
+            for(let x = 0;x < documentList.value.length; x++){
+                let id = await storeDocumentRequest(x, signerList);
+                idArray.push(id)
+            }
+            console.log("🚀 ~ file: DocumentsPreparation.vue ~ line 469 ~ createDocument ~ idArray", idArray)
+            loadDocuments.value = false;
+            if(userSign.value){
+                let ids = JSON.stringify({documents : idArray.map(x => x.id)});
+                console.log("🚀 ~ file: DocumentsPreparation.vue ~ line 398 ~ .then ~ ids", ids)
+                router.push({
+                    name : 'DocumentSign',
+                    params: {ids: ids}
+                });
+            }
+            else
+                documentCreated.value = true;
         }
     }
 
@@ -479,4 +538,11 @@
             return true;
         return false;
     }
+
+    async function dataUrlToFile(dataUrl, fileName) {
+        const res = await fetch(dataUrl);
+        const blob = await res.blob();
+        return new File([blob], fileName, { type: 'application/pdf' });
+    }
+    
 </script>
