@@ -1,8 +1,9 @@
 <?php
 
-use App\Http\Controllers\HomeController;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\Auth\ResetPasswordController;
+use App\Http\Controllers\AuthController;
+use App\Http\Controllers\HomeController;
 
 /*
 |--------------------------------------------------------------------------
@@ -26,7 +27,11 @@ Auth::routes();
 // Route::view('/{any}','home')
 //     ->middleware(['auth'])
 //     ->where('any','.*');
-    
+Route::get('/login-google', [AuthController::class, 'googleLogin']);
+Route::get('/google-callback', [AuthController::class, 'googleCallback']);
+//Route::view('/email-test', 'email.document-to-sign');
+//Route::view('/email-test1', 'email.notification-signer');
+
 Route::middleware(['auth'])->group(function() {
     // Route::view('/', 'layout.content');
     Route::view('/reset-password', 'auth.passwords.reset')->name('reset-password');

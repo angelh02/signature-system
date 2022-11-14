@@ -16,6 +16,7 @@ class CreateUsersTable extends Migration
         Schema::create('users', function (Blueprint $table) {
             $table->id();
             $table->unsignedBigInteger('aws_user_id');
+            $table->text('aws_auth_token')->nullable();
             $table->string('name');
             $table->string('surnames');
             $table->string('user_name');

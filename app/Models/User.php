@@ -25,7 +25,9 @@ class User extends Authenticatable
         'user_name',
         'password',
         'email',
-        'active'
+        'active',
+        'aws_user_id',
+        'aws_auth_token',
     ];
     
     public $timestamps = false;
@@ -36,7 +38,7 @@ class User extends Authenticatable
      */
     protected $hidden = [
         'password',
-        'aws_user_id',
+        'aws_auth_token',
         'remember_token',
     ];
     protected $appends = array('status');
