@@ -11,7 +11,7 @@
     <script src="{{ asset('js/app.js') }}" defer></script>   
 </head>
 <style>
-    @media screen and (min-width:914px){
+    /* @media screen and (min-width:914px){
         h4{
             font-size: 10px;
         },
@@ -58,7 +58,7 @@
             margin-right: -6.5rem !important;
             margin-left: -9.5rem !important;
         }
-    }
+    } */
     /* @media screen and (max-width:572px){
         .py-5 {
             padding-top: 8.5rem !important;
