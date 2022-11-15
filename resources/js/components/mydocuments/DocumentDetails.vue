@@ -69,36 +69,38 @@
                                 <div class="card border border-2">
                                 <div class="card-body">
                                     <form class="needs-validation"  novalidate>
-                                        <div class="card mb-2" >
+                                        <div class="card m-0" >
                                         <div class="row" v-for="signer in signers">
-                                            <div class="py-2 col-2">
-                                                <span :class="'badge border border-light rounded rounded-4 p-2 bg-'+(signer.signed == 0  ? 'warning' : 'success') ">
-                                                    <i :class="(signer.signed == 0 ? 'dripicons-clock' : 'dripicons-checkmark')"></i>
-                                                    <span class="mx-1">{{signer.signed == 0 ? 'Pendiente' : 'Firmado'}}</span>
-                                                </span>
-                                            </div>
-                                            <div class="col-7 py-2 mx-xxl-n4">
-                                                <h5 class="text-black m-0">{{signer.user.email}} - {{signer.user.name}}</h5> 
-                                                <p class="inbox-item-text m-0">RFC: {{signer.user.RFC}}</p>                                     
-                                            </div>
-                                            <div class="col text-end py-2 mx-3">
-                                                <a
-                                                    class="btn btn-info mx-1 mb-2"
-                                                    type="button"
-                                                    :disabled="signer.signed === 1"
-                                                    @click="remindSigner(signer.id)"
-                                                >
-                                                    <span class="uil uil-bell font-16"></span>
-                                                </a>
-                                                <a
-                                                    class="btn btn-danger mx-1 mb-2"
-                                                    type="button"
-                                                    @click="deleteSigner(signer.id)"
-                                                >
-                                                    <span class="uil uil-trash-alt font-16"></span>
-                                                    
-                                                </a>
-                                            </div>
+                                            <template v-if="true">
+                                                <div class="py-2 col-2 mx-3">
+                                                    <span :class="'badge border border-light rounded rounded-4 p-2 bg-'+(signer.signed == 0  ? 'warning' : 'success') ">
+                                                        <i :class="(signer.signed == 0 ? 'dripicons-clock' : 'dripicons-checkmark')"></i>
+                                                        <span class="mx-1">{{signer.signed == 0 ? 'Pendiente' : 'Firmado'}}</span>
+                                                    </span>
+                                                </div>
+                                                <div class="col-7 py-2 mx-xxl-n4">
+                                                    <h5 class="text-black m-0">{{signer.user.email}} - {{signer.user.name}} {{signer.user.surnames}} {{signer.user_id == userLogged.id? '(Tú)' : ''}}</h5> 
+                                                    <p class="inbox-item-text m-0">RFC: {{signer.user.RFC}}</p>                                     
+                                                </div>
+                                                <div class="col text-end py-2 mx-3">
+                                                    <button
+                                                        class="btn btn-info mx-1 mb-2"
+                                                        :disabled="signer.signed == 1"
+                                                        @click="remindSigner(signer?.user_id)"
+                                                    >
+                                                        <span class="uil uil-bell font-16"></span>
+                                                    </button>
+                                                    <a
+                                                        v-if="false"
+                                                        class="btn btn-danger mx-1 mb-2"
+                                                        type="button"
+                                                        @click="deleteSigner(signer.id)"
+                                                    >
+                                                        <span class="uil uil-trash-alt font-16"></span>
+                                                        
+                                                    </a>
+                                                </div>
+                                            </template>
                                         </div>
                                         
                                     </div>
@@ -108,6 +110,7 @@
                             </div>
                             <div>
                                 <button
+                                    v-if="false"
                                     class="btn btn-outline-danger col-3 py-xxl-0"
                                     type="button"
                                     :disabled="documentData.signed === 1"
@@ -118,7 +121,7 @@
                                 </button>
                                 <div v-if="documentData.signed === 1"  class="my-2 alert alert-warning alert-dismissible fade show" role="alert">
                                     <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
-                                    <strong>Aviso - </strong> Este documento ya ha sido firmado, no se puede agregar mas firmantes
+                                    <strong>Aviso - </strong> Este documento ya ha sido firmado.
                                 </div>
                             </div>
                                
@@ -156,12 +159,18 @@
                                     <button
                                         class="btn btn-outline-danger mb-2"
                                         type="button"
-                                        :disabled="documentData.signed === 1"
-                                        v-if="documentData?.id != null"
+                                        v-if="documentData?.id != null && documentData.signed != 1"
                                         @click="deleteDocument"
                                     >
                                         <h5>ELIMINAR DOCUMENTO</h5>
-                                        
+                                    </button>
+                                    <button
+                                        class="btn btn-outline-danger mb-2"
+                                        type="button"
+                                        v-if="documentData?.id != null && documentData.signed == 1 && documentData.deletion_requests.length == 0"
+                                        @click="openDeletionRequest"
+                                    >
+                                        <h5>ELIMINAR DOCUMENTO</h5>
                                     </button>
                                 </div>
                             </div>
@@ -171,6 +180,14 @@
             </div>
         </div>
         <DocumentCreated v-else></DocumentCreated>
+        <!-- Deletion request modal -->
+        <CreateDeletionRequestModal
+            :document-id="documentData?.id"
+            @cancel="cancelDeletionRequest"
+            @stored="storedDeletionRequest"
+        >
+        </CreateDeletionRequestModal>
+        <!-- Deletion confirmation modal -->
         <ConfirmationModal
             :title="'Confirmacion de Eliminación'"
             :message="'Estas seguro de eliminar el siguiente documento'"
@@ -183,6 +200,7 @@
 <script setup>
 import { ref, onMounted, watch, toRef, reactive, useAttrs } from "vue";
 import $ from 'jquery';
+import axios from 'axios';
 import { Modal, Popover } from "bootstrap";
 import { useRouter, useRoute } from "vue-router";
 import VuePdfEmbed from 'vue-pdf-embed'
@@ -190,12 +208,15 @@ import useDocumentRequestsAPI from "@/api/document/index.js";
 import DocumentCreated from "./DocumentCreated.vue";
 import ConfirmationModal from "../elements/ConfirmationModal.vue";
 import ModalSigner from "./ModalSigner.vue";
+import CreateDeletionRequestModal from "./CreateDeletionRequestModal.vue";
 import {useToast} from "vue-toastification";
+import useSignRequestsAPI from "@/api/sign-document/index.js";
 
 const attrs = useAttrs();
 const userLogged = ref(attrs.user);
 
 const confirmationModal= ref({});
+const deletionRequestModal = ref({});
 
 const toast = useToast();
 const router = useRouter();
@@ -225,6 +246,20 @@ const dataFile = toRef(props, "dataFile");
 const resFiles = toRef(props, "resFiles");
 
 const data = ref("");
+
+//Functions
+function cancelDeletionRequest(){
+    deletionRequestModal.value.hide();
+}
+
+function storedDeletionRequest(){
+    deletionRequestModal.value.hide();
+    getDocumentData();
+}
+
+function openDeletionRequest(){
+    deletionRequestModal.value.show();
+}
 
 function closeModal(){
     resetData();
@@ -293,6 +328,8 @@ onMounted(async () => {
     documentId.value = parseInt(route.params.id);
     formData.value.document_id = documentId.value;
     documentModal.value = new Modal($("#request-info-modal"));
+    confirmationModal.value = new Modal($("#confirmation-modal"));
+    deletionRequestModal.value = new Modal($("#deletion-request-modal"));
     getDocumentData();
 });
 
@@ -305,20 +342,26 @@ function deleteDocumentRequest(){
     }
 }
 
-function getDocumentData(){
-    useDocumentRequestsAPI.getDocument(documentId.value)
+async function getDocumentData(){
+    await useDocumentRequestsAPI.getDocument(documentId.value)
     .then((res) => {
         documentData.value = res;
         signers.value = res?.document_signers;
-        source.value = res.url
         if(userLogged.value.id != documentData.value.user_id)
             router.push({path:'/mis-documentos/estado/'+documentData.value.id});
         console.log(documentData.value)
     });
-    confirmationModal.value = new Modal($("#confirmation-modal"));
+    
+    source.value = await useSignRequestsAPI.getDocumentBase(documentData.value.id, userLogged.value.aws_auth_token);
 }
 
 function remindSigner(signerId){
+    console.log("🚀 ~ file: DocumentDetails.vue ~ line 356 ~ remindSigner ~ signerId", signerId)
+    console.log("🚀 ~ file: DocumentDetails.vue ~ line 356 ~ remindSigner ~ signerId", {
+        document_id : documentData.value.id,
+        user_id : signerId
+    });
+    
     useDocumentRequestsAPI.remindSigner({
         document_id : documentData.value.id,
         user_id : signerId
@@ -327,6 +370,12 @@ function remindSigner(signerId){
         toast.success("Se ha notificado correctamente", {
           timeout: 2000,
         });
+    });
+    axios.post("logout").then(response => { 
+        console.log(response);
+    })
+    .catch(error => {
+        console.log(error);
     });
 }
 

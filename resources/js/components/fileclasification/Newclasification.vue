@@ -45,7 +45,7 @@
             </div>
         </div>
         <div class="row mb-3">
-            <label class="form-label">Serie y Subserie</label>
+            <label class="form-label">Serie y Sub serie</label>
             <div class="col-6">
                 <div class="">
                     <div :class="{ valid: !v$.$error && v$.$dirty, error: v$.$error }">
@@ -70,7 +70,7 @@
                             type="text"
                             class="form-control"
                             id="subseries"
-                            placeholder="Ingrese subserie"
+                            placeholder="Ingrese sub serie"
                             v-model="v$.subseries.$model"
                             required
                         />
@@ -82,7 +82,7 @@
             </div>
         </div>
         <div class="mb-3">
-            <label class="form-label" for="production_area_id">Area de producción</label>
+            <label class="form-label" for="production_area_id">Área de producción</label>
             <div :class="{ valid: !v$.$error && v$.$dirty, error: v$.$error }">
                 <select
                     class="form-select"

@@ -1,7 +1,7 @@
 <template>
-    <div v-if="route.params.name === 'tipos-documentos'">
-        <h4 v-if="!edit">Agregar nuevo Tipo de Documento</h4>
-        <h4 v-if="edit">Editar Tipo de Documento</h4>
+    <div class="card-title" v-if="route.params.name === 'tipos-documentos'">
+        <h4 v-if="!edit">Agregar nuevo tipo de documento</h4>
+        <h4 v-if="edit">Editar tipo de documento</h4>
     </div>
     <div v-else class="card-title">
         <div v-if="!edit" class="d-flex">
@@ -139,15 +139,15 @@ const apisGet = {
 }
 
 const buttonTag = {
-    'tipos-documentos':" nuevo Tipo de Documento",
-    fondos: " nuevo Fondo",
-    secciones: " nueva Sección",
-    'areas-productoras': " nueva Aréa Productora",
-    'tiempos-conservacion':" nuevo Tiempo de Conservación",
-    'tipos-conservacion':" nuevo Tipo de Conservación",
-    'valores-documentales':" nuevo Valor Documental",
-    'tipos-informacion':" nuevo Tipo de Información",
-    'tecnicas-seleccion':" nueva Técnica de Selección"
+    'tipos-documentos':" nuevo tipo de Documento",
+    fondos: " nuevo fondo",
+    secciones: " nueva sección",
+    'areas-productoras': " nueva área productora",
+    'tiempos-conservacion':" nuevo tiempo de conservación",
+    'tipos-conservacion':" nuevo tipo de conservación",
+    'valores-documentales':" nuevo valor documental",
+    'tipos-informacion':" nuevo tipo de información",
+    'tecnicas-seleccion':" nueva técnica de selección"
 }
 
 

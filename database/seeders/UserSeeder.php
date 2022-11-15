@@ -23,8 +23,9 @@ class UserSeeder extends Seeder
             "name" => "Administrador",
             "surnames" => "Apellido Administrador",
             "user_name" => "admin",
-            "email" => "admin@admin.com",
-            'RFC' => 'LAAN7008173R5'
+            "email" => "sistema_egestion@itslerdo.edu.mx",
+            'RFC' => 'KAHO641101B39',
+            "aws_user_id" => 11
         ])->create();
         $admin->assignRole($adminRole);
 
@@ -32,13 +33,13 @@ class UserSeeder extends Seeder
             'name' => 'Firmante'
         ]);
         //Signer user
-        $signer = User::factory([
+        /* $signer = User::factory([
             'name' => 'Firmante',
             'surnames' => 'Apellido Firmante',
             'user_name' => 'signer',
             'email' => 'signer@signer.com',
             'RFC' => 'SAUL010720JN8'
         ])->create();
-        $signer->assignRole($signerRole);
+        $signer->assignRole($signerRole); */
     }
 }

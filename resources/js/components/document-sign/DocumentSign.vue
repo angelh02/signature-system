@@ -23,21 +23,22 @@
                         <div class="tab-content">
                             <div class="tab-pane" id="card-pdf">
                                 <p>
-                                    Revisa el documento y cuando estes listo, da
+                                    Revisa el documento y cuando estés listo, da
                                     clic en el botón “Continuar a firmar”. Si hay una
                                     que te impida hacerlo, da clic en enlace “Hay un
                                     problema con el documento”
                                 </p>
-                                <div class="text-center">
+                                <div class="text-center mb-3">
                                     <a class="btn btn-primary" style="width: 80%;" @click="changeTab(2)">CONTINUAR A FIRMAR</a>
                                 </div>
+                                <a v-if="documentData?.user_id != userLogged.id" type="button" class="text-primary" @click="openContactModal">Hay un problema con el documento</a>
                             </div>
                             <div class="tab-pane" id="card-sign">
                                 <p>
-                                    Para firmar, necesitarás los archivos de tu e.firma (anteriormente FIEL).
+                                    Para firmar, necesitarás los archivos de tú e.firma (anteriormente FIEL).
                                 </p>
                                 <p>
-                                    Los datos sensibles de tu e.firma
+                                    Los datos sensibles de tú e.firma
                                     <b>nunca se comparten con esta plataforma.</b>
                                 </p>
                             </div>
@@ -48,12 +49,12 @@
                 <div class="card border border-1 shadow p-3 mb-3 bg-body rounded pt-0 ps-0 pe-0">
                     <div class="card-body">
                         <p><b>Documento</b></p>
-                        <div class="inbox-widget">
+                        <div class="inbox-widget" v-if="documentData != null">
                             <div class="inbox-item">
                                 <div class="inbox-item-img"><i class="mdi mdi-48px mdi-file-document-outline"></i></div>
                                 <p class="inbox-item-author">{{documentData?.name}}</p>
                                 <p class="inbox-item-text">Creado el {{documentData?.created_at}}</p>
-                                <a v-if="documentDownload != ''" :href="documentDownload" style="font-size: 0.8125rem">Descargar</a>
+                                <a type="button" class="text-primary" @click="viewDocument(documentData?.id)" style="font-size: 0.8125rem">Descargar</a>
                             </div>
                             <div class="inbox-item">
                                 <p class="inbox-item-author">Tipo de documento</p>
@@ -120,93 +121,128 @@
                         </div>
                     </div>
                     <div class="tab-pane" id="sign-form">
-                        <div class="accordion custom-accordion" id="custom-accordion-one">
-                            <div class="card mb-0">
-                                <div class="card-header" id="cer-file">
-                                    <h5 class="m-0">
-                                        <a id="up-cer-btn" class="custom-accordion-title d-block py-1"
-                                            data-bs-toggle="collapse" href="#up-cer"
-                                            aria-expanded="true" aria-controls="up-cer">
-                                            1. Selecciona el certificado (archivo .cer) <i
-                                                class="mdi mdi-chevron-down accordion-arrow"></i>
-                                        </a>
-                                    </h5>
+                        <div v-if="certificatesExist">
+                            <div class="d-flex ms-3">
+                                <i class="uil uil-file-check-alt me-2 font-24 text-success"></i>
+                                <div>
+                                    <a class="mt-3 font-18" href="javascript:void(0);">
+                                        <strong class="text-success">Certificados Activos:</strong>
+                                        <span class="text-muted">
+                                            Ya haz subido tus certificados por lo que puedes proceder a firmar directamente {{documents?.length > 1 ? "los documentos":"el documento"}}.<br>
+                                            Por favor revisa que todo este en orden antes de firmar {{documents?.length > 1 ? "los documentos":"el documento"}}.
+                                        </span>
+                                    </a>
                                 </div>
-                                    
-                                <div id="up-cer" class="collapse show"
-                                    aria-labelledby="cer-file"
-                                    data-bs-parent="#up-cer">
-                                    <div class="card-body">
-                                        <div>
-                                            <DropZone :title="'Arrastra tu documetos cer en la página o'" :acceptedFiles="'.cer'" @onDrop="onDropCerFile"></DropZone>
+                            </div>
+                            <div class="mt-3 d-flex justify-content-end">
+                                <button type="submit" class="btn btn-primary" @click="signDocument" :disabled="submit || !certificatesExist" >
+                                    <span class="spinner-border spinner-border-sm" role="status" aria-hidden="true" v-if="submit"></span>
+                                    FIRMAR {{documents?.length > 1 ? "DOCUMENTOS":"DOCUMENTO"}}
+                                </button>
+                            </div>
+                        </div>
+                        <div v-else>
+                            <div class="accordion custom-accordion" id="custom-accordion-one">
+                                <div class="card mb-0">
+                                    <div class="card-header" id="cer-file">
+                                        <h5 class="m-0">
+                                            <a id="up-cer-btn" class="custom-accordion-title d-block py-1"
+                                                data-bs-toggle="collapse" href="#up-cer"
+                                                aria-expanded="true" aria-controls="up-cer">
+                                                1. Selecciona el certificado (archivo .cer) <i
+                                                    class="mdi mdi-chevron-down accordion-arrow"></i>
+                                            </a>
+                                        </h5>
+                                    </div>
+                                        
+                                    <div id="up-cer" class="collapse show"
+                                        aria-labelledby="cer-file"
+                                        data-bs-parent="#up-cer">
+                                        <div class="card-body">
+                                            <div>
+                                                <DropZone :title="'Arrastra tu documetos cer en la página o'" :acceptedFiles="'.cer'" @onDrop="onDropCerFile"></DropZone>
+                                            </div>
                                         </div>
                                     </div>
                                 </div>
-                            </div>
-                            <div class="card mb-0">
-                                <div class="card-header" id="key-file">
-                                    <h5 class="m-0">
-                                        <a id="up-key-btn" class="custom-accordion-title collapsed d-block py-1"
-                                            data-bs-toggle="collapse" href="#up-key"
-                                            aria-expanded="false" aria-controls="up-key">
-                                            2. Selecciona la llave privada (archivo .key) <i
-                                                class="mdi mdi-chevron-down accordion-arrow"></i>
-                                        </a>
-                                    </h5>
-                                </div>
-                                <div id="up-key" class="collapse"
-                                    aria-labelledby="key-file"
-                                    data-bs-parent="#custom-accordion-one">
-                                    <div class="card-body">
-                                        <div>
-                                            <DropZone :title="'Arrastra tu documetos key en la página o'" :acceptedFiles="'.key'" @onDrop="onDropKeyFile"></DropZone>
+                                <div class="card mb-0">
+                                    <div class="card-header" id="key-file">
+                                        <h5 class="m-0">
+                                            <a id="up-key-btn" class="custom-accordion-title collapsed d-block py-1"
+                                                data-bs-toggle="collapse" href="#up-key"
+                                                aria-expanded="false" aria-controls="up-key">
+                                                2. Selecciona la llave privada (archivo .key) <i
+                                                    class="mdi mdi-chevron-down accordion-arrow"></i>
+                                            </a>
+                                        </h5>
+                                    </div>
+                                    <div id="up-key" class="collapse"
+                                        aria-labelledby="key-file"
+                                        data-bs-parent="#custom-accordion-one">
+                                        <div class="card-body">
+                                            <div>
+                                                <DropZone :title="'Arrastra tu documetos key en la página o'" :acceptedFiles="'.key'" @onDrop="onDropKeyFile"></DropZone>
+                                            </div>
                                         </div>
                                     </div>
                                 </div>
-                            </div>
-                            <div class="card mb-0">
-                                <div class="card-header" id="password-form">
-                                    <h5 class="m-0">
-                                        <a id="password-btn" class="custom-accordion-title collapsed d-block py-1"
-                                            data-bs-toggle="collapse" href="#password-tab"
-                                            aria-expanded="false" aria-controls="password-tab">
-                                            3. Ingresa la contraseña de tu e.firma <i
-                                                class="mdi mdi-chevron-down accordion-arrow"></i>
-                                        </a>
-                                    </h5>
-                                </div>
-                                <div id="password-tab" class="collapse" aria-labelledby="password-form"
-                                    data-bs-parent="#custom-accordion-one">
-                                    <div class="card-body">
-                                        <div class="form-group">
-                                            <label class="form-label">Ingresa tu contraseña:</label>
-                                            <div class="input-group input-group-merge">
-                                                <input type="password" id="password" class="form-control " name="password" required="" autocomplete="current-password" placeholder="Introduce tu contraseña" v-model="signData.password">
-                                                <button id="password-type" class="input-group-text" @click="changeInputText">
-                                                    <span class="password-eye"></span>
-                                                </button>
+                                <div class="card mb-0">
+                                    <div class="card-header" id="password-form">
+                                        <h5 class="m-0">
+                                            <a id="password-btn" class="custom-accordion-title collapsed d-block py-1"
+                                                data-bs-toggle="collapse" href="#password-tab"
+                                                aria-expanded="false" aria-controls="password-tab">
+                                                3. Ingresa la contraseña de tu e.firma <i
+                                                    class="mdi mdi-chevron-down accordion-arrow"></i>
+                                            </a>
+                                        </h5>
+                                    </div>
+                                    <div id="password-tab" class="collapse" aria-labelledby="password-form"
+                                        data-bs-parent="#custom-accordion-one">
+                                        <div class="card-body">
+                                            <div class="form-group">
+                                                <label class="form-label">Ingresa tu contraseña:</label>
+                                                <div class="input-group input-group-merge">
+                                                    <input type="password" id="password" class="form-control " name="password" required="" autocomplete="current-password" placeholder="Introduce tu contraseña" v-model="signData.password">
+                                                    <button id="password-type" class="input-group-text" @click="changeInputText">
+                                                        <span class="password-eye"></span>
+                                                    </button>
+                                                </div>
                                             </div>
                                         </div>
                                     </div>
                                 </div>
                             </div>
-                        </div>
-                        <div class="mt-3 d-flex justify-content-end">
-                            <button type="submit" class="btn btn-primary" @click="signDocument" :disabled="submit || signData.password == '' || signData.cer_file == '' || signData.key_file == ''" >
-                                <span class="spinner-border spinner-border-sm" role="status" aria-hidden="true" v-if="submit"></span>
-                                FIRMAR DOCUMENTO
-                            </button>
+                            <div class="mt-3 d-flex justify-content-end">
+                                <button type="submit" class="btn btn-primary" @click="submitCertificates" :disabled="submit || signData.password == '' || signData.cer_file == '' || signData.key_file == ''" >
+                                    <span class="spinner-border spinner-border-sm" role="status" aria-hidden="true" v-if="submit"></span>
+                                    SUBIR DOCUMENTOS
+                                </button>
+                            </div>
                         </div>
                     </div>
                 </div>
             </div>
         </div>
         <DocumentSigned v-if="submited"></DocumentSigned>
+        <ContactModal
+            :document-id="documentData?.id"
+            :user="documentData?.user"
+            :modalId="'contact-modal'"
+            @cancel="cancelModal"
+            @stored="acceptModal"
+        >
+        </ContactModal>
     </div>
 </template>
 <script setup>
     import DocumentUpload from "../elements/DropZone.vue";
+    import ContactModal from "../elements/MessageContacModal.vue";
     import $ from 'jquery';
+    import axios from 'axios';
+    import { Modal } from "bootstrap";  
+    import {useToast} from "vue-toastification";
+    import CryptoJS from 'crypto-js';
     import { ref, onMounted, watch, toRefs, toRef, reactive, useAttrs } from "vue";
     import VuePdfEmbed from 'vue-pdf-embed';
     import DocumentSigned from "./DocumentSigned.vue";
@@ -214,9 +250,13 @@
     import { useRouter, useRoute } from "vue-router";
     import { useDocumentsRequests } from "@/js/composables/document-apis/useDocumentsRequest.js";
     import useDocumentsRequestsAPI from "@/api/document/index.js";
+    import useSignRequestsAPI from "@/api/sign-document/index.js";
 
+    const toast = useToast();
+    
     const attrs = useAttrs();
     const userLogged = ref(attrs.user);
+    const certificatesExist = ref(false);
 
     const router = useRouter();
     const route = useRoute();
@@ -236,47 +276,17 @@
     //Const to steps form
     const step = ref(0);
 
-    const documentsFiles = ref([
-        {
-            name:"minuta_reunion.pdf",
-            url:"https://drive.google.com/uc?id=1e4Pg3SkXZh6NEldfTNTUmzTGxE3VQlvd&export=download",
-            pdf_url:"https://drive.google.com/uc?id=15zd4xb1dOUigrrcNc9ap6LPakfQrj6rf&export=download",
-            xml_url:"https://drive.google.com/uc?id=15zd4xb1dOUigrrcNc9ap6LPakfQrj6rf&export=download"
-        },
-        {
-            name:"lista_asistencia.pdf",
-            url:"https://drive.google.com/uc?id=1sJ1hGDWhFW-3etoSo5gnUAatUxiImXrj&export=download",
-            pdf_url:"https://drive.google.com/uc?id=1Uw0xeRpr9G8ZPLYBvd9edUV6wS01FA8a&export=download",
-            xml_url:"https://drive.google.com/uc?id=1Uw0xeRpr9G8ZPLYBvd9edUV6wS01FA8a&export=download"
-        },
-        {
-            name:"constancia_servicio_social.pdf",
-            url:"https://drive.google.com/uc?id=1QvAC2oJqRnUHddwkJiUOkxIQJ5jyb5ln&export=download",
-            pdf_url:"https://drive.google.com/uc?id=1any8k0DPl9_7nbeeNbJdTo3XhMzXDiFG&export=download",
-            xml_url:"https://drive.google.com/uc?id=1any8k0DPl9_7nbeeNbJdTo3XhMzXDiFG&export=download"
-        },
-        {
-            name:"carta_no_adeudo.pdf",
-            url:"https://drive.google.com/uc?id=1IO2e-rsr0WKXRSF9VrwTBz92VSqthpyK&export=download",
-            pdf_url:"https://drive.google.com/uc?id=1Ofd4anX48iI1VsCO39NjKMutSpoqtHr0&export=download",
-            xml_url:"https://drive.google.com/uc?id=1Ofd4anX48iI1VsCO39NjKMutSpoqtHr0&export=download"
-        },
-        {
-            name:"acta_calificaciones.pdf",
-            url:"https://drive.google.com/uc?id=1tEg_1Kt6N97-waTcHtmIVsR2Tm_ztOl7&export=download",
-            pdf_url:"https://drive.google.com/uc?id=1ehzwQHmBGlpHA8DSMAG9lWV9z3ZdI8Gs&export=download",
-            xml_url:"https://drive.google.com/uc?id=1ehzwQHmBGlpHA8DSMAG9lWV9z3ZdI8Gs&export=download"
-        },
-    ])
-
     //Dropzone
     const dataFile = ref("");
+
+    //Modal
+    const contactModal = ref({});
 
     //Subir info
     const submit = ref(false);
     const submited = ref(false);
     const documents = ref([]);
-    const documentData = ref({});
+    const documentData = ref(null);
     const documentDownload = ref("");
     const signData = ref({
         user_id : 0,
@@ -288,6 +298,7 @@
 
     onMounted(async () => {
         searchDocuments();
+        checkCertificates();
         $("#tab-pdf").addClass("active");
         $("#pdf-viewer").addClass("show active");
         $("#card-pdf").addClass("show active");
@@ -310,11 +321,37 @@
             source.value = "";
             documentData.value = documents.value[pdfIndex.value-1];
             setTimeout(function () {
-                refreshPdf(documentData.value.url);
+                refreshPdf(documentData.value.id);
             }, 1000);
         },
         {deep:true} 
     );
+
+    //Modal functions
+    //Functions
+    function cancelModal(){
+        contactModal.value.hide();
+    }
+
+    function acceptModal(){
+        contactModal.value.hide();
+    }
+
+    function openContactModal(){
+        contactModal.value.show();
+    }
+
+    async function checkCertificates(){
+        await useSignRequestsAPI.checkCertificates({
+                aws_token : userLogged.value.aws_auth_token
+            })
+            .then(data => {
+                if(data.status == 0)
+                    certificatesExist.value = false;
+                else
+                    certificatesExist.value = true;
+            });
+    }
 
     function changeInputText(){
         if($('#password').attr('type') == 'password')
@@ -344,12 +381,33 @@
         }
     }
 
+    async function encryptPassword(password){
+        let keyData = await useSignRequestsAPI.getUploadCertificateKey({aws_token : userLogged.value.aws_auth_token});
+
+        let key = CryptoJS.enc.Utf8.parse(
+            keyData.uuid.slice(0, 16).toUpperCase()
+        );
+        let iv = CryptoJS.enc.Utf8.parse(
+            keyData.data.iv.slice(0, 16).toUpperCase()
+        );
+        let Epassword = CryptoJS.AES.encrypt(
+            CryptoJS.enc.Utf8.parse(password),
+            key,
+            {
+                keySize: 128 / 8,
+                iv: iv,
+                mode: CryptoJS.mode.CBC,
+                padding: CryptoJS.pad.Pkcs7,
+            }
+        ).toString();
+        return {password : Epassword, idRequest : keyData.data.id};
+    }
+
     function getBase64String(file, onLoadCallback) {
         return new Promise(function(resolve, reject) {
             var reader = new FileReader();
             reader.onload = function() { resolve(reader.result); };
             reader.onerror = reject;
-            console.log("🚀 ~ file: DocumentSign.vue ~ line 348 ~ getBase64String ~ file", file)
             reader.readAsDataURL(file);
         });
     }
@@ -366,10 +424,15 @@
         ))
     };
 
+    async function viewDocument(documentId){
+        let url = await useSignRequestsAPI.getDocumentBase(documentId, userLogged.value.aws_auth_token);
+        window.open(url, '_blank');
+    }
+
     //Functions to dropzone
     async function onDropCerFile(acceptFiles) { 
         let promise = getBase64String(acceptFiles[0]);
-        signData.value.cer_file = await promise;
+        signData.value.cer_file = acceptFiles[0];
         step.value = 1;  
         $("#up-cer-btn").attr('aria-expanded', "false");
         $("#up-cer-btn").addClass("collapsed");
@@ -384,7 +447,7 @@
 
     async function onDropKeyFile(acceptFiles) {
         let promise = getBase64String(acceptFiles[0]);
-        signData.value.key_file = await promise;
+        signData.value.key_file = acceptFiles[0];
         step.value = 2;
         $("#up-key-btn").attr('aria-expanded', "false");
         $("#up-key-btn").addClass("collapsed");
@@ -397,8 +460,8 @@
         $("#up-cer").removeClass("show");
     }
 
-    function refreshPdf(result){
-        source.value = result;
+    async function refreshPdf(documentId){
+        source.value = await useSignRequestsAPI.getDocumentBase(documentId, userLogged.value.aws_auth_token);
         pdfViewer.value.$.props.source = source.value;
         refreshPdfViewer();
     }
@@ -410,29 +473,56 @@
     const searchDocuments = async () => {
         documents.value = await getDocumentsByIds({documents : documentsIds.value});
         documentData.value = documents.value[0];
-        let index = documentsFiles.value.findIndex(x => x.name == documentData.value.name);
-        index = index == -1 ? 0 : index;
         pdfLoaded.value = false;
         source.value = "";
-        documentDownload.value = documentData.value.url;
         signData.value.documents = [...documents.value.map(x => x.id)];
         signData.value.user_id = userLogged.value.id;
+        contactModal.value = new Modal($("#contact-modal"));
         setTimeout(function () {
-            refreshPdf( documentData.value.url);
+            refreshPdf( documentData.value.id);
         }, 3000);
     };
 
-    const signDocument = async () => {
+    const submitCertificates = async () => {
         if(signData.value.cer_file != "" && signData.value.key_file != "" && signData.value.password != "")
+        {
+            submit.value = true;
+            let encryptData = await encryptPassword(signData.value.password);
+            console.log("🚀 ~ file: DocumentSign.vue ~ line 458 ~ submitCertificates ~ encryptData", encryptData)
+            let data = new FormData();
+            let headersL = {
+                'content-type': 'multipart/form-data',
+                'accept' : '*/*',
+                'Authorization' : 'Bearer '+userLogged.value.aws_auth_token,
+                'Password' : encryptData.password
+            }
+            data.append('filecer', signData.value.cer_file);
+            data.append('fileKey', signData.value.key_file);
+            console.log("🚀 ~ file: DocumentSign.vue ~ line 468 ~ submitCertificates ~ signData.value", signData.value)
+            await axios
+                .post(`http://trsffirmadigitalserviciocertificadosv.eba-4hsuxaba.us-west-1.elasticbeanstalk.com/Certificados?IdRequest=${encryptData.idRequest}`, data,{headers : headersL})
+                .then(res => {
+                    submit.value = false;
+                    checkCertificates();
+                })
+                .catch(e => {
+                    console.log("🚀 ~ file: DocumentSign.vue ~ line 474 ~ submitCertificates ~ e", e)
+                    toast.warning("No se ha podido Agregar los documentos", {
+                        timeout: 2000,
+                    })
+                });
+        }
+    }
+
+    const signDocument = async () => {
+        if(certificatesExist.value)
         {
             submit.value = true;
             console.log("🚀 ~ file: DocumentSign.vue ~ line 428 ~ signDocument ~ signData.value", signData.value)
             useDocumentsRequestsAPI.signDocument({
+                aws_token : userLogged.value.aws_auth_token,
                 user_id : userLogged.value.id,
                 documents : documentsIds.value,
-                cer_file : signData.value.cer_file,
-                key_file : signData.value.key_file,
-                password : signData.value.password
             })
             .then((res) => {
                 setTimeout(function() {

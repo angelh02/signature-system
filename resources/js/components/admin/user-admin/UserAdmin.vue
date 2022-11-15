@@ -1,8 +1,8 @@
 <template>
-    <div class="row mt-3">
+    <div class="row">
         <div class="col-12">
             <div class="page-title-box">
-                <h1 class="page-title">Administración de usuarios</h1>
+                <h1 class="page-title">Administración de Usuarios</h1>
             </div>
         </div>
     </div>
@@ -10,7 +10,7 @@
         <div class="col-xl-3 col-lg-4">
             <div class="card tilebox-one">
                 <div class="card-body">
-                    <FormCatalogs :edit="edit" :route="route" :param="param" :dataForm="dataForm" @update="dataUpdated" @cancel="cancelUpdate"></FormCatalogs>
+                    <FormCatalogs :token="userLogged.aws_auth_token" :edit="edit" :route="route" :param="param" :dataForm="dataForm" @update="dataUpdated" @cancel="cancelUpdate"></FormCatalogs>
                 </div> 
             </div>
         </div>
@@ -39,6 +39,12 @@
     const router = useRouter();
     const route = useRoute();
 
+    const props = defineProps({
+        user: Object
+    });
+
+    const userLogged = toRef(props, 'user');
+
     const edit = ref(false);
     const updated = ref(false);
     const param = ref("");
@@ -49,7 +55,7 @@
         surnames: "",
         user_name: "",
         email: "",
-        active: 0,
+        active: false,
         role_id:"",
         RFC:""
     });
@@ -68,7 +74,7 @@
             surnames: "",
             user_name: "",
             email: "",
-            active: 0,
+            active: false,
             role_id:"",
             RFC:""
         };

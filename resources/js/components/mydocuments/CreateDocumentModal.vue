@@ -247,29 +247,6 @@
     const dataFiles = toRef(props, "dataFiles");
     const resFile = ref("");
 
-    const documentsFiles = ref([
-        {
-            name:"minuta_reunion.pdf",
-            url:"https://drive.google.com/uc?id=1e4Pg3SkXZh6NEldfTNTUmzTGxE3VQlvd&export=download",
-        },
-        {
-            name:"lista_asistencia.pdf",
-            url:"https://drive.google.com/uc?id=1sJ1hGDWhFW-3etoSo5gnUAatUxiImXrj&export=download",
-        },
-        {
-            name:"constancia_servicio_social.pdf",
-            url:"https://drive.google.com/uc?id=1QvAC2oJqRnUHddwkJiUOkxIQJ5jyb5ln&export=download",
-        },
-        {
-            name:"carta_no_adeudo.pdf",
-            url:"https://drive.google.com/uc?id=1IO2e-rsr0WKXRSF9VrwTBz92VSqthpyK&export=download",
-        },
-        {
-            name:"acta_calificaciones.pdf",
-            url:"https://drive.google.com/uc?id=1tEg_1Kt6N97-waTcHtmIVsR2Tm_ztOl7&export=download",
-        },
-    ])
-
     // const data = dataFiles.map();
     const formData = ref({
         name: "",
@@ -309,8 +286,6 @@
             if(dataFiles !== undefined && dataFiles.value.length > 0){
                 pdfLoaded.value = false;
                 formData.value.name = dataFiles.value[0].path;
-                let index = documentsFiles.value.findIndex(x => x.name == formData.value.name);
-                formData.value.url = index == -1? documentsFiles.value[0].url : documentsFiles.value[index].url;
                 getBase64(dataFiles.value[0]);
             }
         },
@@ -332,8 +307,6 @@
                 pdfLoaded.value = false;
                 source.value = "";
                 formData.value.name = dataFiles.value[pdfIndex.value-1].path;
-                let index = documentsFiles.value.findIndex(x => x.name == formData.value.name);
-                formData.value.url = index == -1? documentsFiles.value[0].url : documentsFiles.value[index].url;
                 getBase64(dataFiles.value[pdfIndex.value-1]);
             }
       },

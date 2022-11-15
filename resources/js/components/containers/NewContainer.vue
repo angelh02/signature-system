@@ -103,7 +103,7 @@
             </div>
         </div>
         <div class="mb-3 ">
-            <label class="form-label" for="selection_technique_id">Tecnica de selección</label>
+            <label class="form-label" for="selection_technique_id">Técnica de selección</label>
             <div :class="{ valid: !v$.$error && v$.$dirty, error: v$.$error }"> 
                 <select
                     class="form-select"

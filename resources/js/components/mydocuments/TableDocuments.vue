@@ -36,9 +36,8 @@
                             uno XML y uno PDf asegurate<br> 
                             de descargar ambos</h5>
                             </div>
-                            <a class="dropdown-item" href="#" disabled>Descargar pdf y xml</a>
-                            <a class="dropdown-item" :href="document?.document_signed?.pdf_url">Descargar pdf</a>
-                            <a class="dropdown-item" href="" disabled>Descargar xml</a>
+                            <a class="dropdown-item" type="button" @click="viewSignedDocument(document?.id)">Descargar pdf</a>
+                            <a class="dropdown-item" type="button" @click="viewSignedDocument(document?.id)" disabled>Descargar xml</a>
                         </div>
                     </div> 
                     <button 
@@ -54,7 +53,7 @@
                         <div class="dropdown-menu" aria-labelledby="dropdownMenuLink">
                             <router-link class="dropdown-item" :to="'/mis-documentos/detalles/'+document?.id">Ver Detalles</router-link>
                             <!-- <a class="dropdown-item" href="#">Ver original</a> -->
-                            <a class="dropdown-item" :href="document?.url">Descargar documento original</a>
+                            <a class="dropdown-item" type="button" @click="viewDocument(document?.id)">Descargar documento original</a>
                             <a v-if="document.user_id == userLogged.id && document.signed == 0" class="dropdown-item" @click="deleteDocument(document.id)">Eliminar documento</a>
                             <a v-if="document.user_id == userLogged.id && document.signed == 1 && document.deletion_requests.length == 0" class="dropdown-item" @click="openDeletionRequest(document.id)">Eliminar documento</a>
                         </div>
@@ -92,6 +91,7 @@ import { useRouter } from "vue-router";
 import { useDocumentsRequests } from "@/js/composables/document-apis/useDocumentTableRequest.js";
 import useDocumentCrudRequests from "@/api/document/index.js";
 import useFileClasificationRequestsAPI from "@/api/index.js";
+import useSignRequestsAPI from "@/api/sign-document/index.js";
 
 const toast = useToast();
 
@@ -272,6 +272,16 @@ function storedDeletionRequest(){
 function openDeletionRequest(documentId){
     documentIdSelected.value = documentId;
     deletionRequestModal.value.show();
+}
+
+async function viewDocument(documentId){
+    let url = await useSignRequestsAPI.getDocumentBase(documentId, userLogged.value.aws_auth_token);
+    window.open(url, '_blank');
+}
+
+async function viewSignedDocument(documentId){
+    let url = await useSignRequestsAPI.getDocumentSigned(documentId, userLogged.value.aws_auth_token);
+    window.open(url, '_blank');
 }
 </script>
 <style>

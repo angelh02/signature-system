@@ -50,7 +50,7 @@ const formData = reactive({
     surnames: "",
     user_name: "",
     email: "",
-    active: 0,
+    active: false,
     role_id:"",
     RFC:""
 });
