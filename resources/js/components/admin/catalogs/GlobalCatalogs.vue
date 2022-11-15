@@ -1,8 +1,8 @@
 <template>
-    <div class="row mt-3">
+    <div class="row">
         <div class="col-12">
             <div v-if="route.params.name === 'tipos-documentos'" class="page-title-box">
-                <h1 class="page-title">Tipos de documentos</h1>
+                <h1 class="page-title">Tipos de Documentos</h1>
             </div>
             <div v-else class="page-title-box">
                 <h1 class="page-title">Catálogo de {{title[route.params.name]}}</h1>

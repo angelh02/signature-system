@@ -103,9 +103,16 @@
                     </form>
                 </div>
                 <div class="modal-footer">
-                    <div v-for="user in users" :key="user.id">
+                    <!-- <div v-for="user in users" :key="user.id">
                         <button type="button" class="btn btn-success" @click="addSigner()" :disabled="!userEnable(user.id)">Añadir</button>
-                    </div>
+                    </div> -->
+                    <button type="button" class="btn btn-success" 
+                            @click="addSigner()" 
+                            :disabled="v$.$errors.length > 0 || v$.$silentErrors.length > 0"
+                    >
+                            Añadir
+                    </button>
+
                     
                     <button type="button" class="btn btn-secondary" @click="closeModal()">Cerrar</button>
                 </div>
