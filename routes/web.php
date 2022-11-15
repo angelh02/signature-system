@@ -32,7 +32,7 @@ Route::get('/google-callback', [AuthController::class, 'googleCallback']);
 //Route::view('/email-test', 'email.document-to-sign');
 //Route::view('/email-test1', 'email.notification-signer');
 
-Route::middleware(['auth'])->group(function() {
+Route::middleware(['cors','auth'])->group(function() {
     // Route::view('/', 'layout.content');
     Route::view('/reset-password', 'auth.passwords.reset')->name('reset-password');
     Route::post('/reset-password', [ResetPasswordController::class, 'resetUserPassword'])->name('reset-password');
