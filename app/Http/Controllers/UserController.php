@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\User;
+use GuzzleHttp\Client;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
@@ -12,6 +13,37 @@ use Spatie\Permission\Models\Role;
 
 class UserController extends Controller
 {
+    //Verifica que el usuario ya halla subido sus certificados
+    public function checkCertificates(Request $request){
+        $validator = Validator::make($request->all(), [
+            'aws_token' => 'required'
+        ]);
+        if($validator->fails())
+            return response()->json($validator->errors(), 422);
+        
+        $client = new Client();
+
+        $url = "http://trsffirmadigitalserviciocertificadosv.eba-4hsuxaba.us-west-1.elasticbeanstalk.com/Certificados";
+        $headers = [
+            'Accept' => '*/*',
+            'Authorization' => 'Bearer '.$request->input('aws_token')
+        ];
+
+        $response = $client->request('GET', $url, [
+            'headers' => $headers,
+            'verify'  => false,
+        ]);
+        if($response->getStatusCode() != 200)
+            return response()->json(["status" => $response->getStatusCode(), "message" => "No Autorizado"], $response->getStatusCode());
+
+        $responseBody = json_decode($response->getBody());
+
+        if(count($responseBody) < 1)
+            return response()->json(["status" => false], 200);
+
+        return response()->json(["status" => true], 200);
+    }
+
     public function delete($id){
         try {
             DB::beginTransaction();
@@ -72,8 +104,9 @@ class UserController extends Controller
 
     public function store(Request $request){
         $validator = Validator::make($request->all(), [
+            'aws_token' => 'required',
             'name' => 'required|min:4|max:255',
-            'surnames' => 'required|min:10|max:255',
+            'surnames' => 'required|min:4|max:255',
             'user_name' => 'required|min:5|max:255',
             'email' => 'required|email:rfc,dns|max:255|unique:users,email',
             'RFC' => 'required|min:13|max:13|unique:users,rfc',
@@ -85,13 +118,41 @@ class UserController extends Controller
         
         try {
             DB::beginTransaction();
+            //AWS IMPLEMENTATION
+            $client = new Client();
+
+            $url = "http://trsffirmadigitalserviciocertificadosv.eba-4hsuxaba.us-west-1.elasticbeanstalk.com/api/Users/AddUser";
+            $headers = [
+                'Accept' => '*/*',
+                'Authorization' => 'Bearer '.$request->input('aws_token')
+            ];
+
+            $queryParameters = [
+                "rfc" => $request->input('RFC'),
+                "fullname" => $request->input('name').' '.$request->input('surnames'),
+                "UserName" => $request->input('email')
+            ];
+
+            $response = $client->request('POST', $url, [
+                'query' => $queryParameters,
+                'headers' => $headers,
+                'verify'  => false,
+            ]);
+            if($response->getStatusCode() != 200)
+                return response()->json(["status" => $response->getStatusCode(), "message" => "No Autorizado"], $response->getStatusCode());
+
+            $responseBody = json_decode($response->getBody());
+            $requestArray = explode(' ', $responseBody->message);
+
+            $userAwsId = intval($requestArray[count($requestArray)-1]);
+
             $userRole = Role::where('id', $request->input('role_id'))->first();
             if(!$userRole)
                 return response()->json(['message' => 'ROLE_DOES_NOT_EXIST'], 200);
             //Create new user 
             $user = new User();
             //Id of user created in AWS BD
-            $user->aws_user_id = 1;
+            $user->aws_user_id = $userAwsId;
             $user->name = $request->input('name');
             $user->surnames = $request->input('surnames');
             $user->user_name = $request->input('user_name');
@@ -115,7 +176,7 @@ class UserController extends Controller
         $validator = Validator::make($request->all(), [
             'id' => 'required|numeric|exists:users,id',
             'name' => 'required|min:4|max:255',
-            'surnames' => 'required|min:10|max:255',
+            'surnames' => 'required|min:4|max:255',
             'user_name' => 'required|min:5|max:255',
             'email' => 'required|email:rfc,dns|max:255|unique:users,email,' . $request->input('id'),
             'RFC' => 'required|min:13|max:13|unique:users,rfc,' . $request->input('id'),
@@ -138,7 +199,7 @@ class UserController extends Controller
             $user->surnames = $request->input('surnames');
             $user->user_name = $request->input('user_name');
             $user->RFC = $request->input('RFC');
-            $user->email = $request->input('email');
+            //$user->email = $request->input('email');
             $user->active = $request->input('active');
             $user->save();
 

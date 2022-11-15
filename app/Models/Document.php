@@ -17,10 +17,6 @@ class Document extends Model
 
     protected $appends = array('singers_progress');
 
-    protected $hidden = [
-        'aws_document_id',
-    ];
-
     public function getSingersProgressAttribute()
     {
         $signers = count(DocumentSigner::where([['document_id', $this->id], ['signed', true], ['signed_at', '!=', null]])->get());

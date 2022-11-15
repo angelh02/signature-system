@@ -157,6 +157,19 @@ async function remindSigner(data) {
     .post(`/api/document/remind-signer`, data
     )
     .then((res) => {
+      console.log("🚀 ~ file: index.js ~ line 160 ~ .then ~ res", res)
+      if (res.status != 200) throw new Error("Response Failed");
+      return res.data;
+    })
+}
+
+// RECORDAR AL FIRMANTE
+async function contactOwner(data) {
+  return await axios
+    .post(`/api/document/contact-owner`, data
+    )
+    .then((res) => {
+      console.log("🚀 ~ file: index.js ~ line 160 ~ .then ~ res", res)
       if (res.status != 200) throw new Error("Response Failed");
       return res.data;
     })
@@ -171,4 +184,4 @@ async function remindSigner(data) {
 //   }
 // }
 
-export default {getDocumentsByIds,getUserDocuments,getUserSignDocuments,getDocument,getDocuments,addDocument,editDocument,deleteDocument,getDocumentsType,addSigner,deleteSigner,signDocument,remindSigner}
+export default {getDocumentsByIds,getUserDocuments,getUserSignDocuments,getDocument,getDocuments,addDocument,editDocument,deleteDocument,getDocumentsType,addSigner,deleteSigner,signDocument,remindSigner, contactOwner}

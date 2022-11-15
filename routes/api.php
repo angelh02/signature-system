@@ -107,12 +107,13 @@ Route::get('/document/get/{id}', 'DocumentController@getDocument');
 Route::post('/document/store', 'DocumentController@store');
 Route::post('/document/update', 'DocumentController@update');
 Route::delete('/document/delete/{id}', 'DocumentController@delete');
+Route::post('/document/contact-owner', 'DocumentController@contactDocumentOwner');
 
 //Document Signers routes
 Route::post('/document/signer/assign', 'DocumentController@assignSigner');
 Route::post('/document/signer/edit', 'DocumentController@editSigner');
 Route::delete('/document/signer/delete/{id}', 'DocumentController@deleteSigner');
-Route::post('/api/document/remind-signer', 'DocumentController@remindSigner');
+Route::post('/document/remind-signer', 'DocumentController@remindSigner');
 
 //Sign Document
 Route::post('/document/sign', 'DocumentController@signDocument');
@@ -135,3 +136,8 @@ Route::post('/deletion-request/reject', 'DeletionRequestController@rejectRequest
 
 //Spatie routes
 Route::get('/spatie/role/get-all', 'UserController@getRoles');
+
+//AWS APIS
+Route::post('/user/check-certificates', 'UserController@checkCertificates');
+Route::post('/document/submit-certificates', 'DocumentController@submitCertificates');
+Route::post('/document/get-upload-key', 'DocumentController@getUploadCertificateKey');

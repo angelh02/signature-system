@@ -98,6 +98,7 @@
                     maxlength="255"
                     v-model="v$.email.$model"
                     required
+                    :disabled="edit"
                 />
                 <div v-for="(error, index) in v$.email.$errors" :key="index" class="invalid-feedback d-block">
                     {{ error.$message }}
@@ -108,28 +109,34 @@
             <label class="form-label"
                 >Activo</label
             >
-            <div class="" >
-                <input v-model="formData.active" class="form-control" type="checkbox" id="switch3" data-switch="success"/>
+            <div :class="{ valid: !v$.$error && v$.$dirty, error: v$.$error }">
+                <input v-model="v$.active.$model" class="form-control" type="checkbox" id="switch3" data-switch="success"/>
                 <label for="switch3" data-on-label="Si" data-off-label="No"></label>
+                <div v-for="(error, index) in v$.email.$errors" :key="index" class="invalid-feedback d-block">
+                    {{ error.$message }}
+                </div>
             </div>
-            
         </div>
 
         <div class="mb-3 ">
             <label class="form-label" for="selection_technique_id">Roles</label>
-            <select
-                class="form-select"
-                id="role_id"
-                name="selectionTechnique"
-                v-model="formData.role_id"
-                required
-            >
-                <option :value="0" disabled selected>Selecciona una opción...</option>
-                <option v-for="res in roles" :value="res.id">
-                    {{ `${res.id}` }} - {{ `${res.name}` }}
-                </option>
-            </select>
-            <div class="valid-feedback">Looks good!</div>
+            <div :class="{ valid: !v$.$error && v$.$dirty, error: v$.$error }">
+                <select
+                    class="form-select"
+                    id="role_id"
+                    name="selectionTechnique"
+                    v-model="v$.role_id.$model"
+                    required
+                >
+                    <option value="" disabled selected>Selecciona una opción...</option>
+                    <option v-for="res in roles" :value="res.id">
+                        {{ `${res.id}` }} - {{ `${res.name}` }}
+                    </option>
+                </select>
+                <div v-for="(error, index) in v$.email.$errors" :key="index" class="invalid-feedback d-block">
+                    {{ error.$message }}
+                </div>
+            </div>
         </div>
         <div class="row justify-items-center">
             <button v-if="!edit" class="btn btn-primary mb-2" type="submit" @click.prevent="addUser" :disabled="v$.$errors.length > 0 || v$.$silentErrors.length > 0">
@@ -162,54 +169,52 @@ const emit = defineEmits(['update','cancel'])
 const props = defineProps({
     dataForm: Object,
     edit: Boolean,
-    param: String
+    param: String,
+    token: String
 });
 
 //ReadOnly
 const dataForm = toRef(props, 'dataForm');
 const edit = toRef(props, 'edit');
+const token = toRef(props, 'token');
 const roles = ref("");
 
 const formData = reactive(dataForm);
 
 const showAll = ref(false);
     const rules = {
-       
-      name: {
-        required: helpers.withMessage('Este campo no debe estar vacio', required),
-        minLength: helpers.withMessage('Minimo debe ser 4 caracteres', minLength(4)),
-        maxLength: helpers.withMessage('Maximo debe ser 255 caracteres', maxLength(255)),
-      }, 
-      surnames: {
-        required: helpers.withMessage('Este campo no debe estar vacio', required),
-        minLength: helpers.withMessage('Minimo debe ser 4 caracteres', minLength(4)),
-        maxLength: helpers.withMessage('Maximo debe ser 255 caracteres', maxLength(255)),
-      },
-      user_name:  {
-        required: helpers.withMessage('Este campo no debe estar vacio', required),
-        minLength: helpers.withMessage('Minimo debe ser 5 caracteres', minLength(5)),
-        maxLength: helpers.withMessage('Maximo debe ser 255 caracteres', maxLength(255)),
-      },
-     
+        name: {
+            required: helpers.withMessage('Este campo no debe estar vacio', required),
+            minLength: helpers.withMessage('Minimo debe ser 4 caracteres', minLength(4)),
+            maxLength: helpers.withMessage('Maximo debe ser 255 caracteres', maxLength(255)),
+        }, 
+        surnames: {
+            required: helpers.withMessage('Este campo no debe estar vacio', required),
+            minLength: helpers.withMessage('Minimo debe ser 4 caracteres', minLength(4)),
+            maxLength: helpers.withMessage('Maximo debe ser 255 caracteres', maxLength(255)),
+        },
+        user_name:  {
+            required: helpers.withMessage('Este campo no debe estar vacio', required),
+            minLength: helpers.withMessage('Minimo debe ser 5 caracteres', minLength(5)),
+            maxLength: helpers.withMessage('Maximo debe ser 255 caracteres', maxLength(255)),
+        },
         email: {
-        required: helpers.withMessage('Este campo no debe estar vacio', required),
-        minLength: helpers.withMessage('Minimo debe ser 5 caracteres', minLength(5)),
-        maxLength: helpers.withMessage('Maximo debe ser 255 caracteres', maxLength(255)),
-        email: helpers.withMessage('Debe ser un email valido', email)
-      },
-    //     active:{
-    //     required: helpers.withMessage('Este campo no debe estar vacio', required),
-    //     minLength: helpers.withMessage('Minimo debe ser 5 caracteres', minLength(5)),
-    //     maxLength: helpers.withMessage('Maximo debe ser 255 caracteres', maxLength(255)),
-    //   },
+            required: helpers.withMessage('Este campo no debe estar vacio', required),
+            minLength: helpers.withMessage('Minimo debe ser 5 caracteres', minLength(5)),
+            maxLength: helpers.withMessage('Maximo debe ser 255 caracteres', maxLength(255)),
+            email: helpers.withMessage('Debe ser un email valido', email)
+        },
+        active:{
+            required: helpers.withMessage('Este campo no debe estar vacio', required),
+        },
         role_id:{
-        required: helpers.withMessage('Este campo no debe estar vacio', required)
-      },
-      RFC:  {
-        required: helpers.withMessage('Este campo no debe estar vacio', required),
-        minLength: helpers.withMessage('Minimo debe ser 13 caracteres', minLength(13)),
-        maxLength: helpers.withMessage('Maximo debe ser 13 caracteres', maxLength(13)),
-      },
+            required: helpers.withMessage('Este campo no debe estar vacio', required)
+        },
+        RFC: {
+            required: helpers.withMessage('Este campo no debe estar vacio', required),
+            minLength: helpers.withMessage('Minimo debe ser 13 caracteres', minLength(13)),
+            maxLength: helpers.withMessage('Maximo debe ser 13 caracteres', maxLength(13)),
+        },
     };
     const state = reactive(dataForm);
 
@@ -230,7 +235,10 @@ onMounted(async () => {
 
 const addUser = async () => {
     onSubmit();
-    let data = formData.value;
+    let data = {
+        aws_token : token.value,
+        ... formData.value
+    };
     data.active = data.active ? 1 : 0;
     useFileUserAPI.store(data)
     .then((res) => {
