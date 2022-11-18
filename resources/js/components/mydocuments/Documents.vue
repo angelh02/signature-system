@@ -80,7 +80,7 @@
                     <div class="card-body">
                         <div class="tab-content">
                             <div class="tab-pane show active" id="user-documents">
-                                <TableDocuments ref="tableDocuments" :signedDocuments="/*userDocuments*/signedDocuments" :dataFilter="dataFilter" :userLogged="userLogged" :needSign="needSign" :refresh="refreshTable" :reload="reloadTable" @refresh="refreshTables"></TableDocuments>
+                                <TableDocuments ref="tableDocuments" :signedDocuments="userDocuments" :dataFilter="dataFilter" :userLogged="userLogged" :needSign="needSign" :refresh="refreshTable" :reload="reloadTable" @refresh="refreshTables"></TableDocuments>
                             </div>
                             <div class="tab-pane" id="sign-documents">
                                 <TableDocumentsSign ref="tableDocumentsSign" :signedDocuments="signedDocuments" :dataFilter="dataFilter" :userLogged="userLogged" :needSign="needSign" :refresh="refreshTable" :reload="reloadTable" @refresh="refreshTables"></TableDocumentsSign>
@@ -184,7 +184,7 @@ function cancelCreation(){
 }
 
 function documentsPreparation(newFiles){
-    console.log("🚀 ~ file: Documents.vue ~ line 181 ~ documentsPreparation ~ newFiles", newFiles.value)
+    //console.log("🚀 ~ file: Documents.vue ~ line 181 ~ documentsPreparation ~ newFiles", newFiles.value)
     documentModal.value.hide();
     router.push({
         name : 'DocumentsPreparation',
@@ -257,7 +257,7 @@ function onDropAccepted(acceptFiles) {
     var encoded = btoa(JSON.stringify(acceptFiles))
     var actual = JSON.parse(atob(encoded))
     dataFiles.value = acceptFiles;
-    console.log("🚀 ~ file: Documents.vue ~ line 234 ~ onDropAccepted ~ dataFiles.value", dataFiles.value);
+    //console.log("🚀 ~ file: Documents.vue ~ line 234 ~ onDropAccepted ~ dataFiles.value", dataFiles.value);
     documentModal.value.show();
 }
 
@@ -269,7 +269,7 @@ function signAllDocuments(){
     let documentsToSign = selectedTable.value == "my-documents" ? tableDocuments.value.filteredDocuments : tableDocumentsSign.value.filteredDocuments;
     //Router push
     let ids = JSON.stringify({documents : documentsToSign.map(x => x.id)});
-    console.log("🚀 ~ file: DocumentsPreparation.vue ~ line 398 ~ .then ~ ids", ids)
+    //console.log("🚀 ~ file: DocumentsPreparation.vue ~ line 398 ~ .then ~ ids", ids)
     router.push({
         name : 'DocumentSign',
         params: {ids: ids}

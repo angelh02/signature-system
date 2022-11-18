@@ -31,13 +31,13 @@
                         </a>                                   
                         <div class="dropdown-menu" aria-labelledby="dropdownMenuLink">
                             <div>
-                            <h5 class="dropdown-header col-2">Por cada documento generado 
+                            <h5 class="dropdown-header col-2" v-if="false">Por cada documento generado 
                             se generan 2 archivos:<br>
                             un pdf firmado electronicamente<br> 
                             y otro para su impresión</h5>
                             </div>
-                            <a class="dropdown-item" type="button" @click="viewSignedDocument(document?.aws_document_id)">Descargar pdf</a>
-                            <a class="dropdown-item" type="button" @click="viewPrintDocument(document?.aws_document_id)" disabled>Descargar pdf para imprimir</a>
+                            <a v-if="false" class="dropdown-item" type="button" @click="viewSignedDocument(document?.aws_document_id)">Descargar pdf</a>
+                            <a class="dropdown-item" type="button" @click="viewPrintDocument(document?.aws_document_id)" disabled>Descargar PDF</a>
                         </div>
                     </div> 
                     <button 
@@ -208,7 +208,7 @@ function checkDocumentSigned(awsDocumentId){
 function deleteRequests(){
     useDocumentCrudRequests.deleteDocument(documentIdSelected.value)
     .then((res) => {
-        console.log(res);
+        //console.log(res);
         toast.success("Se elimino el documento correctamente", {
             timeout: 2000,
         });

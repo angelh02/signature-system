@@ -191,9 +191,9 @@
     const getRequest = async () => {
         //get all users
         let usersList = await useUserRequestsApi.getAll();
-        console.log(userLogged.value)
+        //console.log(userLogged.value)
         users.value = usersList.filter(x => x.roles[0].name != "Administrador" && userLogged.value.id != x.id);
-        console.log("user",users.value)
+        //console.log("user",users.value)
         refreshSelect();
     }
 

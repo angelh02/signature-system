@@ -273,7 +273,7 @@ const addSigners = async(add) => {
     // formData.value = add
     signer.value.user_id = formData.value.id
     signer.value.document_id = formData.value.document_id
-    console.log(signer.value)
+    //console.log(signer.value)
     useDocumentRequestsAPI.addSigner(signer.value)
     .then((res) => {
         resetData();
@@ -348,7 +348,7 @@ async function getDocumentData(){
         signers.value = res?.document_signers;
         if(userLogged.value.id != documentData.value.user_id)
             router.push({path:'/mis-documentos/estado/'+documentData.value.id});
-        console.log(documentData.value)
+        //console.log(documentData.value)
     });
     
     //source.value = "https://cdn.filestackcontent.com/wcrjf9qPTCKXV3hMXDwK";
@@ -356,11 +356,11 @@ async function getDocumentData(){
 }
 
 function remindSigner(signerId){
-    console.log("🚀 ~ file: DocumentDetails.vue ~ line 356 ~ remindSigner ~ signerId", signerId)
-    console.log("🚀 ~ file: DocumentDetails.vue ~ line 356 ~ remindSigner ~ signerId", {
+    //console.log("🚀 ~ file: DocumentDetails.vue ~ line 356 ~ remindSigner ~ signerId", signerId)
+    /* //console.log("🚀 ~ file: DocumentDetails.vue ~ line 356 ~ remindSigner ~ signerId", {
         document_id : documentData.value.id,
         user_id : signerId
-    });
+    }); */
     
     useDocumentRequestsAPI.remindSigner({
         document_id : documentData.value.id,

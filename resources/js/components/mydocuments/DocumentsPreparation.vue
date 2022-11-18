@@ -13,25 +13,10 @@
                             >
                                 <li class="nav-item">
                                     <a
-                                        href="#signers"
-                                        data-bs-toggle="tab"
-                                        aria-expanded="false"
-                                        class="nav-link rounded-0 active"
-                                    >
-                                        <i
-                                            class="mdi mdi-home-variant d-md-none d-block"
-                                        ></i>
-                                        <span class="d-none d-md-block"
-                                            >Preparación</span
-                                        >
-                                    </a>
-                                </li>
-                                <li class="nav-item">
-                                    <a
                                         href="#document"
                                         data-bs-toggle="tab"
                                         aria-expanded="true"
-                                        class="nav-link rounded-0"
+                                        class="nav-link rounded-0  active"
                                     >
                                         <i
                                             class="mdi mdi-account-circle d-md-none d-block"
@@ -41,11 +26,27 @@
                                         >
                                     </a>
                                 </li>
+                                <li class="nav-item">
+                                    <a
+                                        href="#signers"
+                                        data-bs-toggle="tab"
+                                        aria-expanded="false"
+                                        class="nav-link rounded-0"
+                                    >
+                                        <i
+                                            class="mdi mdi-home-variant d-md-none d-block"
+                                        ></i>
+                                        <span class="d-none d-md-block"
+                                            >Preparación</span
+                                        >
+                                    </a>
+                                </li>
+                                
                             </ul>
                         </div>
                     </div>
                     <div class="tab-content mx-2">
-                        <div class="tab-pane my-lg-n4 pt-3" id="document">
+                        <div class="tab-pane active my-lg-n4 pt-3" id="document">
                             <div
                                 class="mt-3"
                             >
@@ -91,7 +92,7 @@
                             </div>
                         </div>
                         <!-- Firmantes -->
-                        <div class="tab-pane active my-xxl-n4" id="signers">
+                        <div class="tab-pane my-xxl-n4" id="signers">
                             <h5>Añadir participantes</h5>
                             <div class="pt-2">
                                 <ul class="nav nav-tabs">
@@ -242,11 +243,11 @@
                                         :disabled="(signers.length == 0 && !userSign) || loadDocuments"
                                     >
                                         <span class="spinner-border spinner-border-sm" role="status" aria-hidden="true" v-if="loadDocuments"></span>
-                                        SOLICITAR FIRMAS
+                                        {{loadDocuments ? "SOLICITANDO "+progressDocument+" / "+dataDocuments?.files.length+"" : 'SOLICITAR FIRMAS'}}
                                     </button>
                                     <router-link v-if="!loadDocuments" class="btn btn-light mb-2" type="button" :to="'/mis-documentos'">CANCELAR</router-link>
-                                    <div class="progress p-0" v-if="loadDocuments">
-                                        <div class="progress-bar" role="progressbar" :style="`width: ${(dataDocuments?.length/progressDocument)*100}%;`" :aria-valuenow="progressDocument" aria-valuemin="0" :aria-valuemax="dataDocuments?.length">{{progressDocument}} / {{dataDocuments?.length}}</div>
+                                    <div v-if="false" class="progress p-0" :class="true ? ' d-none':''">
+                                        <div class="progress-bar" role="progressbar" id="document-progress" :aria-valuenow="progressDocument" aria-valuemin="0" :aria-valuemax="dataDocuments?.files.length">{{progressDocument}} / {{dataDocuments?.length}}</div>
                                     </div>
                                 </div>
                             </div>
@@ -351,7 +352,7 @@
         source.value = "";
         setTimeout(function () {
             refreshPdf(dataDocuments.value.files[pdfIndex.value-1].data);
-        }, 4000);
+        }, 5000);
     });
 
     //Watchers
@@ -386,7 +387,7 @@
     }
 
     const addRequest = async => {
-        console.log(formData.value)
+        //console.log(formData.value)
         useDocumentRequestsAPI.addSigner(formData.value)
         .then((res) => {
             signers.value = res;
@@ -445,7 +446,7 @@
                 };
                 return useDocumentRequestsAPI.addDocument(data)
                 .then((res) => {
-                    console.log("🚀 ~ file: DocumentsPreparation.vue ~ line 412 ~ .then ~ res", res)
+                    //console.log("🚀 ~ file: DocumentsPreparation.vue ~ line 412 ~ .then ~ res", res)
                     return res;
                 });
             }
@@ -464,11 +465,11 @@
                 idArray.push(id);
                 progressDocument.value += 1;
             }
-            console.log("🚀 ~ file: DocumentsPreparation.vue ~ line 469 ~ createDocument ~ idArray", idArray)
+            //console.log("🚀 ~ file: DocumentsPreparation.vue ~ line 469 ~ createDocument ~ idArray", idArray)
             loadDocuments.value = false;
             if(userSign.value){
                 let ids = JSON.stringify({documents : idArray.map(x => x.id)});
-                console.log("🚀 ~ file: DocumentsPreparation.vue ~ line 398 ~ .then ~ ids", ids)
+                //console.log("🚀 ~ file: DocumentsPreparation.vue ~ line 398 ~ .then ~ ids", ids)
                 router.push({
                     name : 'DocumentSign',
                     params: {ids: ids}
@@ -490,7 +491,7 @@
     const getRequest = async () => {
         //get all users
         let usersList = await useUserRequestsApi.getAll();
-        users.value = usersList.filter(x => x.roles[0].name != "Administrador" && userLogged.value.id != x.id);
+        users.value = usersList.filter(x => x.roles[0].name != "Administrador" && userLogged.value.id != x.id && x.active == 1);
         refreshSelect();
     }
 
