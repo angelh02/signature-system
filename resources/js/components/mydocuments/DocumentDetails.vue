@@ -200,7 +200,6 @@
 <script setup>
 import { ref, onMounted, watch, toRef, reactive, useAttrs } from "vue";
 import $ from 'jquery';
-import axios from 'axios';
 import { Modal, Popover } from "bootstrap";
 import { useRouter, useRoute } from "vue-router";
 import VuePdfEmbed from 'vue-pdf-embed'
@@ -352,7 +351,8 @@ async function getDocumentData(){
         console.log(documentData.value)
     });
     
-    source.value = await useSignRequestsAPI.getDocumentBase(documentData.value.id, userLogged.value.aws_auth_token);
+    //source.value = "https://cdn.filestackcontent.com/wcrjf9qPTCKXV3hMXDwK";
+    source.value = await useSignRequestsAPI.getDocumentBase(documentData.value.aws_document_id, userLogged.value.aws_auth_token);
 }
 
 function remindSigner(signerId){
@@ -370,12 +370,6 @@ function remindSigner(signerId){
         toast.success("Se ha notificado correctamente", {
           timeout: 2000,
         });
-    });
-    axios.post("logout").then(response => { 
-        console.log(response);
-    })
-    .catch(error => {
-        console.log(error);
     });
 }
 

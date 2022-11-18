@@ -15,7 +15,7 @@
             <tr v-for="document in filteredDocuments">
                 <td>
                     <p class="m-0">
-                        <span style="font-size: 3pt;" :class="'align-middle badge border border-light rounded-circle p-1 bg-'+(document.signed == 0  ? 'warning' : 'success') ">
+                        <span style="font-size: 3pt;" :class="'align-middle badge border border-light rounded-circle p-1 bg-'+(document.signed == 0 || !checkDocumentSigned(document.aws_document_id) ? 'warning' : 'success') ">
                             &nbsp;&nbsp;&nbsp;
                         </span>
                         <span class="align-middle ms-1">{{document.name}}</span>
@@ -25,7 +25,7 @@
                 <td>{{document.classification.name}}</td>
                 <td>{{document.container.name}}</td>
                 <td>
-                    <div class="dropdown" v-if="document.signed == 1">
+                    <div class="dropdown" v-if="document.signed == 1 && checkDocumentSigned(document.aws_document_id)">
                         <a  class="btn btn-sm btn-secondary dropdown-toggle" href="#" role="button" id="dropdownMenuLink" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
                             DESCARGAR
                         </a>                                   
@@ -33,11 +33,11 @@
                             <div>
                             <h5 class="dropdown-header col-2">Por cada documento generado 
                             se generan 2 archivos:<br>
-                            uno XML y uno PDf asegurate<br> 
-                            de descargar ambos</h5>
+                            un pdf firmado electronicamente<br> 
+                            y otro para su impresión</h5>
                             </div>
-                            <a class="dropdown-item" type="button" @click="viewSignedDocument(document?.id)">Descargar pdf</a>
-                            <a class="dropdown-item" type="button" @click="viewSignedDocument(document?.id)" disabled>Descargar xml</a>
+                            <a class="dropdown-item" type="button" @click="viewSignedDocument(document?.aws_document_id)">Descargar pdf</a>
+                            <a class="dropdown-item" type="button" @click="viewPrintDocument(document?.aws_document_id)" disabled>Descargar pdf para imprimir</a>
                         </div>
                     </div> 
                     <button 
@@ -53,7 +53,7 @@
                         <div class="dropdown-menu" aria-labelledby="dropdownMenuLink">
                             <router-link class="dropdown-item" :to="'/mis-documentos/detalles/'+document?.id">Ver Detalles</router-link>
                             <!-- <a class="dropdown-item" href="#">Ver original</a> -->
-                            <a class="dropdown-item" type="button" @click="viewDocument(document?.id)">Descargar documento original</a>
+                            <a class="dropdown-item" type="button" @click="viewDocument(document?.aws_document_id)">Descargar documento original</a>
                             <a v-if="document.user_id == userLogged.id && document.signed == 0" class="dropdown-item" @click="deleteDocument(document.id)">Eliminar documento</a>
                             <a v-if="document.user_id == userLogged.id && document.signed == 1 && document.deletion_requests.length == 0" class="dropdown-item" @click="openDeletionRequest(document.id)">Eliminar documento</a>
                         </div>
@@ -100,6 +100,7 @@ const router = useRouter();
 const emit = defineEmits(['refresh'])
 
 const props = defineProps({
+    signedDocuments : Array,
     dataFilter: Object,
     needSign: Boolean,
     userLogged: Object,
@@ -107,6 +108,7 @@ const props = defineProps({
     reload: Boolean
 });
 
+const signedDocuments = toRef(props, "signedDocuments");
 const dataFilter = toRef(props, "dataFilter");
 const needSign = toRef(props, "needSign");
 const userLogged = toRef(props, "userLogged");
@@ -196,6 +198,13 @@ const createTable = async () => {
     });
 }
 
+function checkDocumentSigned(awsDocumentId){
+    if(signedDocuments.value.length > 0){
+        return signedDocuments.value.findIndex(x => x.id == awsDocumentId && x.status == "Signed") != -1;
+    }
+    return false;
+}
+
 function deleteRequests(){
     useDocumentCrudRequests.deleteDocument(documentIdSelected.value)
     .then((res) => {
@@ -276,6 +285,11 @@ function openDeletionRequest(documentId){
 
 async function viewDocument(documentId){
     let url = await useSignRequestsAPI.getDocumentBase(documentId, userLogged.value.aws_auth_token);
+    window.open(url, '_blank');
+}
+
+async function viewPrintDocument(documentId){
+    let url = await useSignRequestsAPI.getPrintDocument(documentId, userLogged.value.aws_auth_token);
     window.open(url, '_blank');
 }
 

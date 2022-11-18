@@ -80,10 +80,10 @@
                     <div class="card-body">
                         <div class="tab-content">
                             <div class="tab-pane show active" id="user-documents">
-                                <TableDocuments ref="tableDocuments" :dataFilter="dataFilter" :userLogged="userLogged" :needSign="needSign" :refresh="refreshTable" :reload="reloadTable" @refresh="refreshTables"></TableDocuments>
+                                <TableDocuments ref="tableDocuments" :signedDocuments="/*userDocuments*/signedDocuments" :dataFilter="dataFilter" :userLogged="userLogged" :needSign="needSign" :refresh="refreshTable" :reload="reloadTable" @refresh="refreshTables"></TableDocuments>
                             </div>
                             <div class="tab-pane" id="sign-documents">
-                                <TableDocumentsSign ref="tableDocumentsSign" :dataFilter="dataFilter" :userLogged="userLogged" :needSign="needSign" :refresh="refreshTable" :reload="reloadTable" @refresh="refreshTables"></TableDocumentsSign>
+                                <TableDocumentsSign ref="tableDocumentsSign" :signedDocuments="signedDocuments" :dataFilter="dataFilter" :userLogged="userLogged" :needSign="needSign" :refresh="refreshTable" :reload="reloadTable" @refresh="refreshTables"></TableDocumentsSign>
                             </div>
                         </div>
                         <!-- <div class="alert alert-warning alert-dismissible fade show mb-3" role="alert">
@@ -120,6 +120,7 @@ import { useDropzone } from "vue3-dropzone";
 import { useRouter } from "vue-router";
 //Apis
 import { useDocumentsRequests } from "@/js/composables/document-apis/useDocumentsRequest.js";
+import useSignRequestsAPI from "@/api/sign-document/index.js";
 
 const props = defineProps({
     user: Object
@@ -159,9 +160,14 @@ const selectedTable = ref('my-documents');
 const tableDocuments = ref(null);
 const tableDocumentsSign = ref(null);
 
+const signedDocuments = ref([]);
+const userDocuments = ref([]);
+
 //Life Cycle
 onMounted(async () => {
     await getRequests();
+    await getSignedDocuments();
+    await getUserDocuments();
 });
 //watches
 watch(
@@ -199,6 +205,26 @@ const getRequests = async () => {
     showModal.value = true;
     documentModal.value = new Modal($("#create-modal"));
 };
+
+async function getSignedDocuments(){
+    await useSignRequestsAPI.getSignedDocuments(userLogged.value.aws_auth_token)
+        .then(res => {
+            signedDocuments.value = res.listDocuments;
+        })
+        .catch(e => {
+            console.log(e);
+        })
+}
+
+async function getUserDocuments(){
+    await useSignRequestsAPI.getUserDocuments(userLogged.value.aws_auth_token)
+        .then(res => {
+            userDocuments.value = res.listDocuments;
+        })
+        .catch(e => {
+            console.log(e);
+        })
+}
 
 const dataFiles = ref({});
 const shadow = ref(false);

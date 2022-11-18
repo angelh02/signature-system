@@ -244,7 +244,10 @@
                                         <span class="spinner-border spinner-border-sm" role="status" aria-hidden="true" v-if="loadDocuments"></span>
                                         SOLICITAR FIRMAS
                                     </button>
-                                    <router-link class="btn btn-light mb-2" type="button" :to="'/mis-documentos'">CANCELAR</router-link>
+                                    <router-link v-if="!loadDocuments" class="btn btn-light mb-2" type="button" :to="'/mis-documentos'">CANCELAR</router-link>
+                                    <div class="progress p-0" v-if="loadDocuments">
+                                        <div class="progress-bar" role="progressbar" :style="`width: ${(dataDocuments?.length/progressDocument)*100}%;`" :aria-valuenow="progressDocument" aria-valuemin="0" :aria-valuemax="dataDocuments?.length">{{progressDocument}} / {{dataDocuments?.length}}</div>
+                                    </div>
                                 </div>
                             </div>
                             <!-- end card-body-->
@@ -262,7 +265,6 @@
     //Libraries
     import { ref, onMounted, watch, toRef, reactive, useAttrs } from "vue";
     import $ from 'jquery';
-    import axios from 'axios';
     import select2 from "select2";
     import moment from "moment";
     import {useToast} from "vue-toastification";
@@ -274,6 +276,7 @@
     import useUserRequestsApi from "@/api/admin/user/index.js"
     import useDocumentRequestsAPI from "@/api/document/index.js";
     import DocumentCreated from "./DocumentCreated.vue";
+    import useSignRequestsAPI from "@/api/sign-document/index.js";
 
     const toast = useToast();
 
@@ -299,6 +302,7 @@
 
     //Pdf viewer consts
     const dataDocuments = ref(JSON.parse(route.params.files));
+    const progressDocument = ref(0);
     const source = ref(dataDocuments.value.files[0].data);
     const pdfViewer = ref(null);
     const pdfLoaded = ref(false);
@@ -406,24 +410,16 @@
 
     const submitFile = async(file, signerList) =>{
         let data = new FormData();
-        let headersL = {
-            'content-type': 'multipart/form-data',
-            'accept' : '*/*',
-            'Authorization' : 'Bearer '+userLogged.value.aws_auth_token,
-            'IdUsers' : [...signerList.map(x => x.aws_user_id)]
-        }
         data.append('filePdfToSign', file);
-        return await axios
-                .post(`http://trsffirmadigitalserviciocertificadosv.eba-4hsuxaba.us-west-1.elasticbeanstalk.com/Firmado/SignDocumentWithMultipleRFC`, data,{headers : headersL})
-                .then(res => {
-                    if (res.status != 200) throw new Error("Response Failed");
-                    return res.data;
+        return await useSignRequestsAPI.submitDocument(userLogged.value.aws_auth_token, [...signerList.map(x => x.aws_user_id)], data)
+            .then(res => {
+                return res;
+            })
+            .catch(e => {
+                toast.warning("No se ha podido Agregar los documentos", {
+                    timeout: 2000,
                 })
-                .catch(e => {
-                    toast.warning("No se ha podido Agregar los documentos", {
-                        timeout: 2000,
-                    })
-                });
+            });
     }
 
     const storeDocumentRequest = async(documentIndex, signerList) => {
@@ -465,7 +461,8 @@
             let idArray = [];
             for(let x = 0;x < documentList.value.length; x++){
                 let id = await storeDocumentRequest(x, signerList);
-                idArray.push(id)
+                idArray.push(id);
+                progressDocument.value += 1;
             }
             console.log("🚀 ~ file: DocumentsPreparation.vue ~ line 469 ~ createDocument ~ idArray", idArray)
             loadDocuments.value = false;
