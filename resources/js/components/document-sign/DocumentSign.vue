@@ -54,7 +54,7 @@
                                 <div class="inbox-item-img"><i class="mdi mdi-48px mdi-file-document-outline"></i></div>
                                 <p class="inbox-item-author">{{documentData?.name}}</p>
                                 <p class="inbox-item-text">Creado el {{documentData?.created_at}}</p>
-                                <a type="button" class="text-primary" @click="viewDocument(documentData?.id)" style="font-size: 0.8125rem">Descargar</a>
+                                <a type="button" class="text-primary" @click="viewDocument(documentData?.aws_document_id)" style="font-size: 0.8125rem">Descargar</a>
                             </div>
                             <div class="inbox-item">
                                 <p class="inbox-item-author">Tipo de documento</p>
@@ -128,8 +128,8 @@
                                     <a class="mt-3 font-18" href="javascript:void(0);">
                                         <strong class="text-success">Certificados Activos:</strong>
                                         <span class="text-muted">
-                                            Ya haz subido tus certificados por lo que puedes proceder a firmar directamente {{documents?.length > 1 ? "los documentos":"el documento"}}.<br>
-                                            Por favor revisa que todo este en orden antes de firmar {{documents?.length > 1 ? "los documentos":"el documento"}}.
+                                            Tus certificados se validaron exitosamente, ahora puedes firmar {{documents?.length > 1 ? "tus documentos":"tu documento"}}.<br>
+                                            Por favor, revisa que {{documents?.length > 1 ? "tus documentos estén correctos antes de firmarlos":"tu documento este correcto antes de firmarlo"}}.
                                         </span>
                                     </a>
                                 </div>
@@ -239,7 +239,6 @@
     import DocumentUpload from "../elements/DropZone.vue";
     import ContactModal from "../elements/MessageContacModal.vue";
     import $ from 'jquery';
-    import axios from 'axios';
     import { Modal } from "bootstrap";  
     import {useToast} from "vue-toastification";
     import CryptoJS from 'crypto-js';
@@ -479,7 +478,7 @@
         signData.value.user_id = userLogged.value.id;
         contactModal.value = new Modal($("#contact-modal"));
         setTimeout(function () {
-            refreshPdf( documentData.value.id);
+            refreshPdf( documentData.value.aws_document_id);
         }, 3000);
     };
 
@@ -488,29 +487,22 @@
         {
             submit.value = true;
             let encryptData = await encryptPassword(signData.value.password);
-            console.log("🚀 ~ file: DocumentSign.vue ~ line 458 ~ submitCertificates ~ encryptData", encryptData)
+            //console.log("🚀 ~ file: DocumentSign.vue ~ line 458 ~ submitCertificates ~ encryptData", encryptData)
             let data = new FormData();
-            let headersL = {
-                'content-type': 'multipart/form-data',
-                'accept' : '*/*',
-                'Authorization' : 'Bearer '+userLogged.value.aws_auth_token,
-                'Password' : encryptData.password
-            }
             data.append('filecer', signData.value.cer_file);
             data.append('fileKey', signData.value.key_file);
-            console.log("🚀 ~ file: DocumentSign.vue ~ line 468 ~ submitCertificates ~ signData.value", signData.value)
-            await axios
-                .post(`http://trsffirmadigitalserviciocertificadosv.eba-4hsuxaba.us-west-1.elasticbeanstalk.com/Certificados?IdRequest=${encryptData.idRequest}`, data,{headers : headersL})
+            //console.log("🚀 ~ file: DocumentSign.vue ~ line 468 ~ submitCertificates ~ signData.value", signData.value)
+            await useSignRequestsAPI.submitCertificates(userLogged.value.aws_auth_token, encryptData.password, encryptData.idRequest, data)
                 .then(res => {
                     submit.value = false;
                     checkCertificates();
                 })
-                .catch(e => {
-                    console.log("🚀 ~ file: DocumentSign.vue ~ line 474 ~ submitCertificates ~ e", e)
+                .catch(e => {
+                    //console.log("🚀 ~ file: DocumentSign.vue ~ line 474 ~ submitCertificates ~ e", e)
                     toast.warning("No se ha podido Agregar los documentos", {
                         timeout: 2000,
                     })
-                });
+                })
         }
     }
 
@@ -518,7 +510,7 @@
         if(certificatesExist.value)
         {
             submit.value = true;
-            console.log("🚀 ~ file: DocumentSign.vue ~ line 428 ~ signDocument ~ signData.value", signData.value)
+            //console.log("🚀 ~ file: DocumentSign.vue ~ line 428 ~ signDocument ~ signData.value", signData.value)
             useDocumentsRequestsAPI.signDocument({
                 aws_token : userLogged.value.aws_auth_token,
                 user_id : userLogged.value.id,

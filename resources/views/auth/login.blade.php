@@ -6,10 +6,15 @@
         <div class="row justify-content-center">
             <div class="col-4">
                 <div class="card">
+                    <!-- Logo -->
+                    <div class="card-header text-center" style="background-color: #FFF3E0">
+                        <a class="text-warning h2">
+                            <span><img class="me-2" src="{{ asset('/images/itsl-logo.png') }}" alt="" height="75">Sistema eGestión</span>
+                        </a>
+                    </div>
                     <div class="card-body">
                         <div class="text-center w-75 m-auto">
-                            <h4 class="text-dark-50 text-center pb-0 fw-bold">Iniciar Sesión</h4>
-                            <p class="text-muted mb-4">Ingrese con su cuenta de google para acceder al panel de administración</p>
+                            <p class="text-muted mb-3">Ingresa con tu cuenta de correo institucional</p>
                         </div>
                         @if(false)
                         <form method="POST" action="{{ route('login') }}">
@@ -72,9 +77,8 @@
                         @endif
                         <div class="row mb-0">
                             <div class="mb-3 mb-0 text-center">
-                                <a id="signinButton" href="/login-google" class="btn btn-outline-danger rounded-3">
-                                    <i class="mdi mdi-google me-2"></i>
-                                    Iniciar con Google
+                                <a id="signinButton" href="/login-google" class="btn btn-warning rounded-3">
+                                    Iniciar sesión
                                 </a>
                                 @if (session('user'))
                                     <span class="d-block invalid-feedback" role="alert">

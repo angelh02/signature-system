@@ -398,7 +398,7 @@ class DocumentController extends Controller
         $validator = Validator::make($request->all(), [
             'aws_token' => 'required',
             'user_id' => 'required|numeric|exists:users,id',
-            'document_name' => 'required|min:10|max:30',
+            'document_name' => 'required|min:10|max:255',
             'aws_document_id' => 'required|numeric',
             'url' => 'required',
             'signers' => 'required|array|min:1',
