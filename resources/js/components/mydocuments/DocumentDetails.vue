@@ -200,7 +200,6 @@
 <script setup>
 import { ref, onMounted, watch, toRef, reactive, useAttrs } from "vue";
 import $ from 'jquery';
-import axios from 'axios';
 import { Modal, Popover } from "bootstrap";
 import { useRouter, useRoute } from "vue-router";
 import VuePdfEmbed from 'vue-pdf-embed'
@@ -274,7 +273,7 @@ const addSigners = async(add) => {
     // formData.value = add
     signer.value.user_id = formData.value.id
     signer.value.document_id = formData.value.document_id
-    console.log(signer.value)
+    //console.log(signer.value)
     useDocumentRequestsAPI.addSigner(signer.value)
     .then((res) => {
         resetData();
@@ -349,18 +348,19 @@ async function getDocumentData(){
         signers.value = res?.document_signers;
         if(userLogged.value.id != documentData.value.user_id)
             router.push({path:'/mis-documentos/estado/'+documentData.value.id});
-        console.log(documentData.value)
+        //console.log(documentData.value)
     });
     
-    source.value = await useSignRequestsAPI.getDocumentBase(documentData.value.id, userLogged.value.aws_auth_token);
+    //source.value = "https://cdn.filestackcontent.com/wcrjf9qPTCKXV3hMXDwK";
+    source.value = await useSignRequestsAPI.getDocumentBase(documentData.value.aws_document_id, userLogged.value.aws_auth_token);
 }
 
 function remindSigner(signerId){
-    console.log("🚀 ~ file: DocumentDetails.vue ~ line 356 ~ remindSigner ~ signerId", signerId)
-    console.log("🚀 ~ file: DocumentDetails.vue ~ line 356 ~ remindSigner ~ signerId", {
+    //console.log("🚀 ~ file: DocumentDetails.vue ~ line 356 ~ remindSigner ~ signerId", signerId)
+    /* //console.log("🚀 ~ file: DocumentDetails.vue ~ line 356 ~ remindSigner ~ signerId", {
         document_id : documentData.value.id,
         user_id : signerId
-    });
+    }); */
     
     useDocumentRequestsAPI.remindSigner({
         document_id : documentData.value.id,
@@ -370,12 +370,6 @@ function remindSigner(signerId){
         toast.success("Se ha notificado correctamente", {
           timeout: 2000,
         });
-    });
-    axios.post("logout").then(response => { 
-        console.log(response);
-    })
-    .catch(error => {
-        console.log(error);
     });
 }
 
