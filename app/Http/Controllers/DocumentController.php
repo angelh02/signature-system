@@ -223,7 +223,7 @@ class DocumentController extends Controller
             "deletionRequests" => function($query){
                 $query->where("status", "Pendiente");
             }
-        ])->where([["canceled", false], ["canceled_at", null]])->get();
+        ])->where([["canceled", false], ["canceled_at", null]])->orderBy('created_at', 'desc')->orderBy('signed')->orderBy('name')->get();
         
         return response()->json($documents, 200);
     }

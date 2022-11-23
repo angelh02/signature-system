@@ -245,14 +245,14 @@ const addUser = async () => {
         toast.success("Se ha agregado corectamente", {
           timeout: 2000,
         });
+        emit('update');
+        resetData();
     })
     .catch(error => 
         toast.warning("No se ha podido agregar, verifique que los datos sean correctos", {
           timeout: 2000,
         })
     );
-    emit('update');
-    resetData();
     onSubmit();
 };
 
@@ -265,14 +265,14 @@ const editUser = async => {
         toast.success("El registro se ha actualizado corectamente", {
           timeout: 2000,
         })
+        emit('update');
+        resetData();
     })
     .catch((error) =>{
         toast.error("El registro no se ha podido actualizar", {
           timeout: 2000,
         });
     });
-    emit('update');
-    resetData();
 }
 
 function resetData(){
