@@ -5,8 +5,8 @@
         style="width: 100%"
     ></table>
     <ConfirmationModal
-        :title="'Confirmacion de Eliminación'"
-        :message="'Estas seguro de eliminar el siguiente registro, esto hara que se eliminen los documentos referenciados a esta clasificación'"
+        :title="'Confirmación de Eliminación'"
+        :message="'Éstas seguro de eliminar el siguiente registro, esto hara que se eliminen los documentos referenciados a esta clasificación'"
         @response="confirmationResponse"
     ></ConfirmationModal>
 </template>
@@ -74,7 +74,7 @@ const refreshTable = async() => {
         },
         data: filesClasification.value,
         columns: filesColumns,
-        scrollY: "50vh",
+        scrollY: "600px",
         scrollCollapse: true,
         destroy: true,
     });
@@ -87,7 +87,7 @@ const createTable = async () => {
         },
         data: filesClasification.value,
         columns: filesColumns,
-        scrollY: "50vh",
+        scrollY: "600px",
         scrollCollapse: true,
         destroy: true,
     });
@@ -120,8 +120,10 @@ const getRequests = async (refresh = false) => {
     const results = await getClasification([]);
     filesClasification.value = results;
     confirmationModal.value = new Modal("#confirmation-modal")
-    if(!refresh)
+    if(!refresh){
+        confirmationModal.value = new Modal("#confirmation-modal");
         createTable();
+    }
     else
         refreshTable();
 };

@@ -81,7 +81,7 @@ const refreshTable = async() => {
         },
         data: users.value,
         columns: userColumns,
-        scrollY: "50vh",
+        scrollY: "600px",
         scrollCollapse: true,
         destroy: true,
     });
@@ -94,7 +94,7 @@ const createTable = async () => {
         },
         data: users.value,
         columns: userColumns,
-        scrollY: "50vh",
+        scrollY: "600px",
         scrollCollapse: true,
         destroy: true,
     });

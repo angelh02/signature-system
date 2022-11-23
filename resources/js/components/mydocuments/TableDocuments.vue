@@ -54,8 +54,8 @@
                             <router-link class="dropdown-item" :to="'/mis-documentos/detalles/'+document?.id">Ver Detalles</router-link>
                             <!-- <a class="dropdown-item" href="#">Ver original</a> -->
                             <a class="dropdown-item" type="button" @click="viewDocument(document?.aws_document_id)">Descargar documento original</a>
-                            <a v-if="document.user_id == userLogged.id && document.signed == 0" class="dropdown-item" @click="deleteDocument(document.id)">Eliminar documento</a>
-                            <a v-if="document.user_id == userLogged.id && document.signed == 1 && document.deletion_requests.length == 0" class="dropdown-item" @click="openDeletionRequest(document.id)">Eliminar documento</a>
+                            <a v-if="document.user_id == userLogged.id && document.signed == 0" class="dropdown-item" @click="deleteDocument(document.id)">Cancelar documento</a>
+                            <a v-if="document.user_id == userLogged.id && document.signed == 1 && document.deletion_requests.length == 0" class="dropdown-item" @click="openDeletionRequest(document.id)">Cancelar documento</a>
                         </div>
                     </div> 
                 </td>
@@ -69,8 +69,8 @@
     >
     </CreateDeletionRequestModal>
     <ConfirmationModal
-        :title="'Confirmacion de Eliminación'"
-        :message="'Estas seguro de eliminar el siguiente documento'"
+        :title="'Confirmación de cancelación'"
+        :message="'Éstas seguro de cancelar el siguiente documento'"
         @response="confirmationResponse"
     ></ConfirmationModal>
 </div>
@@ -185,6 +185,7 @@ const createTable = async () => {
                 url: "//cdn.datatables.net/plug-ins/1.10.11/i18n/Spanish.json",
             },
             bFilter: false,
+            scrollY: "600px",
             scrollCollapse: false,
             responsive: true,
             columnDefs : [ {
@@ -216,7 +217,7 @@ function deleteRequests(){
     })
     .catch(e => {
         console.log(e);
-        toast.warning("No se ha podido eliminar el documento", {
+        toast.warning("No se ha podido cancelar el documento", {
             timeout: 2000,
         })
     });

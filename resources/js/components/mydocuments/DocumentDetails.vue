@@ -162,7 +162,7 @@
                                         v-if="documentData?.id != null && documentData.signed != 1"
                                         @click="deleteDocument"
                                     >
-                                        <h5>ELIMINAR DOCUMENTO</h5>
+                                        <h5>CANCELAR DOCUMENTO</h5>
                                     </button>
                                     <button
                                         class="btn btn-outline-danger mb-2"
@@ -170,7 +170,7 @@
                                         v-if="documentData?.id != null && documentData.signed == 1 && documentData.deletion_requests.length == 0"
                                         @click="openDeletionRequest"
                                     >
-                                        <h5>ELIMINAR DOCUMENTO</h5>
+                                        <h5>CANCELAR DOCUMENTO</h5>
                                     </button>
                                 </div>
                             </div>
@@ -189,8 +189,8 @@
         </CreateDeletionRequestModal>
         <!-- Deletion confirmation modal -->
         <ConfirmationModal
-            :title="'Confirmacion de Eliminación'"
-            :message="'Estas seguro de eliminar el siguiente documento'"
+            :title="'Confirmación de cancelación'"
+            :message="'Éstas seguro de cancelar el siguiente documento'"
             @response="confirmationResponse"
         ></ConfirmationModal>
         <ModalSigner :signers="signers" :userLogged="userLogged" :formData="formData" @cancel="closeModal" @add="addSigners"></ModalSigner>

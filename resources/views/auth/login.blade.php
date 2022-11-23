@@ -4,7 +4,7 @@
 <div class="account-pages pt-5 pb-4 pb-sm-5">
     <div class="container">
         <div class="row justify-content-center">
-            <div class="col-4">
+            <div style="width: 425px">
                 <div class="card">
                     <!-- Logo -->
                     <div class="card-header text-center" style="background-color: #FFF3E0">

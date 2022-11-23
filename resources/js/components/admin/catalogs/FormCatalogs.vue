@@ -172,14 +172,14 @@ const addClassification = async () => {
         toast.success("Se ha agregado correctamente", {
           timeout: 2000,
         });
+        emit('update');
+        resetData();
     })
     .catch(error => 
         toast.warning("No se ha podido agregar", {
           timeout: 2000,
         })
     );
-    emit('update');
-    resetData();
     onSubmit();
 };
 
@@ -191,14 +191,14 @@ const editRequest = async => {
         toast.success("El registro se ha actualizado correctamente", {
           timeout: 2000,
         })
+        emit('update');
+        resetData();
     })
     .catch((error) =>{
         toast.error("El registro no se ha actualizado", {
           timeout: 2000,
         });
     });
-    emit('update');
-    resetData();
 }
 
 function resetData(){

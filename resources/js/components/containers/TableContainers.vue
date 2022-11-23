@@ -5,8 +5,8 @@
         style="width: 100%"
     ></table>
     <ConfirmationModal
-        :title="'Confirmacion de Eliminación'"
-        :message="'Estas seguro de eliminar el siguiente registro, esto hara que se eliminen los documentos referenciados a este contenedor'"
+        :title="'Confirmación de Eliminación'"
+        :message="'Éstas seguro de eliminar el siguiente registro, esto hara que se eliminen los documentos referenciados a este contenedor'"
         @response="confirmationResponse"
     ></ConfirmationModal>
 </template>
@@ -73,7 +73,7 @@ const refreshTable = async() => {
         },
         data: containersData.value,
         columns: containerColumns,
-        scrollY: "50vh",
+        scrollY: "600px",
         scrollCollapse: true,
         destroy: true,
     });
@@ -86,7 +86,7 @@ const createTable = async () => {
         },
         data: containersData.value,
         columns: containerColumns,
-        scrollY: "50vh",
+        scrollY: "600px",
         scrollCollapse: true,
         destroy: true,
         
@@ -118,9 +118,10 @@ const createTable = async () => {
 const getRequests = async (refresh = false) => {
     const results = await getContainers([]);
     containersData.value = results;
-    confirmationModal.value = new Modal("#confirmation-modal")
-    if(!refresh)
+    if(!refresh){
+        confirmationModal.value = new Modal("#confirmation-modal");
         createTable();
+    }
     else
         refreshTable();
 };

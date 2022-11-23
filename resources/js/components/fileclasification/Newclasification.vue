@@ -286,14 +286,15 @@ const addRequest = async => {
             toast.success("Se ha agregado correctamente el archivo de clasificación", {
             timeout: 2000,
             });
+
+            emit('update');
+            resetData();
         })
         .catch(error => 
             toast.warning("No se ha podido agregar, verifique los datos (ej. nombre repetido, etc..)", {
             timeout: 2000,
             })
         );
-        emit('update');
-        resetData();
     }
 };
 
@@ -306,14 +307,15 @@ const editRequest = async => {
             toast.success("Se ha editado correctamente la clasificación", {
             timeout: 2000,
             });
+
+            emit('update');
+            resetData();
         })
         .catch(error => 
             toast.warning("No se ha podido editar, verifique los datos.", {
             timeout: 2000,
             })
         );
-        emit('update');
-        resetData();
     }
     
 }
