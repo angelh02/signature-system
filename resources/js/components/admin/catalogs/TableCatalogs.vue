@@ -5,8 +5,8 @@
         style="width: 100%"
     ></table>
     <ConfirmationModal
-        :title="'Confirmacion de Eliminación'"
-        :message="'Estas seguro que deseas eliminar ' + tags"
+        :title="'Confirmación de Eliminación'"
+        :message="'Éstas seguro que deseas cancelar ' + tags"
         @response="confirmationResponse"
     ></ConfirmationModal>
 </template>
@@ -108,7 +108,7 @@ const refreshTable = async() => {
         },
         data: catalogs.value,
         columns: catalogsColumns,
-        scrollY: "50vh",
+        scrollY: "372px",
         scrollCollapse: true,
         destroy: true,
     });
@@ -121,7 +121,7 @@ const createTable = async () => {
         },
         data: catalogs.value,
         columns: catalogsColumns,
-        scrollY: "50vh",
+        scrollY: "372px",
         scrollCollapse: true,
         destroy: true,
     });
