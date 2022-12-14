@@ -23,7 +23,7 @@ class UserController extends Controller
         
         $client = new Client();
 
-        $url = "http://trsffirmadigitalserviciocertificadosv.eba-4hsuxaba.us-west-1.elasticbeanstalk.com/Certificados";
+        $url = "https://firmaelectronica.mxteam23.com/Certificados";
         $headers = [
             'Accept' => '*/*',
             'Authorization' => 'Bearer '.$request->input('aws_token')
@@ -121,7 +121,7 @@ class UserController extends Controller
             //AWS IMPLEMENTATION
             $client = new Client();
 
-            $url = "http://trsffirmadigitalserviciocertificadosv.eba-4hsuxaba.us-west-1.elasticbeanstalk.com/api/Users/AddUser";
+            $url = "https://firmaelectronica.mxteam23.com/api/Users/AddUser";
             $headers = [
                 'Accept' => '*/*',
                 'Authorization' => 'Bearer '.$request->input('aws_token')

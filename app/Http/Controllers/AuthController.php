@@ -25,7 +25,7 @@ class AuthController extends Controller
             //Consume api
             $client = new Client();
 
-            $url = "http://trsffirmadigitalserviciocertificadosv.eba-4hsuxaba.us-west-1.elasticbeanstalk.com/api/Auth/LoginExternal";
+            $url = "https://firmaelectronica.mxteam23.com/api/Auth/LoginExternal";
             $headers = [
                 'Accept' => '*/*',
                 'Content-Type' => 'application/json'

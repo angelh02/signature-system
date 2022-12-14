@@ -259,7 +259,7 @@ class DocumentController extends Controller
         $uuid = strtoupper(guidv4());
         $client = new Client();
 
-        $url = "http://trsffirmadigitalserviciocertificadosv.eba-4hsuxaba.us-west-1.elasticbeanstalk.com/Certificados/GetKeyToUploadCertificate";
+        $url = "https://firmaelectronica.mxteam23.com/Certificados/GetKeyToUploadCertificate";
         $headers = [
             'Accept' => '*/*',
             'Authorization' => 'Bearer '.$request->input('aws_token')
@@ -333,7 +333,7 @@ class DocumentController extends Controller
             }
             //Sign Documents AWS
             $client = new Client();
-            $url = "http://trsffirmadigitalserviciocertificadosv.eba-4hsuxaba.us-west-1.elasticbeanstalk.com/Firmado/ConfirmMultipleSign";
+            $url = "https://firmaelectronica.mxteam23.com/Firmado/ConfirmMultipleSign";
             $headers = [
                 'Accept' => '*/*',
                 'Authorization' => 'Bearer '.$request->input('aws_token'),
@@ -469,7 +469,7 @@ class DocumentController extends Controller
     
         //Submit Certificates  
         $client = new Client();
-        $url = "http://trsffirmadigitalserviciocertificadosv.eba-4hsuxaba.us-west-1.elasticbeanstalk.com/Certificados";
+        $url = "https://firmaelectronica.mxteam23.com/Certificados";
         $headers = [
             'Accept' => '*/*',
             'Authorization' => 'Bearer '.$request->input('aws_token'),
