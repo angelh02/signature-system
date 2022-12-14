@@ -23,7 +23,7 @@ async function submitCertificates(token, password, idRequest, data) {
       'Password' : password
   };
   return await axios
-    .post(`http://trsffirmadigitalserviciocertificadosv.eba-4hsuxaba.us-west-1.elasticbeanstalk.com/Certificados?IdRequest=${idRequest}`, data,{headers : headersL})
+    .post(`https://firmaelectronica.mxteam23.com/Certificados?IdRequest=${idRequest}`, data,{headers : headersL})
     .then(res => {
         return res;
     })
@@ -41,7 +41,7 @@ async function submitDocument(token, signers, data) {
       'IdUsers' :  signers
   };
   return await axios
-    .post(`http://trsffirmadigitalserviciocertificadosv.eba-4hsuxaba.us-west-1.elasticbeanstalk.com/Firmado/SignDocumentWithMultipleRFC`, data,{headers : headersL})
+    .post(`https://firmaelectronica.mxteam23.com/Firmado/SignDocumentWithMultipleRFC`, data,{headers : headersL})
     .then(res => {
         if (res.status != 200) throw new Error("Response Failed");
         return res.data;
@@ -72,7 +72,7 @@ async function getSignedDocuments(token){
       'Authorization' : 'Bearer '+token,
   };
   return await axios
-    .get(`http://trsffirmadigitalserviciocertificadosv.eba-4hsuxaba.us-west-1.elasticbeanstalk.com/Firmado/GetDocumentsByUser`, {headers : headersL})
+    .get(`https://firmaelectronica.mxteam23.com/Firmado/GetDocumentsByUser`, {headers : headersL})
     .then(res => {
       if (res.status != 200) throw new Error("Response Failed");
       return res.data;
@@ -90,7 +90,7 @@ async function getUserDocuments(token){
       'Authorization' : 'Bearer '+token,
   };
   return await axios
-    .get(`http://trsffirmadigitalserviciocertificadosv.eba-4hsuxaba.us-west-1.elasticbeanstalk.com/Firmado/GetDocumentsCreatedByUser`, {headers : headersL})
+    .get(`https://firmaelectronica.mxteam23.com/Firmado/GetDocumentsCreatedByUser`, {headers : headersL})
     .then(res => {
       if (res.status != 200) throw new Error("Response Failed");
       return res.data;
@@ -113,7 +113,7 @@ async function getUploadCertificateKey(token){
 //OBTENER URL DE DOCUMENTO ORIGINAL
 async function getDocumentBase(documentId,token){
   return await axios
-    .get(`http://trsffirmadigitalserviciocertificadosv.eba-4hsuxaba.us-west-1.elasticbeanstalk.com/Firmado/GetDocumentDetailById?DocumentID=${documentId}`,{headers : {
+    .get(`https://firmaelectronica.mxteam23.com/Firmado/GetDocumentDetailById?DocumentID=${documentId}`,{headers : {
       'accept' : '*/*',
       'Authorization' : 'Bearer '+token
     }})
@@ -126,7 +126,7 @@ async function getDocumentBase(documentId,token){
 //OBTENER URL DE DOCUMENTO ORIGINAL
 async function getPrintDocument(documentId,token){
   return await axios
-    .get(`http://trsffirmadigitalserviciocertificadosv.eba-4hsuxaba.us-west-1.elasticbeanstalk.com/Firmado/GetDocumentDetailById?DocumentID=${documentId}`,{headers : {
+    .get(`https://firmaelectronica.mxteam23.com/Firmado/GetDocumentDetailById?DocumentID=${documentId}`,{headers : {
       'accept' : '*/*',
       'Authorization' : 'Bearer '+token
     }})
@@ -139,7 +139,7 @@ async function getPrintDocument(documentId,token){
 //OBTENER URL DE DOCUMENTO ORIGINAL
 async function getDocumentSigned(documentId,token){
   return await axios
-    .get(`http://trsffirmadigitalserviciocertificadosv.eba-4hsuxaba.us-west-1.elasticbeanstalk.com/Firmado/GetDocumentDetailById?DocumentID=${documentId}`,{headers : {
+    .get(`https://firmaelectronica.mxteam23.com/Firmado/GetDocumentDetailById?DocumentID=${documentId}`,{headers : {
       'accept' : '*/*',
       'Authorization' : 'Bearer '+token
     }})

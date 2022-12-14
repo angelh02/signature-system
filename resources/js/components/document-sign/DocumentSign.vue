@@ -371,6 +371,7 @@
             $("#card-pdf").addClass("show active");
         }
         else{
+            checkCertificates();
             $("#tab-pdf").removeClass("active");
             $("#pdf-viewer").removeClass("show active");
             $("#card-pdf").removeClass("show active");
