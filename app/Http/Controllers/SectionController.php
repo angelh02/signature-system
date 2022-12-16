@@ -26,7 +26,7 @@ class SectionController extends Controller
 
     public function getAll()
     {
-        $sections = Section::all();
+        $sections = Section::orderBy("name")->get();
 
         return response()->json($sections, 200);
     }

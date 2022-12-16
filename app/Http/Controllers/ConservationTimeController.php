@@ -26,7 +26,7 @@ class ConservationTimeController extends Controller
 
     public function getAll()
     {
-        $conservationTimes = ConservationTime::all();
+        $conservationTimes = ConservationTime::orderBy("name")->get();
 
         return response()->json($conservationTimes, 200);
     }

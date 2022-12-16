@@ -2,8 +2,33 @@
     <table
         id="containers-table"
         class="table table-striped cell-border"
-        style="width: 100%"
-    ></table>
+        cellspacing="0" style="width:100%"
+    >
+        <thead>
+            <tr>
+                <th data-priority="1">Nombre</th>
+                <th>Tiempo de conservación</th>
+                <th>Tipo de conservación</th>
+                <th>Valor documental</th>
+                <th>Tipo de información</th>
+                <th>Técnica de selección</th>
+                <th class="no-sort"></th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr v-for="container in containersData">
+                <td>{{container.name}}</td>
+                <td>{{container.conservation_time.name}}</td>
+                <td>{{container.conservation_type.name}}</td>
+                <td>{{container.document_value.name}}</td>
+                <td>{{container.information_type.name}}</td>
+                <td>{{container.selection_technique.name}}</td>
+                <td>
+                    <button id="btn_editar" class="btn btn-warning uil-edit-alt" @click="updateContainer(container.id)"></button>
+                </td>
+            </tr> 
+        </tbody>
+    </table>
     <ConfirmationModal
         :title="'Confirmación de Eliminación'"
         :message="'Éstas seguro de eliminar el siguiente registro, esto hara que se eliminen los documentos referenciados a este contenedor'"
@@ -13,7 +38,7 @@
 
 <script setup>
 //Libraries
-import { ref, onMounted, watch, toRefs, reactive } from "vue";
+import { ref, onMounted, watch, toRefs, reactive, nextTick } from "vue";
 import $ from "jquery";
 import { Modal } from "bootstrap";
 import { dataTable, table, row, draw, destroy } from "datatables";
@@ -71,27 +96,38 @@ const refreshTable = async() => {
         language: {
             url: "//cdn.datatables.net/plug-ins/1.10.11/i18n/Spanish.json",
         },
-        data: containersData.value,
-        columns: containerColumns,
         scrollY: "600px",
-        scrollCollapse: true,
-        destroy: true,
+        scrollCollapse: false,
+        responsive: true,
+        columnDefs : [ {
+            targets: 'no-sort',
+            orderable: false,
+        },{ width: '30%', targets: 0 }
+        ],
+        fixedColumns: true,
+        destroy : true
     });
 }
 
 const createTable = async () => {
-    containerTable.value = $("#containers-table").DataTable({
-        language: {
-            url: "//cdn.datatables.net/plug-ins/1.10.11/i18n/Spanish.json",
-        },
-        data: containersData.value,
-        columns: containerColumns,
-        scrollY: "600px",
-        scrollCollapse: true,
-        destroy: true,
-        
+    await nextTick(function() {
+        containerTable.value = $("#containers-table").DataTable({
+            language: {
+                url: "//cdn.datatables.net/plug-ins/1.10.11/i18n/Spanish.json",
+            },
+            scrollY: "600px",
+            scrollCollapse: false,
+            responsive: true,
+            columnDefs : [ {
+                targets: 'no-sort',
+                orderable: false,
+            },{ width: '30%', targets: 0 }
+            ],
+            fixedColumns: true,
+            destroy : true
+        });
     });
-    containerTable.value.on("click", "#btn_editar", function () {
+    /* containerTable.value.on("click", "#btn_editar", function () {
         fila.value = $(this).closest("tr");
         let containers = containersData.value;
         let containerId = parseInt(containerTable.value.rows(fila.value).data()[0].id);
@@ -105,7 +141,7 @@ const createTable = async () => {
         formData.selection_technique_id = containers[index].selection_technique_id;
         formData.effective_date = containers[index].effective_date;
         emit("data", formData);
-    });
+    }); */
 
     /* containerTable.value.on("click", "#btn_borrar", function(){
         fila.value = $(this).closest("tr");      
@@ -122,8 +158,10 @@ const getRequests = async (refresh = false) => {
         confirmationModal.value = new Modal("#confirmation-modal");
         createTable();
     }
-    else
-        refreshTable();
+    else{
+        containerTable.value.destroy();
+        createTable();
+    }
 };
 
 const deleteRequests = async (id) => {
@@ -141,6 +179,19 @@ const deleteRequests = async (id) => {
     );
 };
 
+function updateContainer(containerId){
+    let containers = containersData.value;
+    let index = containers.findIndex(x => x.id == containerId);
+    formData.id = containers[index].id;
+    formData.name = containers[index].name;        
+    formData.conservation_time_id = containers[index].conservation_time_id;
+    formData.conservation_type_id = containers[index].conservation_type_id;
+    formData.document_value_id = containers[index].document_value_id;
+    formData.information_type_id = containers[index].information_type_id;
+    formData.selection_technique_id = containers[index].selection_technique_id;
+    formData.effective_date = containers[index].effective_date;
+    emit("data", formData);
+}
 
 watch(
     () => updated,

@@ -14,11 +14,11 @@ export function useFileClasificationRequests(from = null, to = null) {
         },
         {
             title: "Fondo",
-            data: "background.code",
+            data: "background",
         },
         {
             title: "Sección",
-            data: "section.code",
+            data: "section",
         },
         {
             title: "Series",
@@ -32,7 +32,7 @@ export function useFileClasificationRequests(from = null, to = null) {
         },
         {
             title: "Area de producción",
-            data: "production_area.code",
+            data: "production_area",
         },
         {
             title: "Periodo de inicio",

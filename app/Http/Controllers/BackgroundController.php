@@ -26,7 +26,7 @@ class BackgroundController extends Controller
 
     public function getAll()
     {
-        $backgrounds = Background::all();
+        $backgrounds = Background::orderBy('name')->get();
 
         return response()->json($backgrounds, 200);
     }
