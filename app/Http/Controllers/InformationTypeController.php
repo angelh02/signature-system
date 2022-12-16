@@ -26,7 +26,7 @@ class InformationTypeController extends Controller
 
     public function getAll()
     {
-        $informationTypes = InformationType::all();
+        $informationTypes = InformationType::orderBy("name")->get();
 
         return response()->json($informationTypes, 200);
     }

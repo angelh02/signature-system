@@ -26,7 +26,7 @@ class ProductionAreaController extends Controller
 
     public function getAll()
     {
-        $productionAreas = ProductionArea::all();
+        $productionAreas = ProductionArea::orderBy("name")->get();
 
         return response()->json($productionAreas, 200);
     }

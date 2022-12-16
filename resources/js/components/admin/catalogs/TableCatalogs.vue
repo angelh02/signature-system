@@ -147,8 +147,9 @@ const createTable = async () => {
 };
 
 const getRequests = async (refresh = false) => {
-    tags.value = Tag[route.params.name]
-    const get = apisGet[route.params.name]
+    const index = route.params.name != undefined && route.params.name != null && route.params.name != "" ? route.params.name : "tipos-documentos"; 
+    tags.value = Tag[index]
+    const get = apisGet[index]
     const info = await get.getAll([]);
     catalogs.value = info;
     confirmationModal.value = new Modal($("#confirmation-modal"))

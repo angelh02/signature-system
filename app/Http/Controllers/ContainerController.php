@@ -34,7 +34,7 @@ class ContainerController extends Controller
             "documentValue",
             "informationType",
             "selectionTechnique"
-        ])->get();
+        ])->orderBy("name")->get();
 
         return response()->json($containers, 200);
     }

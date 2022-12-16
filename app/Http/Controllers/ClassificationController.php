@@ -36,7 +36,7 @@ class ClassificationController extends Controller
             "background", 
             "section", 
             "productionArea"
-        ])->get();
+        ])->orderBy("name")->get();
 
         return response()->json($classifications);
     }
