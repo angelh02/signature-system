@@ -51,7 +51,7 @@
                         <a  class="btn btn-sm btn-outline-secondary dropdown-toggle" href="#" role="button" id="dropdownMenuLink" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
                         </a>                                   
                         <div class="dropdown-menu" aria-labelledby="dropdownMenuLink">
-                            <router-link class="dropdown-item" :to="'/mis-documentos/detalles/'+document?.id">Ver Detalles</router-link>
+                            <router-link class="dropdown-item" :to="'/mis-documentos/detalles/'+document?.id" v-if="(document?.signed == 1 && checkDocumentSigned(document?.aws_document_id)) || document?.signed == 0">Ver Detalles</router-link>
                             <!-- <a class="dropdown-item" href="#">Ver original</a> -->
                             <a class="dropdown-item" type="button" @click="viewDocument(document?.aws_document_id)">Descargar documento original</a>
                             <a v-if="document.user_id == userLogged.id && document.signed == 0" class="dropdown-item" @click="deleteDocument(document.id)">Cancelar documento</a>
