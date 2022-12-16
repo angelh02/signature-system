@@ -140,7 +140,7 @@
                                         <div class="inbox-item-img"><i class="mdi mdi-48px mdi-file-document-outline"></i></div>
                                         <p class="inbox-item-author">{{documentData?.name}}</p>
                                         <p class="inbox-item-text">Creado el {{documentData?.created_at}}</p>
-                                        <a v-if="documentDownload != ''" :href="documentDownload" style="font-size: 0.8125rem">Descargar</a>
+                                        <a v-if="documentData != null && documentData != ''" type="button" @click="viewDocument" style="font-size: 0.8125rem">Descargar</a>
                                     </div>
                                     <div class="inbox-item">
                                         <p class="inbox-item-author">Tipo de documento</p>
@@ -352,7 +352,10 @@ async function getDocumentData(){
     });
     
     //source.value = "https://cdn.filestackcontent.com/wcrjf9qPTCKXV3hMXDwK";
-    source.value = await useSignRequestsAPI.getDocumentBase(documentData.value.aws_document_id, userLogged.value.aws_auth_token);
+    if(documentData.value.signed == 1)
+        source.value = await useSignRequestsAPI.getPrintDocument(documentData.value.aws_document_id, userLogged.value.aws_auth_token);
+    else
+        source.value = await useSignRequestsAPI.getDocumentBase(documentData.value.aws_document_id, userLogged.value.aws_auth_token);
 }
 
 function remindSigner(signerId){
@@ -371,6 +374,15 @@ function remindSigner(signerId){
           timeout: 2000,
         });
     });
+}
+
+async function viewDocument(){
+    let url = "";
+    if(documentData.value.signed == 1)
+        url = await useSignRequestsAPI.getPrintDocument(documentData.value.aws_document_id, userLogged.value.aws_auth_token);
+    else
+        url = await useSignRequestsAPI.getDocumentBase(documentData.value.aws_document_id,userLogged.value.aws_auth_token);
+    window.open(url, '_blank');
 }
 
 </script>
