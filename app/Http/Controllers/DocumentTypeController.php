@@ -26,7 +26,7 @@ class DocumentTypeController extends Controller
 
     public function getAll()
     {
-        $documentTypes = DocumentType::all();
+        $documentTypes = DocumentType::orderBy("name")->get();
 
         return response()->json($documentTypes, 200);
     }

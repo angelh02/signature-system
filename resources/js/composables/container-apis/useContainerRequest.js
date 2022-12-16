@@ -13,24 +13,29 @@ export function useContainersRequests(from = null, to = null) {
             data: "name",
         },
         {
-            title: "TC",
-            data: "conservation_time.name",
+            title: "Tiempo de conservación",
+            data: "conservation_time",
         },
         {
-            title: "TC",
-            data: "conservation_type.name",
+            title: "Tipo de conservación",
+            data: "conservation_type",
         },
         {
-            title: "VD",
-            data: "document_value.name",
+            title: "Valor documental",
+            data: "document_value",
         },
         {
-            title: "IT",
-            data: "information_type.name",
+            title: "Tipo de información",
+            data: "information_type",
         },
         {
-            title: "ST",
-            data: "selection_technique.name",
+            title: "Técnica de selección",
+            data: "selection_technique",
+        },
+        {
+            title: "Fecha efectiva",
+            data: "effective_date",
+            visible: false
         },
         {
             targets: -1,

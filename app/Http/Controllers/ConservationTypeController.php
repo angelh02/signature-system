@@ -26,7 +26,7 @@ class ConservationTypeController extends Controller
 
     public function getAll()
     {
-        $conservationTypes = ConservationType::all();
+        $conservationTypes = ConservationType::orderBy("name")->get();
 
         return response()->json($conservationTypes, 200);
     }

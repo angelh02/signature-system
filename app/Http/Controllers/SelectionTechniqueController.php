@@ -26,7 +26,7 @@ class SelectionTechniqueController extends Controller
 
     public function getAll()
     {
-        $selectionTechniques = SelectionTechnique::all();
+        $selectionTechniques = SelectionTechnique::orderBy("name")->get();
 
         return response()->json($selectionTechniques, 200);
     }

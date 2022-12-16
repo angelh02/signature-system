@@ -26,7 +26,7 @@ class DocumentValueController extends Controller
 
     public function getAll()
     {
-        $documentValues = DocumentValue::all();
+        $documentValues = DocumentValue::orderBy("name")->get();
 
         return response()->json($documentValues, 200);
     }
